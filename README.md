@@ -1,4 +1,4 @@
-# Anidea-SmartThings &copy; Graham Johnson (OrangeBucket)
+# Anidea-SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs.
 
 ## AutoRemote Switch
