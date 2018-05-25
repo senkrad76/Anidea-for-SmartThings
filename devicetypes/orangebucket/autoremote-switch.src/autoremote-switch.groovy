@@ -17,16 +17,25 @@
  *
  * AutoRemote Switch
  * =================
- * Virtual switch device handle that sends AutoRemote messages for 'on' and 'off' states.
+ * A SmartThings Device Handler for a virtual switch that sends AutoRemote messages 
+ * on entering 'on' and 'off' states. All options supported on the AutoRemote
+ * 'personal URL' are included. Notifications are not supported. URL encoding is
+ * left to the user.
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1 (23/05/2018)
+ * Version:				1.2 (23/05/2018)
  *
- * Future plans:		Add notifications.	
+ * Future plans:		There are no particular plans for enhancements. Thought was
+ *						given to handling notifications but there are an awful lot of
+ *						parameters to handle. URL encoding is being left to the user.
  *
- * Changes:				1.1 (23/05/2018)		Cosmetic changes to source code.
+ * Changes:				1.2 (25/05/2018)		Tidy up.
+ *						1.1 (23/05/2018)		Cosmetic changes to source code.
  *						1.0 (23/05/2018)		Initial release.
+ *
+ * Please be aware that this file is created in the SmartThings Groovy IDE and it may
+ * format differently when viewed outside that environment.
  */
 
 preferences
@@ -80,36 +89,36 @@ metadata
 	}
 }
 
-def parse(String description)
+def parse(String message)
 {
-	// log.debug(description)
+	// No messages are expected from the device because there isn't one.
 }
 
 def String url(String message)
 {
 	def url = "https://autoremotejoaomgcd.appspot.com/sendmessage?key="+"${settings.autoremote_key}"+"&message="+"${message}"
     
-    if (settings.target != null && settings.target != "")
+    if (settings.target)
     {
     	url = url+"&target="+"${settings.target}"
     }
     
-    if (settings.sender != null && settings.sender != "")
+    if (settings.sender)
     {
     	url = url+"&sender="+"${settings.sender}"
     }
         
-    if (settings.password != null && settings.password != "")
+    if (settings.password)
     {
     	url = url+"&password="+"${settings.password}"
     }
         
-    if (settings.ttl != null && settings.ttl != "")
+    if (settings.ttl)
     {
     	url = url+"&ttl="+"${settings.ttl}"
     }
         
-    if (settings.collapsekey != null && settings.collapsekey != "")
+    if (settings.collapsekey)
     {
     	url = url+"&collapsekey="+"${settings.collapsekey}"
     }
