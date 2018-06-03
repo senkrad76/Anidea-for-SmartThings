@@ -13,7 +13,7 @@
  * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER 
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
- * ----n-----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------
  *
  * AutoRemote WiFi Switch
  * ======================
@@ -22,12 +22,13 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.0 (02/05/2018)
+ * Version:				1.1		(03/06/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
  *
- * Changes:				1.0 (02/05/2018)	Initial release.
+ * Changes:				1.1		(03/06/2018)	Now do it somewhat more competently.
+ *						1.0 	(02/06/2018)	Initial release.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -35,8 +36,6 @@
 
 preferences
 {
-		input "autoremote_ip", "text", 	title: "AutoRemote Device IP",						required: true,
-        description: "IP Address of AutoRemote Device on LAN"
 		input "message_on",     "text", 	title: "Message for 'On'", 						required: true,
         description: "AutoRemote WiFi message"
 		input "message_off",    "text", 	title: "Message for 'Off'", 					required: true,
@@ -57,12 +56,12 @@ metadata
 		capability "Switch"
 	}
 
-	// Simulator
+	// Simulator.
 	simulator
     {
 	}
 
-	// UI
+	// UI.
 	tiles
     {
 		standardTile("status",   "device.switch", width: 2, height: 2, canChangeIcon: true)
@@ -88,46 +87,50 @@ metadata
 	}
 }
 
-def parse(String message)
+def parse(description)
 {
-	// No messages are expected from the device because there isn't one.
+	def msg = parseLanMessage(description)
+
+    log.debug msg.headers
+    log.debug msg.body
 }
 
-def callbackmethod(evt)
+def buildhubaction(String message)
 {
-	log.info(evt)
-}
-
-def sendmessage(String message)
-{
-	def hubAction = new physicalgraph.device.HubAction(
+	// In order for the hub to send responses to the 'parse()' method it seems the
+    // device network ID needs to be either the MAC address or the IP address and
+    // port in hex pair notation. It doesn't seem to be possible to override it
+    // programmatically so it might as well be set once via the IDE rather than via
+    // parameters.
+	def hex = device.getDeviceNetworkId()
+	
+	def hubaction = new physicalgraph.device.HubAction(
         method	: "GET",
+        path	: "/sendmessage",
  		query	:	[ "message": "${message}" ],          	
         headers	:
             [
-            	"HOST"		:	"${settings.autoremote_ip}:1817",
-      		],
-    	null,
-        [ 
-         	callback: callbackmethod 
-        ]
+            	"HOST": "${hex}",
+      		]
 	);
 
-	sendHubCommand( hubAction );
+    return hubaction
 }
 
 def on()
 {
-	sendmessage(settings.message_on)
-    
-    // Tell ST the switch is on
+    // Tell ST the switch is on.
     sendEvent(name: "switch", value: "on")
+    
+    // ST will run the HubAction for us.
+	return buildhubaction(settings.message_on)   
 }
 
 def off()
 {
-	sendmessage(settings.message_off)
-    
-    // Tell ST the switch is off
+    // Tell ST the switch is off.
     sendEvent(name: "switch", value: "off")
+
+	// ST will run the HubAction for us.
+	return buildhubaction(settings.message_off)   
 }
