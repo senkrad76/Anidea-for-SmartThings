@@ -26,16 +26,19 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				2.0 (26/05/2018)
+ * Version:				2.1 (31/05/2018)
  *
- * Future plans:		There are no particular plans for enhancements. Thought was
+ * Comments:			There are no particular plans for enhancements. Thought was
  *						given to handling AutoRemote Notifications but there are an 
- *						awful lot of parameters to handle.
+ *						awful lot of parameters to handle. There was an experiment
+ *						with the canChangeBackground parameter enabled on the main 
+ *						tile but it was found to interfere with canChangeIcon.
  *
- * Changes:				2.0 (26/05/2018)		Support full URLs as an alternative.
- *						1.2 (25/05/2018)		Tidy up.
- *						1.1 (23/05/2018)		Cosmetic changes to source code.
- *						1.0 (23/05/2018)		Initial release.
+ * Changes:				2.1 (31/05/2018)	Removed redundant canChangeIcon parameters.
+ 						2.0 (26/05/2018)	Support full URLs as an alternative.
+ *						1.2 (25/05/2018)	Tidy up.
+ *						1.1 (23/05/2018)	Cosmetic changes to source code.
+ *						1.0 (23/05/2018)	Initial release.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -43,18 +46,18 @@
 
 preferences
 {
-		input "message_on",     "text", 	title: "URL or Message for 'On'", 							required: true,
+		input "message_on",     "text", 	title: "URL or Message for 'On'", 				required: true,
         description: "Full URL or AutoRemote message"
-		input "message_off",    "text", 	title: "URL or Message for 'Off'", 							required: true,
+		input "message_off",    "text", 	title: "URL or Message for 'Off'", 				required: true,
         description: "Full URL or AutoRemote message"
-		input "autoremote_key", "text", 	title: "AutoRemote Key (Optional)",							required: false,
+		input "autoremote_key", "text", 	title: "AutoRemote Key (Optional)",				required: false,
         description: "AutoRemote key, or leave empty"
-        input "target",     	"text", 	title: "AutoRemote Target (Optional)",						required: false
-        input "sender",     	"text", 	title: "AutoRemote Sender (Optional)",						required: false
-		input "password",     	"password", title: "AutoRemote Password (Optional)",					required: false
+        input "target",     	"text", 	title: "AutoRemote Target (Optional)",			required: false
+        input "sender",     	"text", 	title: "AutoRemote Sender (Optional)",			required: false
+		input "password",     	"password", title: "AutoRemote Password (Optional)",		required: false
 		input "ttl",     		"text", 	title: "AutoRemote Validity time (Optional)",	required: false
-		input "collapsekey",    "text", 	title: "AutoRemote Message Group (Optional)",				required: false
-        input "showdebug",		"bool",		title: "Debug Messages",									required: true
+		input "collapsekey",    "text", 	title: "AutoRemote Message Group (Optional)",	required: false
+        input "showdebug",		"bool",		title: "Debug Messages",						required: true
 }
 
 metadata
@@ -73,19 +76,19 @@ metadata
 	// UI
 	tiles
     {
-		standardTile("status",    "device.switch", width: 2, height: 2, canChangeIcon: true)
+		standardTile("status",   "device.switch", width: 2, height: 2, canChangeIcon: true)
         {
 			state "off", label: 'Off', action: "switch.on",  icon: "st.switches.switch.off", backgroundColor: "#ffffff"
 			state "on",  label: 'On',  action: "switch.off", icon: "st.switches.switch.on",  backgroundColor: "#00a0dc"
 		}
         
-		standardTile("swon",  "device.switch", width: 1, height: 1, canChangeIcon: true)
+		standardTile("swon",  	"device.switch", width: 1, height: 1)
         {
 			state "off", label: 'On',  action: "switch.on",  icon: "st.switches.switch.on",  backgroundColor: "#008000",
             defaultState: true
 		}
         
-		standardTile("swoff", "device.switch", width: 1, height: 1, canChangeIcon: true)
+		standardTile("swoff",	"device.switch", width: 1, height: 1)
         {
 			state "on", label: 'Off', action: "switch.off", icon: "st.switches.switch.off", backgroundColor: "#ff0000",
             defaultState: true
