@@ -22,12 +22,16 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1		(03/06/2018)
+ * Version:				1.2		(05/06/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
+ *						The state change event is only triggered when a response to the 
+ *                      request has been received. This doesn't mean it has 'worked',
+ *						only that the remote device has received the request.
  *
- * Changes:				1.1		(03/06/2018)	Now do it somewhat more competently.
+ * Changes:				1.2		(05/06/2018)	State change events handled in parse method.
+ *						1.1		(03/06/2018)	Now do it somewhat more competently.
  *						1.0 	(02/06/2018)	Initial release.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
@@ -66,9 +70,12 @@ metadata
     {
 		standardTile("status",   "device.switch", width: 2, height: 2, canChangeIcon: true)
         {
-			state "off", label: 'Off', action: "switch.on",  icon: "st.switches.switch.off", backgroundColor: "#ffffff"
-			state "on",  label: 'On',  action: "switch.off", icon: "st.switches.switch.on",  backgroundColor: "#00a0dc"
-		}
+			state "off",     label: "Off", action: "switch.on",  icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState: "turnon"
+			state "on",      label: "On",  action: "switch.off", icon: "st.switches.switch.on",  backgroundColor: "#00a0dc", nextState: "turnoff"
+            
+			state "turnoff", label: "Turning Off", icon: "st.switches.switch.off", backgroundColor: "#ff8000"
+            state "turnon",  label: "Turning On",  icon: "st.switches.switch.on",  backgroundColor: "#ff8000"
+        }
         
 		standardTile("swon",  	"device.switch", width: 1, height: 1)
         {
@@ -91,11 +98,20 @@ def parse(description)
 {
 	def msg = parseLanMessage(description)
 
-    log.debug msg.headers
-    log.debug msg.body
+	// There should be a record of the request in the state map.
+    if ( state[msg.requestId] )
+    {
+    	def stateevent = createEvent(name: "switch", value: state[msg.requestId])
+        
+        // This entry in the map is no longer required.
+        state.remove(msg.requestId)
+        
+        // Let ST fire off the event.
+        return stateevent
+    } 
 }
 
-def buildhubaction(String message)
+def buildhubaction(commstate, message)
 {
 	// In order for the hub to send responses to the 'parse()' method it seems the
     // device network ID needs to be either the MAC address or the IP address and
@@ -112,25 +128,22 @@ def buildhubaction(String message)
             [
             	"HOST": "${hex}",
       		]
-	);
-
+	)
+    
+    // Save the state change associated with this request.
+    state[hubaction.requestId] = commstate
+    
     return hubaction
 }
 
 def on()
 {
-    // Tell ST the switch is on.
-    sendEvent(name: "switch", value: "on")
-    
     // ST will run the HubAction for us.
-	return buildhubaction(settings.message_on)   
+    return buildhubaction('on', settings.message_on)
 }
 
 def off()
 {
-    // Tell ST the switch is off.
-    sendEvent(name: "switch", value: "off")
-
 	// ST will run the HubAction for us.
-	return buildhubaction(settings.message_off)   
+    return buildhubaction('off', settings.message_off)
 }
