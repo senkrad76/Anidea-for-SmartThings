@@ -31,13 +31,13 @@
  *		Switch
  *		Tone
  *
- * (*) The Actuator and Sensor capabilities are shown as deprecated in a Capabilities
- * reference, yet elsewhere their use is encouraged as best practice. The Actuator capability
+ * (*) The Actuator and Sensor capabilities are shown as deprecated in the Capabilities
+ * references, yet their use is also encouraged as best practice. The Actuator capability
  * just means the device has commands. The Sensor capability means it has attributes.
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.5		(02/10/2018)
+ * Version:				1.7		(03/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -48,7 +48,9 @@
  *						commands.
  commands.
  *
- * Changes:				1.5		(02/10/2018)	Continuing tidy up as part of learning curve.
+ * Changes:				1.7		(03/10/2018)	Make command structure more regular.
+ *						1.6		(02/10/2018)	Handle command in speech text.
+ *						1.5		(02/10/2018)	Continuing tidy up as part of learning curve.
  *												Add more intermediate states.
  *						1.4		(01/10/2018)	Add Speech Synthesis. General tidy up and
  *												improvement of code.
@@ -211,9 +213,7 @@ def parse(description)
     	def st = state[msg.requestId].split('=:=')
         def stcap = st[0]
         def stval = st[1]
-        
-        log.debug stcap + " " + stval
-    	
+          	
     	def stateevent = createEvent(name: stcap, value: stval)
         
         // This entry in the map is no longer required.
@@ -224,7 +224,7 @@ def parse(description)
     } 
 }
 
-def buildhubaction(thing, thingcommand, commandstate)
+def buildhubaction(cap, capcommfree, commandstate = false)
 {    
 	// In order for the hub to send responses to the 'parse()' method it seems the
     // device network ID needs to be either the MAC address or the IP address and
@@ -233,15 +233,22 @@ def buildhubaction(thing, thingcommand, commandstate)
     // parameters.
 	def hex = device.getDeviceNetworkId()
     
+    // The capcommfree parameter may be a command, free text, or free text with
+    // a command on the front. So sort it out.
+    def tempcap = capcommfree.split('=:=')
+    def capcomm = tempcap[0]
+    def capfree = capcomm
+    if (tempcap.length > 1) capfree = tempcap[1] ?: ""
+    
     // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
     // decoding so it would break things if the whole query string was encoded. So
     // just encode the variable that might have relatively free text in it.
-    def encthingcommand = URLEncoder.encode(thingcommand, 'UTF-8');
+    def enccapfree = URLEncoder.encode(capfree, 'UTF-8');
 	
 	def hubaction = new physicalgraph.device.HubAction(
         method	: "GET",
         path	: "/sendmessage",
- 		query	:	[ "message": "autoremotewifithing=:=${thing}=:=${encthingcommand}" ],          	
+ 		query	:	[ "message": "autoremotewifithing=:=${cap}=:=${capcomm}=:=${enccapfree}" ],          	
         headers	:
             [
             	"HOST": "${hex}",
@@ -249,7 +256,7 @@ def buildhubaction(thing, thingcommand, commandstate)
 	)
     
     // Save any state change associated with this request.
-    if (commandstate) state[hubaction.requestId] = "${thing}=:=${thingcommand}"
+    if (commandstate) state[hubaction.requestId] = "${cap}=:=${capcomm}"
 
 	return hubaction
 }
@@ -303,13 +310,13 @@ def off()
 	// This command can be called for the alarm or the switch.
     
     // Default is the switch.
-    def thing = "switch"
+    def cap = "switch"
 
 	// If the alarm is activated turn it off.
-    if (device.currentValue('alarm') != "off") thing = "alarm"
+    if (device.currentValue('alarm') != "off") cap = "alarm"
     
     // ST will run the HubAction for us.
-    return buildhubaction(thing, 'off', true)
+    return buildhubaction(cap, 'off', true)
 }
 
 // Custom command to turn switch off.
