@@ -34,4 +34,3 @@ The free text used with the Notification or Speech Synthesis can be of the form 
 |switch|off|*off*|
 |switch|on|*on*|
 |tone|beep|*beep*|
-l
