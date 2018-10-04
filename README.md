@@ -16,20 +16,24 @@ An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;</code>.
+The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end as Tasker doesn't really handle them elegantly.
 
-If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted. In the absence of this &lt;command&gt; and &lt;free text&gt; will be the same (it was a side effect of the coding but there didn't seem to be anything to gain by further processing).
+If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
-|capability|command|free text|
-|---|---|---|
-|alarm|off|*off*|
-|alarm|siren|*siren*|
-|alarm|strobe|*strobe*|
-|alarm|both|*both*|
-|notification|*&lt;free text&gt;*|&lt;free text&gt;|
-|notification|&lt;command&gt;|&lt;free text&gt;|
-|speechSynthesis|*&lt;free text&gt;*|&lt;free text&gt;|
-|speechSynthesis|&lt;command&gt;|&lt;free text&gt;|
-|switch|off|*off*|
-|switch|on|*on*|
-|tone|beep|*beep*|
+|capability|command/state|free text||
+|---|---|---|---|
+|alarm|off|off||
+|alarm|siren|siren||
+|alarm|strobe|strobe||
+|alarm|both|both||
+|notification|deviceNotification|AutoRemote WiFi Thing|Empty notification text replaced by dummy text.|
+|notification|deviceNotification|&lt;free text&gt;|Notification without a valid command.|
+|notification|&lt;command&gt;|&lt;free text&gt;|Notification with a valid command.|
+|notification|&lt;command&gt;|deviceNotification|Notification only containing a command.
+|speechSynthesis|speechSynthesis|AutoRemote WiFi Thing|Empty speech text replaced by dummy text.|
+|speechSynthesis|speechSynthesis|&lt;free text&gt;|Speech without a valid command.|
+|speechSynthesis|&lt;command&gt;|&lt;free text&gt;|Speech with a valid command.|
+|speechSynthesis|&lt;command&gt;|speechSynthesis|Speech only containing a command.|
+|switch|off|off|
+|switch|on|on|
+|tone|beep|beep|
