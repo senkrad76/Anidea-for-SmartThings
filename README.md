@@ -15,7 +15,7 @@ An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168
 
 *Ideally the IP address would be one of the settings and used to set the device ID. That would work if a SmartApp were being used to dynamically create the devices and it seems it once worked from Device Handlers too.*
 
-*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method. If the MAC address were to be used the device handler could also easily receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't seem to work, presumably because the remote port isn't 1817 for these requests. Testing using the MAC address as the IP address was not a success as the responses to commands were being massively delayed, if indeed they arrived at all.*
+*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method. If the MAC address were to be used the device handler could also easily receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't seem to work, presumably because the remote port isn't 1817 for these requests. Testing using the MAC address as the device network ID was not a success as the responses to commands were being massively delayed, if indeed they arrived at all.*
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
