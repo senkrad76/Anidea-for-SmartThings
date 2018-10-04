@@ -246,12 +246,13 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
     def tempcap = capfree.split('=:=')
     if (tempcap.length > 1)
     {
-    	capcomm = tempcap[0]
-    	capfree = tempcap[1] ?: ""
+    	// Don't allow capcomm or capfree to end up empty.
+    	capcomm = tempcap[0] ?: capcomm
+    	capfree = tempcap[1] ?: capcomm
     }
     
-    // Things will be easier at the other end if the command is set to something.
-    if (!capcomm) capcomm = cap
+    // Don't allow capfree to be empty.
+    if (!capfree) capfree = capcomm
     
     // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
     // decoding so it would break things if the whole query string was encoded. So
@@ -301,7 +302,7 @@ def deviceNotification(notificationtext)
     if (!notificationtext?.trim()) notificationtext = "AutoRemote WiFi Thing"
    
 	// ST will run the HubAction for us.
-    return buildhubaction('notification', '', notificationtext, false)
+    return buildhubaction('notification', 'deviceNotification', notificationtext, false)
 }
 
 def speak(words)
@@ -309,7 +310,7 @@ def speak(words)
     if (!words?.trim()) words = "AutoRemote WiFi Thing"
    
 	// ST will run the HubAction for us.
-    return buildhubaction('speechSynthesis', '', words, false)
+    return buildhubaction('speechSynthesis', 'speak', words, false)
 }
 
 def on()
