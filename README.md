@@ -11,8 +11,11 @@ This device handler started out as an exercise in communicating over the local L
 
 The device is identified by using a hex version of <code>&lt;IP ADDRESS&gt;:&lt;PORT&gt;</code> as its network ID, so you will probably want to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server.
   
-An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168.1.10:1817</code>. Each component of the IP address is converted into two hex digits. The port will always be <code>0719</code> which is a straight conversion of <code>1817</code> int
-*Ideally the IP address would be one of the settings. That would work if a SmartApp were being used to dynamically create the devices and it seems it once worked from Device Handlers too. The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method.*
+An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168.1.10:1817</code>. Each component of the IP address is converted into two hex digits. The port will always be <code>0719</code> which is a straight conversion of <code>1817</code>, the port used by the AutoRemote WiFi Service.
+
+*Ideally the IP address would be one of the settings and used to set the device ID. That would work if a SmartApp were being used to dynamically create the devices and it seems it once worked from Device Handlers too.*
+
+*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method. If the MAC address were to be used the device handler could also easily receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't seem to work, presumably because the remote port isn't 1817 for these requests. Testing using the MAC address as the IP address was not a success as the responses to commands were being massively delayed, if indeed they arrived at all.*
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
