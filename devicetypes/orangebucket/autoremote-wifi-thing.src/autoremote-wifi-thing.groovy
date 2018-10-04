@@ -37,7 +37,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.7		(03/10/2018)
+ * Version:				1.8		(03/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -48,7 +48,10 @@
  *						commands.
  commands.
  *
- * Changes:				1.7		(03/10/2018)	Make command structure more regular.
+ * Changes:				1.8		(04/10/2018)	Correct the ID for Speech Synthesis. Change
+ *												buildhubaction() parameters to make parsing
+ *												commands easier.
+ *						1.7		(03/10/2018)	Make command structure more regular.
  *						1.6		(02/10/2018)	Handle command in speech text.
  *						1.5		(02/10/2018)	Continuing tidy up as part of learning curve.
  *												Add more intermediate states.
@@ -171,7 +174,7 @@ metadata
         }
         
         // This tile sends a sample text to be spoken.
-        standardTile("speak", "device.speech", width: 1, height: 1)
+        standardTile("speechSynthesis", "device.speech", width: 1, height: 1)
         {
             state "speak", label:'Speak', action:'Speech Synthesis.speak', icon:"st.Entertainment.entertainment3", backgroundColor:"#800080", defaultState: true
         }
@@ -199,7 +202,7 @@ metadata
         // Use the alarm as the main tile.
         main "alarm"
         // Sort the tiles suitably.
-        details (["alarm", "siren", "strobe", "notification", "speak", "tone", "switch", "alarmreset", "switchreset"])
+        details (["alarm", "siren", "strobe", "notification", "speechSynthesis", "tone", "switch", "alarmreset", "switchreset"])
 	}
 }
 
@@ -224,7 +227,13 @@ def parse(description)
     } 
 }
 
-def buildhubaction(cap, capcommfree, commandstate = false)
+// Build and return a hubaction.
+//
+// cap			Capability id.
+// capcomm		Command or empty string.
+// capfree 		Free text or empty string.
+// commandstate	True if command should trigger a state change.
+def buildhubaction(cap, capcomm, capfree, commandstate = false)
 {    
 	// In order for the hub to send responses to the 'parse()' method it seems the
     // device network ID needs to be either the MAC address or the IP address and
@@ -233,12 +242,16 @@ def buildhubaction(cap, capcommfree, commandstate = false)
     // parameters.
 	def hex = device.getDeviceNetworkId()
     
-    // The capcommfree parameter may be a command, free text, or free text with
-    // a command on the front. So sort it out.
-    def tempcap = capcommfree.split('=:=')
-    def capcomm = tempcap[0]
-    def capfree = capcomm
-    if (tempcap.length > 1) capfree = tempcap[1] ?: ""
+    // The capfree parameter may have a command on the front. Extract it if so.
+    def tempcap = capfree.split('=:=')
+    if (tempcap.length > 1)
+    {
+    	capcomm = tempcap[0]
+    	capfree = tempcap[1] ?: ""
+    }
+    
+    // Things will be easier at the other end if the command is set to something.
+    if (!capcomm) capcomm = cap
     
     // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
     // decoding so it would break things if the whole query string was encoded. So
@@ -263,24 +276,24 @@ def buildhubaction(cap, capcommfree, commandstate = false)
 
 def both()
 {
-	return buildhubaction('alarm', 'both', true)
+	return buildhubaction('alarm', 'both', '', true)
 }
 
 def siren()
 {
-	return buildhubaction('alarm', 'siren', true)
+	return buildhubaction('alarm', 'siren', '', true)
 }
 
 def strobe()
 {
-	return buildhubaction('alarm', 'strobe', true)
+	return buildhubaction('alarm', 'strobe', '', true)
 }
 
 // Custom command to turn alarm off.
 def alarmoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('alarm', 'off', true)
+    return buildhubaction('alarm', 'off', '', true)
 }
 
 def deviceNotification(notificationtext)
@@ -288,7 +301,7 @@ def deviceNotification(notificationtext)
     if (!notificationtext?.trim()) notificationtext = "AutoRemote WiFi Thing"
    
 	// ST will run the HubAction for us.
-    return buildhubaction('notification', notificationtext, false)
+    return buildhubaction('notification', '', notificationtext, false)
 }
 
 def speak(words)
@@ -296,13 +309,13 @@ def speak(words)
     if (!words?.trim()) words = "AutoRemote WiFi Thing"
    
 	// ST will run the HubAction for us.
-    return buildhubaction('speak', words, false)
+    return buildhubaction('speechSynthesis', '', words, false)
 }
 
 def on()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'on', true)
+    return buildhubaction('switch', 'on', '', true)
 }
 
 def off()
@@ -316,18 +329,18 @@ def off()
     if (device.currentValue('alarm') != "off") cap = "alarm"
     
     // ST will run the HubAction for us.
-    return buildhubaction(cap, 'off', true)
+    return buildhubaction(cap, 'off', '', true)
 }
 
 // Custom command to turn switch off.
 def switchoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'off', true)
+    return buildhubaction('switch', 'off', '', true)
 }
 
 def beep()
 {
 	// ST will run the HubAction for us.
-    return buildhubaction('tone', 'beep', false)
+    return buildhubaction('tone', 'beep', '', false)
 }
