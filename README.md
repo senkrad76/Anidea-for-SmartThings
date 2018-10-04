@@ -11,15 +11,14 @@ This device handler started out as an exercise in communicating over the local L
 
 The device is identified by using a hex version of <code>&lt;IP ADDRESS&gt;:&lt;PORT&gt;</code> as its network ID, so you will probably want to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server.
   
-An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168.1.10:1817</code>. Each component of the IP address is converted into two hex digits. The port will always be <code>0719</code> which is a straight conversion of <code>1817</code> into hex.
-
+An example of a network ID would be <code>C0A8010A:0719</code> for <code>192.168.1.10:1817</code>. Each component of the IP address is converted into two hex digits. The port will always be <code>0719</code> which is a straight conversion of <code>1817</code> int
 *Ideally the IP address would be one of the settings. That would work if a SmartApp were being used to dynamically create the devices and it seems it once worked from Device Handlers too. The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method.*
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
 The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;</code>.
 
-The free text used with the Notification or Speech Synthesis can be of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code>. In the absence of this &lt;command&gt; and &lt;free text&gt; are the same.
+If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted. In the absence of this &lt;command&gt; and &lt;free text&gt; will be the same (it was a side effect of the coding but there didn't seem to be anything to gain by further processing).
 
 |capability|command|free text|
 |---|---|---|
@@ -29,8 +28,8 @@ The free text used with the Notification or Speech Synthesis can be of the form 
 |alarm|both|*both*|
 |notification|*&lt;free text&gt;*|&lt;free text&gt;|
 |notification|&lt;command&gt;|&lt;free text&gt;|
-|speak|*&lt;free text&gt;*|&lt;free text&gt;|
-|speak|&lt;command&gt;|&lt;free text&gt;|
+|speechSynthesis|*&lt;free text&gt;*|&lt;free text&gt;|
+|speechSynthesis|&lt;command&gt;|&lt;free text&gt;|
 |switch|off|*off*|
 |switch|on|*on*|
 |tone|beep|*beep*|
