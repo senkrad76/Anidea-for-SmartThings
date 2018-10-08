@@ -35,11 +35,12 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.0		(07/10/2018)
+ * Version:				1.1		(08/10/2018)
  *
  * Comments:			
  *
- * Changes:				1.0		(08/10/2018)	Was and brush up.
+ * Changes:				1.1		(08/10/2018)	Set DNI from IP and Port in preferences.
+ *						1.0		(08/10/2018)	Wash and brush up.
  *						0.1		(07/10/2018)	Initial version.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
@@ -48,8 +49,12 @@
 
 preferences
 {
-	// Ideally the IP host and port would be preferences but the device network ID from 
-    // the device handler has never worked for me, though that might be my fault.
+	section("Remote Device")
+    {
+    	paragraph "Enter the IP address and port to be checked. An HTTP request will be made to http://ip:port/"
+    	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
+    	input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
+    }
 }
 
 metadata
@@ -101,14 +106,41 @@ def installed()
 }
 
 // Schedule a call to polldevice() every fifteen minutes and also call it in
-// two seconds time.
+// ten seconds time.
 def updated()
 {
 	log.debug "${device}: updated"
-
+ 
 	unschedule()
-	runEvery15Minutes(polldevice)
-	runIn(2, polldevice)
+  
+    runEvery15Minutes(polldevice)
+
+	runIn(1, setdni)
+
+	runIn(10, polldevice)
+}
+
+def setdni()
+{
+	def address = settings.ip
+	def port = settings.port
+	def octets = address.tokenize('.')
+	def hex = ""
+
+	octets.each
+    {
+		hex = hex + Integer.toHexString(it as Integer).toUpperCase().padLeft(2, '0')
+	}
+
+	hex = hex + ":" + Integer.toHexString(port as Integer).toUpperCase().padLeft(4, '0')
+
+	if (device.getDeviceNetworkId() != hex)
+    {
+    	log.debug  "${device}: setdni ${settings.ip}:${settings.port} ${hex}"
+  	  
+		device.setDeviceNetworkId(hex)
+    }
+    else log.debug "${device}: setdni (not needed)"
 }
 
 // If parse() is called that suggests the remote device is switched on and
