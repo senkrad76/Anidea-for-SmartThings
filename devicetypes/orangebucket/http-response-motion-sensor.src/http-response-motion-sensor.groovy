@@ -35,7 +35,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1		(08/10/2018)
+ * Version:				1.2		(08/10/2018)
  *
  * Comments:			
  *
@@ -49,12 +49,8 @@
 
 preferences
 {
-	section("Remote Device")
-    {
-    	paragraph "Enter the IP address and port to be checked. An HTTP request will be made to http://ip:port/"
-    	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
-    	input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
-    }
+    input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
+    input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
 }
 
 metadata
