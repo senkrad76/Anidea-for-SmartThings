@@ -35,11 +35,12 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				0.1		(07/10/2018)
+ * Version:				1.0		(07/10/2018)
  *
  * Comments:			
  *
- * Changes:				0.1		(07/10/2018)
+ * Changes:				1.0		(08/10/2018)	Was and brush up.
+ *						0.1		(07/10/2018)	Initial version.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -47,6 +48,8 @@
 
 preferences
 {
+	// Ideally the IP host and port would be preferences but the device network ID from 
+    // the device handler has never worked for me, though that might be my fault.
 }
 
 metadata
@@ -89,18 +92,27 @@ metadata
 	}
 }
 
+// Call the updated() command on device installation.
 def installed()
 {
+	log.debug "${device}: installed"
+    
 	updated()
 }
 
+// Schedule a call to polldevice() every fifteen minutes and also call it in
+// two seconds time.
 def updated()
 {
+	log.debug "${device}: updated"
+
 	unschedule()
 	runEvery15Minutes(polldevice)
 	runIn(2, polldevice)
 }
 
+// If parse() is called that suggests the remote device is switched on and
+// so the motion sensor is set to to active.
 def parse(description)
 {
 	def msg = parseLanMessage(description)
@@ -112,9 +124,12 @@ def parse(description)
     return stateevent
 }
 
-// SmartThings will automatically send a HubAction returned by a command. However
-// refresh() isn't actually a command when run automagically every fifteen minutes.
-// So simply wrap it in a method and do the sendHubCommand manually.
+// SmartThings will automatically run a HubAction returned by a command such as 
+// refresh(). However if refresh() is called from the scheduler it would not be
+// acting as a command. It is therefore necessary to use a separate method for 
+// scheduling that calls sendHubCommand() manually.
+
+// Wrapper for refresh() for scheduling.
 def polldevice()
 {    
     log.debug "${device}: polldevice"
