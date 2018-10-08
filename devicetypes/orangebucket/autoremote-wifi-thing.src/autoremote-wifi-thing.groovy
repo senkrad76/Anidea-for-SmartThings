@@ -37,7 +37,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.9		(04/10/2018)
+ * Version:				2.0		(08/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -48,7 +48,9 @@
  *						commands.
  commands.
  *
- * Changes:				1.9		(04/10/2018)	Experimenting with various things. All
+ * Changes:				2.0		(08/10/2018)	Read IP and Port in preferences and set the
+ *												DNI dynamically.
+ *						1.9		(04/10/2018)	Experimenting with various things. All
  *												changes removed.
  *						1.8		(04/10/2018)	Correct the ID for Speech Synthesis. Change
  *												buildhubaction() parameters to make parsing
@@ -72,7 +74,10 @@
 
 preferences
 {
-    // These preferences were used by the cloud based AutoRemote messaging in a different DTH.
+   	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
+    input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
+
+	// These preferences were used by the cloud based AutoRemote messaging in a different DTH.
     // The password might be useful if it is honoured, the others probably aren't.
     
     // input "target", "text", title: "AutoRemote Target (Optional)", required: false
@@ -208,6 +213,58 @@ metadata
 	}
 }
 
+def installed()
+{
+	log.debug "${device}: installed"
+    
+    updated()
+}
+
+def updated()
+{
+	log.debug "${device}: updated"
+ 
+	unschedule()
+ 
+	runIn(2, setdni)
+}
+
+// In order for the hub to send responses to the 'parse()' method in a DTH it seems
+// the device network ID needs to be either the MAC address, or the IP address and
+// port in hex notation. Generally the MAC address is encouraged as IP addresses
+// can change.
+//
+// Incoming messages generally wouldn't, and often can't, have the same source port
+// number as the destination port used in outgoing messages. Therefore the MAC address
+// would be required to allow incoming messages. Brief testing suggested this made 
+// receiving responses at best slow and at worst unreliable. This was quite possibly
+// due to flawed coding, or indeed flawed testing, but it hasn't been pursued.
+//
+// As it works and it saves entering or finding the MAC address, the hex IP port and
+// address are used.
+def setdni()
+{
+	def address = settings.ip
+	def port = settings.port
+	def octets = address.tokenize('.')
+	def hex = ""
+
+	octets.each
+    {
+		hex = hex + Integer.toHexString(it as Integer).toUpperCase().padLeft(2, '0')
+	}
+
+	hex = hex + ":" + Integer.toHexString(port as Integer).toUpperCase().padLeft(4, '0')
+    
+    if (device.getDeviceNetworkId() != hex)
+    {
+    	log.debug "${device}: setdni ${address}:${port} ${hex}"
+  	  
+		device.setDeviceNetworkId(hex)
+    }
+    else log.debug "${device}: setdni (not needed)"
+}
+
 def parse(description)
 {
 	def msg = parseLanMessage(description)
@@ -224,9 +281,12 @@ def parse(description)
         // This entry in the map is no longer required.
         state.remove(msg.requestId)
         
-        // Let ST fire off the event.
+		log.debug "${device}: parse"
+
+		// Let ST fire off the event.
         return stateevent
     }
+    else log.debug "${device}: parse (unknown request)"
 }
 
 // Build and return a hubaction.
@@ -237,13 +297,7 @@ def parse(description)
 // commandstate	True if command should trigger a state change.
 def buildhubaction(cap, capcomm, capfree, commandstate = false)
 {    
-	// In order for the hub to send responses to the 'parse()' method it seems the
-    // device network ID needs to be either the MAC address or the IP address and
-    // port in hex pair notation. It doesn't seem to be possible to override it
-    // programmatically so it might as well be set once via the IDE rather than via
-    // parameters. Although the MAC address would allow out of band messages to be 
-    // received from the device, tests suggest it makes receiving responses at best
-    // slow and at worst unreliable, so the IP port and address in hex are used.
+	// The DNI is IP:port in hex form.
 	def hex = device.getDeviceNetworkId()
     
     // The capfree parameter may have a command on the front. Extract it if so.
