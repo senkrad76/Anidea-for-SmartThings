@@ -39,7 +39,7 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 ## HTTP Response Motion Sensor
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
 
-This simple device handler does the job described above. Every fifteen minutes it resets its status to inactive and then attempts to connect an HTTP server on the IP address and port defined in hex form in the device network ID (as described in the discussion of the previous DTH). If the parse() command picks up the response the status is set to active. A refresh command can also be used to check the status out of band.
+This simple device handler does the job described above. Every fifteen minutes it resets its status to inactive and then attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. A refresh command can also be used to check the status out of band.
 
 The device handler should not be used in automations that would respond immediately to a change of status to inactive as this may only be momentary while the state is being refreshed.
 
