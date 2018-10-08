@@ -37,7 +37,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.8		(03/10/2018)
+ * Version:				1.9		(04/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -48,7 +48,9 @@
  *						commands.
  commands.
  *
- * Changes:				1.8		(04/10/2018)	Correct the ID for Speech Synthesis. Change
+ * Changes:				1.9		(04/10/2018)	Experimenting with various things. All
+ *												changes removed.
+ *						1.8		(04/10/2018)	Correct the ID for Speech Synthesis. Change
  *												buildhubaction() parameters to make parsing
  *												commands easier.
  *						1.7		(03/10/2018)	Make command structure more regular.
@@ -70,8 +72,8 @@
 
 preferences
 {
-	// These preferences are used by the cloud based AutoRemote messaging. The password
-    // might be useful if it is honoured, the others probably aren't.
+    // These preferences were used by the cloud based AutoRemote messaging in a different DTH.
+    // The password might be useful if it is honoured, the others probably aren't.
     
     // input "target", "text", title: "AutoRemote Target (Optional)", required: false
 	// input "sender", "text", title: "AutoRemote Sender (Optional)", required: false
@@ -209,8 +211,8 @@ metadata
 def parse(description)
 {
 	def msg = parseLanMessage(description)
-
-	// There should be a record of any state change requests in the state map.
+    
+    // There should be a record of any state change requests in the state map.
     if ( state[msg.requestId] )
     {
     	def st = state[msg.requestId].split('=:=')
@@ -224,7 +226,7 @@ def parse(description)
         
         // Let ST fire off the event.
         return stateevent
-    } 
+    }
 }
 
 // Build and return a hubaction.
@@ -239,7 +241,9 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
     // device network ID needs to be either the MAC address or the IP address and
     // port in hex pair notation. It doesn't seem to be possible to override it
     // programmatically so it might as well be set once via the IDE rather than via
-    // parameters.
+    // parameters. Although the MAC address would allow out of band messages to be 
+    // received from the device, tests suggest it makes receiving responses at best
+    // slow and at worst unreliable, so the IP port and address in hex are used.
 	def hex = device.getDeviceNetworkId()
     
     // The capfree parameter may have a command on the front. Extract it if so.
