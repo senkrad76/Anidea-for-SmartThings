@@ -6,7 +6,7 @@ This device handler started out as an exercise in communicating over the local L
 
 The device is specified by IP Address and Port in the Preferences, and the MAC address may also be specified (with or without colons and in upper, lower or mixed case). If the MAC address is provided it will be used as the Device Network ID (DNI), otherwise the IP Address and Port are combined in a hex form as the DNI. You might prefer to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server.
 
-Using the MAC address as the DNI seems to have the unfortunate side effect of sometimes delaying the update of the device UI in the SmartThings Classic app. Exiting the UI and reentering picks up the correct state.
+Using the MAC address as the DNI seems to correspond with some unusually long delays in updating the device tiles in the SmartThings Classic app to the correct new state. Re-entering the UI causes the correct states to be picked up. There is a suggestion things settle down so it could be something only experienced in the development environment.
 
 *The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method of a device handler. The MAC address is generally preferred and if it were to be used the device handler could also easily receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't work as the remote source port wouldn't be 1817 for these requests.*
 
