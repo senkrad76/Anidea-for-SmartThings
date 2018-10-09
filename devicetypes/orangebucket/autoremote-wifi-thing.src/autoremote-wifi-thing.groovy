@@ -25,6 +25,8 @@
  *
  *		Actuator (*)
  *		Alarm
+ *		Battery
+ *		Estimated Time Of Arrival
  *		Notification
  * 		Sensor (*)
  *		Speech Synthesis
@@ -37,7 +39,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				2.1		(09/10/2018)
+ * Version:				2.2		(09/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -47,7 +49,10 @@
  *						is a lot better than simply sending state change events in the
  *						commands.
  *
- * Changes:				2.1		(09/10/2018)	Add MAC address to preferences and use for 
+ * Changes:				2.2		(09/10/2018)	Further refinement. Add ability to
+ *												receive pings. Add Battery and Estimated
+ * 												Time Of Arrival capabilities as proof of concept.
+ *						2.1		(09/10/2018)	Add MAC address to preferences and use for 
  *												DNI if supplied.
  *						2.0		(08/10/2018)	Read IP and Port in preferences and set the
  *												DNI dynamically.
@@ -96,6 +101,8 @@ metadata
     {
 		capability "Actuator"
         capability "Alarm"
+        capability "Battery"
+        capability "Estimated Time Of Arrival"
         capability "Notification"
         capability "Sensor"
         capability "Speech Synthesis"
@@ -182,10 +189,10 @@ metadata
             state "notify", label:'Notify', action:"notification.deviceNotification", icon:"st.Office.office13", backgroundColor:"#800080", defaultState: true
         }
         
-        // This tile sends a sample text to be spoken.
+        // This tile sends a sample text to be spoken. Speech is a dummy attribute.
         standardTile("speechSynthesis", "device.speech", width: 1, height: 1)
         {
-            state "speak", label:'Speak', action:'Speech Synthesis.speak', icon:"st.Entertainment.entertainment3", backgroundColor:"#800080", defaultState: true
+            state "speech", label:'Speak', action:'Speech Synthesis.speak', icon:"st.Entertainment.entertainment3", backgroundColor:"#800080", defaultState: true
         }
         
 		// Switch showing transitional states while awaiting device response.
@@ -208,10 +215,20 @@ metadata
             state "tone", label:'Tone', action:"tone.beep", icon:"st.alarm.beep.beep", backgroundColor: "#800080", defaultState: true
         }
         
+        valueTile("battery", "device.battery", decoration: "flat", width: 1, height:1)
+        {
+        	state "battery", label:'Battery Level ${currentValue}%'
+    	}  
+
+        valueTile("eta", "device.eta", decoration: "flat", width: 2, height:1)
+        {
+        	state "eta", label:'ETA ${currentValue}'
+    	} 
+        
         // Use the alarm as the main tile.
         main "alarm"
         // Sort the tiles suitably.
-        details (["alarm", "siren", "strobe", "notification", "speechSynthesis", "tone", "switch", "alarmreset", "switchreset"])
+        details (["alarm", "siren", "strobe", "notification", "speechSynthesis", "tone", "switch", "alarmreset", "switchreset", "battery", "eta"])
 	}
 }
 
@@ -256,23 +273,23 @@ def setdni()
 
 		hex = hex + ":" + Integer.toHexString(port as Integer).toUpperCase().padLeft(4, '0')
     }
-    else hex = mac.replaceAll(":", "").toUpperCase()
-    
+    else hex = mac.replaceAll("[^a-fA-F0-9]", "").toUpperCase()
+
     if (device.getDeviceNetworkId() != hex)
     {
-    	log.debug "${device}: setdni ${address}:${port} ${hex}"
+    	log.info "${device}: setdni ${address}:${port} ${hex}"
   	  
 		device.setDeviceNetworkId(hex)
     }
     else log.debug "${device}: setdni (not needed)"
 }
 
+import groovy.json.JsonSlurper
+
 def parse(description)
 {
 	def msg = parseLanMessage(description)
-    
-    log.debug "${device}: parse ${msg.headers}"
-    
+        
     // There should be a record of any state change requests in the state map.
     if ( state[msg.requestId] )
     {
@@ -285,12 +302,59 @@ def parse(description)
         // This entry in the map is no longer required.
         state.remove(msg.requestId)
         
-		log.debug "${device}: parse ${stcap} ${stval}"
+		log.info "${device}: parse (Set state of ${stcap} to ${stval})"
 
 		// Let ST fire off the event.
         return stateevent
     }
-    else log.debug "${device}: parse (unknown request)"
+    else
+    {
+		if (msg.body)
+       	{
+      		def jsonSlurper = new JsonSlurper()
+      		def body = jsonSlurper.parseText(msg.body)
+
+			if (body.result == "OK")
+        	{
+        		log.debug "${device}: parse (No state change event required)"
+        	}
+        	else
+            {
+        		log.info "${device}: parse (Ping received)"
+                
+                if (body.state.battery)
+                {
+                	log.info "${device}: parse (Battery Level $body.state.battery%)"
+                    
+                    sendEvent(name: "battery", value: body.state.battery, isStateChange: true)
+                }
+                
+                if (body.state.eta)
+                {
+                	try
+                    {
+                    	def mytime = Date.parse("yyyy-MM-dd'T'HH:mm:ssX", body.state.eta).format("HH:mm", location.getTimeZone())
+                        
+                    	log.info "${device}: parse (ETA ${mytime})"
+                    
+                    	sendEvent(name: "eta", value: body.state.eta, isStateChange: true)
+                    }
+                    catch(Exception e)
+                    {
+                    	// The returned value is not an ISO8601 date.
+                    	log.info "${device}: parse (No ETA available) ${e}"
+                    }
+                }
+                
+        		log.debug "${device}: parse ${body}"      
+        	}
+        }
+        else
+        {
+        	// Body is empty.
+            log.warn "${device}: parse (Ping received with empty body)"
+        }
+    }
 }
 
 // Build and return a hubaction.
