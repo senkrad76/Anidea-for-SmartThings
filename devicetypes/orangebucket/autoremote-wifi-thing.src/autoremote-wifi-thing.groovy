@@ -37,7 +37,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				2.0		(08/10/2018)
+ * Version:				2.1		(09/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -46,9 +46,10 @@
  *						only that the remote device has received the request. However it
  *						is a lot better than simply sending state change events in the
  *						commands.
- commands.
  *
- * Changes:				2.0		(08/10/2018)	Read IP and Port in preferences and set the
+ * Changes:				2.1		(09/10/2018)	Add MAC address to preferences and use for 
+ *												DNI if supplied.
+ *						2.0		(08/10/2018)	Read IP and Port in preferences and set the
  *												DNI dynamically.
  *						1.9		(04/10/2018)	Experimenting with various things. All
  *												changes removed.
@@ -76,6 +77,7 @@ preferences
 {
    	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
     input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
+    input name: "mac", type: "text", title: "MAC Address (optional)", description: "e.g. aa:bb:cc:dd:ee:ff", required: false
 
 	// These preferences were used by the cloud based AutoRemote messaging in a different DTH.
     // The password might be useful if it is honoured, the others probably aren't.
@@ -160,8 +162,8 @@ metadata
         standardTile("strobe", "device.alarm", width: 1, height: 1) 
         {
             state "off", label:'Off', action:'alarm.strobe', icon:"st.Lighting.light13", backgroundColor:"#ffffff", nextState: "strobeon"
-            state "siren", label:'Siren', action:'alarm.both', icon:"st.Lighting.light13", backgroundColor:"#ffffff", nextState: "bothon"
-            state "strobeon", label: '-> Siren', icon:"st.Lighting.light13", backgroundColor:"#c0c000"
+            state "siren", label:'Off', action:'alarm.both', icon:"st.Lighting.light13", backgroundColor:"#ffffff", nextState: "bothon"
+            state "strobeon", label: '-> Strobe', icon:"st.Lighting.light13", backgroundColor:"#c0c000"
             state "bothon", label: '-> Both', icon:"st.Lighting.light13", backgroundColor:"#c0c000"
             state "strobe", label: 'Strobe', action:'alarmoff', icon:"st.Lighting.light13", backgroundColor:"#e86d13", nextState: "bothoff"
             state "both", label: 'Both', action:'alarmoff', icon:"st.Lighting.light13", backgroundColor:"#e86d13", nextState: "bothoff"
@@ -234,27 +236,27 @@ def updated()
 // port in hex notation. Generally the MAC address is encouraged as IP addresses
 // can change.
 //
-// Incoming messages generally wouldn't, and often can't, have the same source port
-// number as the destination port used in outgoing messages. Therefore the MAC address
-// would be required to allow incoming messages. Brief testing suggested this made 
-// receiving responses at best slow and at worst unreliable. This was quite possibly
-// due to flawed coding, or indeed flawed testing, but it hasn't been pursued.
-//
-// As it works and it saves entering or finding the MAC address, the hex IP port and
-// address are used.
+// The MAC address will give the potential for the device handler to receive incoming
+// messages. If the MAC address is specified in the preferences it will be used.
 def setdni()
 {
 	def address = settings.ip
 	def port = settings.port
-	def octets = address.tokenize('.')
+    def mac = settings.mac
 	def hex = ""
 
-	octets.each
+	if ( !settings.mac )
     {
-		hex = hex + Integer.toHexString(it as Integer).toUpperCase().padLeft(2, '0')
-	}
+		def octets = address.tokenize('.')
+        
+    	octets.each
+    	{
+			hex = hex + Integer.toHexString(it as Integer).toUpperCase().padLeft(2, '0')
+		}
 
-	hex = hex + ":" + Integer.toHexString(port as Integer).toUpperCase().padLeft(4, '0')
+		hex = hex + ":" + Integer.toHexString(port as Integer).toUpperCase().padLeft(4, '0')
+    }
+    else hex = mac.replaceAll(":", "").toUpperCase()
     
     if (device.getDeviceNetworkId() != hex)
     {
@@ -269,6 +271,8 @@ def parse(description)
 {
 	def msg = parseLanMessage(description)
     
+    log.debug "${device}: parse ${msg.headers}"
+    
     // There should be a record of any state change requests in the state map.
     if ( state[msg.requestId] )
     {
@@ -281,7 +285,7 @@ def parse(description)
         // This entry in the map is no longer required.
         state.remove(msg.requestId)
         
-		log.debug "${device}: parse"
+		log.debug "${device}: parse ${stcap} ${stval}"
 
 		// Let ST fire off the event.
         return stateevent
@@ -299,6 +303,8 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
 {    
 	// The DNI is IP:port in hex form.
 	def hex = device.getDeviceNetworkId()
+    hex = settings.ip + ":" + settings.port
+    // hex = "C0A80112:0719"
     
     // The capfree parameter may have a command on the front. Extract it if so.
     def tempcap = capfree.split('=:=')
@@ -330,6 +336,7 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
     // Save any state change associated with this request.
     if (commandstate) state[hubaction.requestId] = "${cap}=:=${capcomm}"
 
+	log.debug "${device}: buildhubaction ${cap} ${capcomm} ${hex}"
 	return hubaction
 }
 
