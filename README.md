@@ -4,7 +4,7 @@ Assorted SmartThings bits and bobs.
 ## AutoRemote WiFi Tasker Thing
 This device handler started out as an exercise in communicating over the local LAN using the hub, working with the AutoRemote WiFi Service. However it has developed into a serious tool that implements the capabilities Alarm, Audio Notification, Speech Synthesis, Switch and Tone by sending messages in AutoApps command format to the AutoRemote WiFi Service running on port 1817 of AutoRemote devices. The commands are sent in the query part of an HTTP Get request so there isn't anything particularly magical about them and you can do absolutely anything you want with them at the other end. However the bottom line is that the author wanted to use Tasker on Android devices instead of using LANnouncer.
 
-*Audio Notification capability is implemented according to the documentation for the capabilities. Unfortunately the Speaker Notify With Sound app isn't as it calls an undocumented command and adds a 'duration' parameter to another two. Its replacement Speaker Companion may well do likewise, and certainly adds the extra parameters. The device handler allows for (but ignores) the extra parameter but does not implement the command.*
+*The Audio Notification capability is implemented according to the capabilities reference documentation. Unfortunately the Speaker Notify With Sound app isn't as it calls an undocumented command and adds a 'duration' parameter to another two. Its replacement Speaker Companion may well do likewise, and certainly adds the extra parameters. The device handler allows for (but ignores) the extra parameter but does not implement the command.*
 
 The device handler is also capable of receiving 'pings' from the remote device sent as HTTP Post requests to port 39500 of the hub in JSON format. Currently these can be used to set the attributes for the Air Quality Sensor, Battery, Estimated Time Of Arrival, Relative Humidity, Temperature and Ultraviolet Index capabilities.
 
@@ -26,9 +26,9 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |alarm|siren|siren|||
 |alarm|strobe|strobe|||
 |alarm|both|both|||
-|audioNotification|playTrack|<uri>|<level>||
-|audioNotification|playTrackAndResume|<uri>|<level>||
-|audioNotification|playTracAndRestore|<uri>|<level>||
+|audioNotification|playTrack|&lt;uri&gt;|&lt;level&gt;||
+|audioNotification|playTrackAndResume|&lt;uri&gt;|&lt;level&gt;||
+|audioNotification|playTrackAndRestore|&lt;uri&gt;|&lt;level&gt;||
 |notification|deviceNotification||AutoRemote WiFi Tasker Thing|Empty notification text replaced by dummy text.|
 |notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
 |notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
