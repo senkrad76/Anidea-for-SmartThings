@@ -36,8 +36,8 @@
  *						is a lot better than simply sending state change events in the
  *						commands.
  *
- * Changes:				2.5		(10/10/2018)	Add the Audio Notification capability. Also add
- *												in Configuration as it may be handy.
+ * Changes:				2.5		(10/10/2018)	Add Audio Notification, Configuration and
+ *												Power Source capabilities.
  *						2.4		(09/10/2018)	Add 'Tasker' to name and add Air Quality Sensor,
  *												Relative Humidity Measurement and Ultraviolet 
  *												Index as capabilities.
@@ -100,6 +100,7 @@ metadata
         capability "Configuration"
         capability "Estimated Time Of Arrival"
         capability "Notification"
+        capability "Power Source"
         capability "Relative Humidity Measurement"
         capability "Sensor"
         capability "Speech Synthesis"
@@ -365,61 +366,40 @@ def parse(description)
         	}
         	else
             {
-        		log.info "${device}: parse (Ping received)"
+        		log.debug "${device}: parse (Ping received)"
                 
-                if (body.state.airQuality)
-                {
-                	log.info "${device}: parse (Air Quality $body.state.airQuality)"
-                    
-                    sendEvent(name: "airQuality", value: body.state.airQuality, isStateChange: true)
-                }
-                
-                if (body.state.battery)
-                {
-                	log.info "${device}: parse (Battery Level $body.state.battery%)"
-                    
-                    sendEvent(name: "battery", value: body.state.battery, isStateChange: true)
-                }
-                
-                if (body.state.eta)
-                {
-                	try
-                    {
-                    	def mytime = Date.parse("yyyy-MM-dd'T'HH:mm:ssX", body.state.eta).format("HH:mm", location.getTimeZone())
+                body.state.each
+				{
+                	myname, myvalue ->
+                                    
+                	if (name == "eta")
+                	{
+                		try
+                    	{
+                    		def mytime = Date.parse("yyyy-MM-dd'T'HH:mm:ssX", myvalue).format("HH:mm", location.getTimeZone())
                         
-                    	log.info "${device}: parse (ETA ${mytime})"
+                    		log.info "${device}: parse $name $value (${mytime})"
                     
-                    	sendEvent(name: "eta", value: body.state.eta, isStateChange: true)
+                    		sendEvent(name: myname, value: myvalue, isStateChange: true)
+                    	}
+                    	catch(Exception e)
+                    	{
+                    		// The returned value is not an ISO8601 date.
+                    		log.info "${device}: $name (value invalid)"
+                    	}
+                	}
+					else if (myname == "temperature")
+					{
+                 		log.info "${device}: parse ${myname} $myvalue.value $myvalue.unit"      
+                		sendEvent(name: myname, value: myvalue.value, unit: myvalue.unit, isStateChange: true)
                     }
-                    catch(Exception e)
-                    {
-                    	// The returned value is not an ISO8601 date.
-                    	log.info "${device}: parse (No ETA available) ${e}"
+                    else
+               		{
+                		log.info "${device}: parse ${myname} ${myvalue}"      
+ 
+ 						sendEvent(name: myname, value: myvalue, isStateChange: true)
                     }
                 }
-                
-                if (body.state.humidity)
-                {    
-           			log.info "${device}: parse (Relative Humidity $body.state.humidity)"
-                    
-                    sendEvent(name: "humidity", value: body.state.humidity, isStateChange: true)
-                }
-                
-                if (body.state.temperature)
-                {
-                    log.info "${device}: parse (Temperature $body.state.temperature.value $body.state.temperature.unit)"
-                    
-                    sendEvent(name: "temperature", value: body.state.temperature.value, unit: body.state.temperature.unit, isStateChange: true)
-                }
-                
-                if (body.state.ultravioletIndex)
-                {    
-           			log.info "${device}: parse (UV Index $body.state.ultravioletIndex)"
-                    
-                    sendEvent(name: "ultravioletIndex", value: body.state.ultravioletIndex, isStateChange: true)
-                }
-                
-                log.debug "${device}: parse ${body}"      
         	}
         }
         else
