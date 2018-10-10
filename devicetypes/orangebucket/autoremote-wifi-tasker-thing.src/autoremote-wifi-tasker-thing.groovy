@@ -26,7 +26,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				2.4		(09/10/2018)
+ * Version:				2.5		(10/10/2018)
  *
  * Comments:			Need to look at what parameters from the AutoRemote
  *						Send Message Service also apply to WiFi.
@@ -36,7 +36,9 @@
  *						is a lot better than simply sending state change events in the
  *						commands.
  *
- * Changes:				2.4		(09/10/2018)	Add 'Tasker' to name and add Air Quality Sensor,
+ * Changes:				2.5		(10/10/2018)	Add the Audio Notification capability. Also add
+ *												in Configuration as it may be handy.
+ *						2.4		(09/10/2018)	Add 'Tasker' to name and add Air Quality Sensor,
  *												Relative Humidity Measurement and Ultraviolet 
  *												Index as capabilities.
  *						2.3		(09/10/2018)	Add Temperature capability.
@@ -93,7 +95,9 @@ metadata
 		capability "Actuator"
         capability "Air Quality Sensor"
         capability "Alarm"
+        capability "Audio Notification"
         capability "Battery"
+        capability "Configuration"
         capability "Estimated Time Of Arrival"
         capability "Notification"
         capability "Relative Humidity Measurement"
@@ -210,9 +214,16 @@ metadata
 			state "reset", label: 'Reset', action: "switchoff", icon: "st.switches.switch.off", backgroundColor: "#ff0000", defaultState: true
 		}
         
+        // This tile sens the beep command.
         standardTile("tone", "device.tone", width: 1, height: 1)
         {
             state "tone", label:'Tone', action:"tone.beep", icon:"st.alarm.beep.beep", backgroundColor: "#800080", defaultState: true
+        }
+        
+        // This tile calls the configure command. The attribute 'configuration' is a dummy one.
+        standardTile("configuration", "device.configuration", width: 1, height: 1)
+        {
+            state "configuration", label:'Configure', action:"configuration.configure", icon:"st.Office.office15", backgroundColor: "#800080", defaultState: true
         }
         
         valueTile("airquality", "device.airQuality", decoration: "flat", width: 1, height:1)
@@ -249,7 +260,7 @@ metadata
         main "alarm"
         // Sort the tiles suitably.
         details (["alarm", "siren", "strobe", "notification", "speechSynthesis", "tone", "switch", "alarmreset", "switchreset",
-        	      "airquality", "battery", "eta", "humidity", "temperature", "uvindex"])
+        	      "configuration", "airquality", "battery", "eta", "humidity", "temperature", "uvindex"])
 	}
 }
 
@@ -260,10 +271,23 @@ def installed()
     updated()
 }
 
+
+// The updated() command is called when preferences are saved. It often seems
+// to be called twice so an attempt is made to only let it run once in a five
+// second period.
 def updated()
 {
-	log.debug "${device}: updated"
+	if (state.lastupdated && now() < state.lastupdated + 5000)
+    {        
+        log.debug "${device}: updated (skipped as ran recently)"
  
+ 		return
+    }
+        
+ 	state.lastupdated = now()
+
+	log.debug "${device}: updated"
+    
 	unschedule()
  
 	runIn(2, setdni)
@@ -410,9 +434,10 @@ def parse(description)
 //
 // cap			Capability id.
 // capcomm		Command or empty string.
-// capfree 		Free text or empty string.
-// commandstate	True if command should trigger a state change.
-def buildhubaction(cap, capcomm, capfree, commandstate = false)
+// capfree 		Free text or empty string (default).	
+// capextra		Extra args or empty string (default).
+// commandstate	True (default) if command should trigger a state change.
+def buildhubaction(cap, capcomm, capfree = '', capextra = '', commandstate = true)
 {    
 	// The DNI is IP:port in hex form.
 	def hex = device.getDeviceNetworkId()
@@ -439,7 +464,7 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
 	def hubaction = new physicalgraph.device.HubAction(
         method	: "GET",
         path	: "/sendmessage",
- 		query	:	[ "message": "autoremotewifithing=:=${cap}=:=${capcomm}=:=${enccapfree}" ],          	
+ 		query	:	[ "message": "autoremotewifithing=:=${cap}=:=${capcomm}=:=${enccapfree}=:=${capextra}" ],          	
         headers	:
             [
             	"HOST": "${hex}",
@@ -453,48 +478,128 @@ def buildhubaction(cap, capcomm, capfree, commandstate = false)
 	return hubaction
 }
 
+//
+// Alarm
+//
+// off() command is with Switch commands.
+
 def both()
 {
-	return buildhubaction('alarm', 'both', '', true)
+	return buildhubaction('alarm', 'both')
 }
 
 def siren()
 {
-	return buildhubaction('alarm', 'siren', '', true)
+	return buildhubaction('alarm', 'siren')
 }
 
 def strobe()
 {
-	return buildhubaction('alarm', 'strobe', '', true)
+	return buildhubaction('alarm', 'strobe')
 }
 
 // Custom command to turn alarm off.
 def alarmoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('alarm', 'off', '', true)
+    return buildhubaction('alarm', 'off')
 }
+
+//
+// Audio Notification
+//
+// The SmartThings device capabilities documention shows three commands for
+// Audio Notification, all of which just have a URL and an optional level.
+// The Speaker Companion smartapp hasn't read the documentation and calls 
+// commands that don't exist and throws in a duration before the level.
+// This device handler implements the commands as documented but accepts
+// the undocumented usage.
+//
+
+def playTrack(uri, level = null)
+{
+	log.debug "${device}: playTrack"
+    return buildhubaction('audioNotification', 'playTrack', uri, level, false)
+}
+
+def playTrackAndResume(uri, level = null, anotherlevel = null)
+{
+	if (otherVolume) level = anotherlevel
+        
+	log.debug "${device}: playTrackAndResume"
+    return buildhubaction('audioNotification', 'playTrackAndResume', uri, level, false)
+}
+
+def playTrackAndRestore(uri, level = null, anotherlevel = null)
+{
+ 	if (otherVolume) level = anotherlevel
+
+	log.debug "${device}: playTrackAndRestore"
+    return buildhubaction('audioNotification', 'playTrackAndRestore', uri, level, false)
+}
+
+//
+// Configuration
+//
+// The Configuration capability is intended for configuring an actual device rather than
+// setting up the device handler. A use for it hasn't revealed itself yet, but it might
+// be handy for diagnostic purposes, if nothing else.
+//
+// The configure() command is only called by a tile in this device handler.
+//
+
+// The configure() command often, but not always, seems to be called twice. An attempt
+// is made to prevent it running again within five seconds but sometimes the commands
+// are so close that they can even end up with the same timestamp.
+def configure()
+{
+	if (state.lastconfigure && now() < state.lastconfigure + 5000)
+    {   
+        log.debug "${device}: configure (skipped as ran recently)"
+ 
+ 		return
+    }
+    
+ 	state.lastconfigure = now()
+ 
+ 	log.debug "${device}: configure $state.lastconfigure"
+    
+    // ST will run the HubAction for us.
+    return buildhubaction('configuration', 'configure', '', '', false)
+}
+
+//
+// Notification
+//
 
 def deviceNotification(notificationtext)
 {
-    if (!notificationtext?.trim()) notificationtext = "AutoRemote WiFi Tasker Thing"
+    if (!notificationtext?.trim()) notificationtext = device.name
    
 	// ST will run the HubAction for us.
-    return buildhubaction('notification', 'deviceNotification', notificationtext, false)
+    return buildhubaction('notification', 'deviceNotification', notificationtext, '', false)
 }
+
+//
+// Speech Synthesis
+//
 
 def speak(words)
 {
-    if (!words?.trim()) words = "AutoRemote WiFi Tasker Thing"
+    if (!words?.trim()) words = device.name
    
 	// ST will run the HubAction for us.
-    return buildhubaction('speechSynthesis', 'speak', words, false)
+    return buildhubaction('speechSynthesis', 'speak', words, '', false)
 }
+
+//
+// Switch
+//
 
 def on()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'on', '', true)
+    return buildhubaction('switch', 'on')
 }
 
 def off()
@@ -508,18 +613,18 @@ def off()
     if (device.currentValue('alarm') != "off") cap = "alarm"
     
     // ST will run the HubAction for us.
-    return buildhubaction(cap, 'off', '', true)
+    return buildhubaction(cap, 'off')
 }
 
 // Custom command to turn switch off.
 def switchoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'off', '', true)
+    return buildhubaction('switch', 'off')
 }
 
 def beep()
 {
 	// ST will run the HubAction for us.
-    return buildhubaction('tone', 'beep', '', false)
+    return buildhubaction('tone', 'beep', '', '', false)
 }
