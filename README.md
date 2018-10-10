@@ -2,7 +2,7 @@
 Assorted SmartThings bits and bobs.
 
 ## AutoRemote WiFi Tasker Thing
-This device handler started out as an exercise in communicating over the local LAN using the hub, working with the AutoRemote WiFi Service. However it has developed into a serious tool that implements the capabilities Alarm, Audio Notification, Speech Synthesis, Switch and Tone by sending messages in AutoApps command format to the AutoRemote WiFi Service running on port 1817 of AutoRemote devices. The commands are sent in the query part of an HTTP Get request so there isn't anything particularly magical about them and you can do absolutely anything you want with them at the other end. However the bottom line is that the author wanted to use Tasker on Android devices instead of using LANnouncer.
+This device handler started out as an exercise in communicating over the local LAN using the hub, working with the AutoRemote WiFi Service. However it has developed into a serious tool that implements the capabilities Alarm, Audio Notification, Configuration, Speech Synthesis, Switch and Tone by sending messages in AutoApps command format to the AutoRemote WiFi Service running on port 1817 of AutoRemote devices. The commands are sent in the query part of an HTTP Get request so there isn't anything particularly magical about them and you can do absolutely anything you want with them at the other end. However the bottom line is that the author wanted to use Tasker on Android devices instead of using LANnouncer.
 
 *The Audio Notification capability is implemented according to the capabilities reference documentation. Unfortunately the Speaker Notify With Sound app isn't as it calls an undocumented command and adds a 'duration' parameter to another two. Its replacement Speaker Companion may well do likewise, and certainly adds the extra parameters. The device handler allows for (but ignores) the extra parameter but does not implement the command.*
 
@@ -16,7 +16,7 @@ Using the MAC address as the DNI has been seen to correspond with some unusually
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end as Tasker doesn't really handle them elegantly.
+The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
@@ -29,6 +29,7 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |audioNotification|playTrack|&lt;uri&gt;|&lt;level&gt;||
 |audioNotification|playTrackAndResume|&lt;uri&gt;|&lt;level&gt;||
 |audioNotification|playTrackAndRestore|&lt;uri&gt;|&lt;level&gt;||
+|configuration|configure|configure|||
 |notification|deviceNotification|AutoRemote WiFi Tasker Thing||Empty notification text replaced by dummy text.|
 |notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
 |notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
