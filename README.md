@@ -16,27 +16,30 @@ Using the MAC address as the DNI has been seen to correspond with some unusually
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end as Tasker doesn't really handle them elegantly.
+The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end as Tasker doesn't really handle them elegantly.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
-|capability|command/state|free text||
-|---|---|---|---|
-|alarm|off|off||
-|alarm|siren|siren||
-|alarm|strobe|strobe||
-|alarm|both|both||
-|notification|deviceNotification|AutoRemote WiFi Thing|Empty notification text replaced by dummy text.|
-|notification|deviceNotification|&lt;free text&gt;|Notification without a valid command.|
-|notification|&lt;command&gt;|&lt;free text&gt;|Notification with a valid command.|
-|notification|&lt;command&gt;|deviceNotification|Notification only containing a command.
-|speechSynthesis|speechSynthesis|AutoRemote WiFi Thing|Empty speech text replaced by dummy text.|
-|speechSynthesis|speechSynthesis|&lt;free text&gt;|Speech without a valid command.|
-|speechSynthesis|&lt;command&gt;|&lt;free text&gt;|Speech with a valid command.|
-|speechSynthesis|&lt;command&gt;|speechSynthesis|Speech only containing a command.|
-|switch|off|off|
-|switch|on|on|
-|tone|beep|beep|
+|capability|command/state|free text|extra||
+|---|---|---|---|---|
+|alarm|off|off|||
+|alarm|siren|siren|||
+|alarm|strobe|strobe|||
+|alarm|both|both|||
+|audioNotification|playTrack|<uri>|<level>||
+|audioNotification|playTrackAndResume|<uri>|<level>||
+|audioNotification|playTracAndRestore|<uri>|<level>||
+|notification|deviceNotification||AutoRemote WiFi Tasker Thing|Empty notification text replaced by dummy text.|
+|notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
+|notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
+|notification|&lt;command&gt;|deviceNotification||Notification only containing a command.
+|speechSynthesis|speechSynthesis|AutoRemote WiFi Tasker Thing||Empty speech text replaced by dummy text.|
+|speechSynthesis|speechSynthesis|&lt;free text&gt;||Speech without a valid command.|
+|speechSynthesis|&lt;command&gt;|&lt;free text&gt;||Speech with a valid command.|
+|speechSynthesis|&lt;command&gt;|speechSynthesis||Speech only containing a command.|
+|switch|off|off|||
+|switch|on|on|||
+|tone|beep|beep|||
 
 ## HTTP Response Motion Sensor
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
