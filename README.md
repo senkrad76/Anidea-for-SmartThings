@@ -29,7 +29,7 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |audioNotification|playTrack|&lt;uri&gt;|&lt;level&gt;||
 |audioNotification|playTrackAndResume|&lt;uri&gt;|&lt;level&gt;||
 |audioNotification|playTrackAndRestore|&lt;uri&gt;|&lt;level&gt;||
-|notification|deviceNotification||AutoRemote WiFi Tasker Thing|Empty notification text replaced by dummy text.|
+|notification|deviceNotification|AutoRemote WiFi Tasker Thing||Empty notification text replaced by dummy text.|
 |notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
 |notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
 |notification|&lt;command&gt;|deviceNotification||Notification only containing a command.
