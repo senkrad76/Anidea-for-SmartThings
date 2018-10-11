@@ -34,10 +34,10 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
 |notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
 |notification|&lt;command&gt;|deviceNotification||Notification only containing a command.
-|speechSynthesis|speechSynthesis|AutoRemote WiFi Tasker Thing||Empty speech text replaced by dummy text.|
-|speechSynthesis|speechSynthesis|&lt;free text&gt;||Speech without a valid command.|
+|speechSynthesis|speak|AutoRemote WiFi Tasker Thing||Empty speech text replaced by dummy text.|
+|speechSynthesis|speak|&lt;free text&gt;||Speech without a valid command.|
 |speechSynthesis|&lt;command&gt;|&lt;free text&gt;||Speech with a valid command.|
-|speechSynthesis|&lt;command&gt;|speechSynthesis||Speech only containing a command.|
+|speechSynthesis|&lt;command&gt;|speak||Speech only containing a command.|
 |switch|off|off|||
 |switch|on|on|||
 |tone|beep|beep|||
