@@ -10,13 +10,11 @@ The device handler is also capable of receiving 'pings' from the remote device s
 
 The device is specified by IP Address and Port in the Preferences, and the MAC address may also be specified (with or without colons and in upper, lower or mixed case). If the MAC address is provided it will be used as the Device Network ID (DNI), otherwise the IP Address and Port are combined in a hex form as the DNI. You might prefer to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server. If the MAC address is not provided the incoming 'pings' will not work.
 
-Using the MAC address as the DNI has been seen to correspond with some unusually long delays in updating the device tiles in the SmartThings Classic app to the correct new state. When this happens re-entering the UI causes the correct states to be picked up. There is a suggestion things settle down so it could be something only experienced in the development environment as the device handler is being frequently updated.
-
-*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method of a device handler. The MAC address is generally preferred and allows the device handler to receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't work as the remote source port wouldn't be 1817 for these requests.*
+*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method of a device handler. The MAC address is generally preferred and allows the device handler to receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't work as the remote source port wouldn't be 1817 for these requests. Unfortunately if you have one device set up with the MAC address and another with the hex IP:Port the latter will not see the responses to its own requests. It would be nice if messages were forwarded based on IP:Port first and then MAC address but that isn't how it works.*
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>LANMultiThing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
+The HTTP GET requests are of the form <code>http://&lt;IP address on local LAN&gt;:&lt;Port&gt;/sendmessage?message=&lt;message&gt;</code> where the &lt;message&gt; is of the form <code>LANMultiThing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
@@ -41,6 +39,19 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |switch|off|off|||
 |switch|on|on|||
 |tone|beep|beep|||
+
+Incoming HTTP POST requests are sent to <code>http://<hub IP address>:39500/</code>, the content type is <code>application/json</code> and the data is of the form:
+  
+<pre>{
+    "attribute": {
+        "attribute1name":"attribute1value",
+        "attribute2name":{"attribute2field1name":"attribute2field1value"}
+    }
+    "state": {
+        "state1name":"state1value",
+        "state2name":"state2value"
+    }
+}</pre>
 
 ## HTTP Response Motion Sensor
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
