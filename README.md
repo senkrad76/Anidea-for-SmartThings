@@ -1,12 +1,12 @@
 # Anidea-SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs.
 
-## AutoRemote WiFi Tasker Thing
-This device handler started out as an exercise in communicating over the local LAN using the hub, working with the AutoRemote WiFi Service. However it has developed into a serious tool that implements the capabilities Alarm, Audio Notification, Configuration, Speech Synthesis, Switch and Tone by sending messages in AutoApps command format to the AutoRemote WiFi Service running on port 1817 of AutoRemote devices. The commands are sent in the query part of an HTTP Get request so there isn't anything particularly magical about them and you can do absolutely anything you want with them at the other end. However the bottom line is that the author wanted to use Tasker on Android devices instead of using LANnouncer.
-
-*It is possible to query the commands and attributes supported by capabilities on the fly. The commands reported for Audio Notification are consistent with the reference documentation. However the Speaker Companion app (previously Speaker Notify With Sound) uses commands which are not part of the Audio Notification or the now deprecated Music Player capabilities, or indeed any at all. They are device specific commands, which is utterly ridiculous. Two of the commands have the same names and can be written to handle, and ignore, the extra parameter they are called with. The other command is not supported at the moment.*
+## LAN MultiThing
+This device handler implements the capabilities Alarm, Audio Notification (*), Configuration, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
 
 The device handler is also capable of receiving 'pings' from the remote device sent as HTTP Post requests to port 39500 of the hub in JSON format. Currently these can be used to set the attribute states for the Air Quality Sensor, Battery, Estimated Time Of Arrival, Relative Humidity, Temperature and Ultraviolet Index capabilities, and also to set other variables in the device state map.
+
+*It is possible to query the commands and attributes supported by capabilities on the fly. The commands reported for Audio Notification are consistent with the reference documentation. However the Speaker Companion app (previously Speaker Notify With Sound) uses commands which are not part of the Audio Notification or the now deprecated Music Player capabilities, or indeed any at all. They are device specific commands, which is utterly ridiculous. The two commands which have the same names will accept, and ignore, the extra parameter they may be called with. The other command is not supported at the moment.*
 
 The device is specified by IP Address and Port in the Preferences, and the MAC address may also be specified (with or without colons and in upper, lower or mixed case). If the MAC address is provided it will be used as the Device Network ID (DNI), otherwise the IP Address and Port are combined in a hex form as the DNI. You might prefer to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server. If the MAC address is not provided the incoming 'pings' will not work.
 
@@ -16,7 +16,7 @@ Using the MAC address as the DNI has been seen to correspond with some unusually
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>autoremotewifithing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
+The commands are of the form <code>LAN MultiThing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
@@ -30,11 +30,11 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |audioNotification|playTrackAndResume|&lt;uri&gt;|&lt;level&gt;||
 |audioNotification|playTrackAndRestore|&lt;uri&gt;|&lt;level&gt;||
 |configuration|configure|configure|||
-|notification|deviceNotification|AutoRemote WiFi Tasker Thing||Empty notification text replaced by dummy text.|
+|notification|deviceNotification|LAN MultiThing||Empty notification text replaced by dummy text.|
 |notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
 |notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
 |notification|&lt;command&gt;|deviceNotification||Notification only containing a command.
-|speechSynthesis|speak|AutoRemote WiFi Tasker Thing||Empty speech text replaced by dummy text.|
+|speechSynthesis|speak|LAN MultiThing||Empty speech text replaced by dummy text.|
 |speechSynthesis|speak|&lt;free text&gt;||Speech without a valid command.|
 |speechSynthesis|&lt;command&gt;|&lt;free text&gt;||Speech with a valid command.|
 |speechSynthesis|&lt;command&gt;|speak||Speech only containing a command.|
