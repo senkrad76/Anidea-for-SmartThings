@@ -16,7 +16,7 @@ Using the MAC address as the DNI has been seen to correspond with some unusually
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The commands are of the form <code>LAN MultiThing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
+The commands are of the form <code>LANMultiThing=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
