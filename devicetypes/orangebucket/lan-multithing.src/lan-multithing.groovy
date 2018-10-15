@@ -15,18 +15,27 @@
  * THIS SOFTWARE.
  * ---------------------------------------------------------------------------------
  *
- * Lan MultiThing
+ * LAN MultiThing
  * ==============
- * The LAN Multi-Thing sends commands using HTTP GET to devices on the local network
- * using a path and expecting a response that is compatible with the AutoRemote WiFi
- * service. The commands use the AutoApps command format.
+ * The LAN MultiThing is a device handler for a remote device on the local network
+ * that implements a number of actuator and sensor capabilities, and can also
+ * act as a bridge to other devices. No specific remote device implementation is 
+ * required, but the development implementation uses the AutoRemote WiFi Service
+ * as a server front end to Tasker.
  *
- * Listens for 'pings' from the remote device sent using HTTP POST in JSON format to
- * the hub and processes attribute state changes and sets device state map entries.
+ * Actuator commands for the parent and child devices are sent using HTTP GET to 
+ * a server on the local network using a path and expecting a response that are 
+ * compatible with the AutoRemote WiFi Service. The commands use the AutoApps 
+ * command format.
+ *
+ * The remote device uses HTTP POST to send JSON format messages to the hub which
+ * are either processed by the parent or passed on to a specified child device
+ * handler. These messages may include sensor attributes, state variables and the
+ * current list of child devices.
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.0.0	(12/10/2018) 
+ * Version:				1.1.0	(15/10/2018) 
  *
  * Comments:			
  *
@@ -36,6 +45,11 @@
  *
  * Changes:
  *
+ * 1.1.0		(15/10/2018)	Further work on working with child devices.
+ *				(14/10/2018)	Support multiple child device handlers. Handle attribute
+ *								changes for ETA children.
+ *				(13/10/2018)	Acts as a composite device, bridging individual child
+ *								devices.
  * 1.0.0		(12/10/2018)	Rename the app with a more generic name and reset the
  *								version number. Do logging via a logger() method.
  *
@@ -59,6 +73,7 @@ metadata
         capability "Alarm"
         capability "Audio Notification"
         capability "Battery"
+        capability "Bridge"
         capability "Configuration"
         capability "Estimated Time Of Arrival"
         capability "Notification"
@@ -74,11 +89,19 @@ metadata
         // The Actuator and Sensor capabilities are shown as deprecated in the Capabilities
         // references, yet their use is also encouraged as best practice. The Actuator capability
 		// just means the device has commands. The Sensor capability means it has attributes.
-	}
-    
-    // Specific off commands for alarm and switch as they both have an 'off' command.
-    command "alarmoff"
-    command "switchoff"
+        
+        // The Bridge capability is a similar deprecated 'tagging' capability. As the device
+        // handler now forwards commands from virtual child devices with the intention of the
+        // remote device farming them off to different speakers, for example, it is probably 
+        // a bridge now.
+
+        // Specific off commands for alarm and switch as they both have an 'off' command.
+    	command "alarmoff"
+   	 	command "switchoff"
+            
+    	// Commands for child devices.
+    	command "childspeak"
+    }
     
 	// One day I will investigate this.
 	simulator
@@ -294,7 +317,7 @@ def setdni()
 // Have own logging routine.
 def logger(method, level = "debug", message ="")
 {
-	log."${level}" "$device [$device.name] [${method}] ${message}"
+	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
 
 import groovy.json.JsonSlurper 
@@ -302,7 +325,7 @@ import groovy.json.JsonSlurper
 def parse(description)
 {
 	def msg = parseLanMessage(description)
-        
+    
     // There should be a record of any state change requests in the state map.
     if ( state[msg.requestId] )
     {
@@ -326,8 +349,22 @@ def parse(description)
        	{
       		def jsonSlurper = new JsonSlurper()
       		def body = jsonSlurper.parseText(msg.body)
-
-			if (body.result == "OK")
+			def children = getChildDevices()
+            
+			if (body.devicename)
+            {
+        		children.each
+                {
+                	child ->
+                    
+                    if (child.displayName == body.devicename)
+                    {
+                    	logger("parse", "info", "Message passed to $child.displayName")
+                    	child.parse(description)
+                    }   
+                }
+            }
+			else if (body.result == "OK")
         	{
         		logger("parse", "debug", "No state change event required")
         	}
@@ -370,6 +407,7 @@ def parse(description)
  						sendEvent(name: myname, value: myvalue, isStateChange: true)
                     }
                 }
+                
                 body.state.each
 				{
                 	myname, myvalue ->
@@ -399,8 +437,22 @@ def parse(description)
  						state."${myname}" = myvalue
                     }
                 }
+                           
+                if (body.devices) 
+            	{
+                 	def childlist = []
+
+					body.devices.each
+					{
+                		logger("parse", "info", "name: $it.name type: $it.type")
+                    
+                    	childlist += [name: it.name, type: it.type]
+                	}
+
+					state.childdevicelist = childlist
+                }
           	}
-       }
+        }
         else
         {
         	// Body is empty.
@@ -411,16 +463,16 @@ def parse(description)
 
 // Build and return a hubaction.
 //
+// devicename	Device name (this device or child).
 // cap			Capability id.
 // capcomm		Command or empty string.
 // capfree 		Free text or empty string (default).	
 // capextra		Extra args or empty string (default).
 // commandstate	True (default) if command should trigger a state change.
-def buildhubaction(cap, capcomm, capfree = '', capextra = '', commandstate = true)
+def buildhubaction(devicename, cap, capcomm, capfree = '', capextra = '', commandstate = true)
 {    
-	// The DNI is IP:port in hex form.
-	def hex = device.getDeviceNetworkId()
-    hex = settings.ip + ":" + settings.port
+	// Hex isn't required but the variable name has stuck.
+    def hex = settings.ip + ":" + settings.port
     // hex = "C0A80112:0719"
     
     // The capfree parameter may have a command on the front. Extract it if so.
@@ -440,13 +492,16 @@ def buildhubaction(cap, capcomm, capfree = '', capextra = '', commandstate = tru
     // just encode the variable that might have relatively free text in it.
     def enccapfree = URLEncoder.encode(capfree, 'UTF-8');
     
-    // The device name could usefully be stripped of 'special' characters though.
-    def devicename = device.name.replaceAll("[^a-zA-Z0-9]+","")
+    // AutoApps Commands aren't strictly compatible with URLs because of spaces so
+    // remove them from the device names. This does make things a bit messier at
+    // the remote end unfortunately.
+    def devicenamestrip = devicename.displayName.replaceAll("[^a-zA-Z0-9]+","")
+    def dth = device.name.replaceAll("[^a-zA-Z0-9]+","")
 	
 	def hubaction = new physicalgraph.device.HubAction(
         method	: "GET",
         path	: "/sendmessage",
- 		query	:	[ "message": "${devicename}=:=${cap}=:=${capcomm}=:=${enccapfree}=:=${capextra}" ],          	
+ 		query	:	[ "message": "${dth}${devicenamestrip}=:=${cap}=:=${capcomm}=:=${enccapfree}=:=${capextra}" ],          	
         headers	:
             [
             	"HOST": "${hex}",
@@ -456,7 +511,7 @@ def buildhubaction(cap, capcomm, capfree = '', capextra = '', commandstate = tru
     // Save any state change associated with this request.
     if (commandstate) state[hubaction.requestId] = "${cap}=:=${capcomm}"
 
-	logger("buildhubaction", "debug", "${devicename} ${cap} ${capcomm} ${hex}")
+	logger("buildhubaction", "debug", "${dth}${devicenamestrip} ${cap} ${capcomm} ${hex}")
     
 	return hubaction
 }
@@ -468,7 +523,7 @@ def buildhubaction(cap, capcomm, capfree = '', capextra = '', commandstate = tru
 
 def both()
 {
-	return buildhubaction('alarm', 'both')
+	return buildhubaction(device, 'alarm', 'both')
 }
 
 def siren()
@@ -503,7 +558,7 @@ def playTrack(uri, level = null)
 {
 	logger("playTrack")
     
-    return buildhubaction('audioNotification', 'playTrack', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrack', uri, level, false)
 }
 
 def playTrackAndResume(uri, level = null, anotherlevel = null)
@@ -512,7 +567,7 @@ def playTrackAndResume(uri, level = null, anotherlevel = null)
         
 	logger("playTrackandResume")
         
-    return buildhubaction('audioNotification', 'playTrackAndResume', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrackAndResume', uri, level, false)
 }
 
 def playTrackAndRestore(uri, level = null, anotherlevel = null)
@@ -521,15 +576,17 @@ def playTrackAndRestore(uri, level = null, anotherlevel = null)
 
 	logger("playTrackandRestore")
     
-    return buildhubaction('audioNotification', 'playTrackAndRestore', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrackAndRestore', uri, level, false)
 }
 
 //
 // Configuration
 //
 // The Configuration capability is intended for configuring an actual device rather than
-// setting up the device handler. A use for it hasn't revealed itself yet, but it might
-// be handy for diagnostic purposes, if nothing else.
+// setting up the device handler. 
+//
+// In this device handler it is also used to synchronise the list of child devices with
+// that sent from the remote device.
 //
 // The configure() command is only called by a tile in this device handler.
 //
@@ -539,7 +596,7 @@ def playTrackAndRestore(uri, level = null, anotherlevel = null)
 // are so close that they can even end up with the same timestamp.
 def configure()
 {
-	if (state.lastconfigure && now() < state.lastconfigure + 5000)attri
+	if (state.lastconfigure && now() < state.lastconfigure + 5000)
     {   
         logger("configure", "debug", "Skipped as ran recently")
 
@@ -550,8 +607,11 @@ def configure()
  
  	logger("configure", "debug", "$state.lastconfigure")
     
+    addchildren(state.childdevicelist)
+    deletechildren(state.childdevicelist)
+   
     // ST will run the HubAction for us.
-    return buildhubaction('configuration', 'configure', '', '', false)
+    return buildhubaction(device, 'configuration', 'configure', '', '', false)
 }
 
 //
@@ -563,7 +623,7 @@ def deviceNotification(notificationtext)
     if (!notificationtext?.trim()) notificationtext = device.name
    
 	// ST will run the HubAction for us.
-    return buildhubaction('notification', 'deviceNotification', notificationtext, '', false)
+    return buildhubaction(device, 'notification', 'deviceNotification', notificationtext, '', false)
 }
 
 //
@@ -575,7 +635,7 @@ def speak(words)
     if (!words?.trim()) words = device.name
    
 	// ST will run the HubAction for us.
-    return buildhubaction('speechSynthesis', 'speak', words, '', false)
+    return buildhubaction(device, 'speechSynthesis', 'speak', words, '', false)
 }
 
 //
@@ -585,7 +645,7 @@ def speak(words)
 def on()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'on')
+    return buildhubaction(device, 'switch', 'on')
 }
 
 def off()
@@ -599,18 +659,101 @@ def off()
     if (device.currentValue('alarm') != "off") cap = "alarm"
     
     // ST will run the HubAction for us.
-    return buildhubaction(cap, 'off')
+    return buildhubaction(device, cap, 'off')
 }
 
 // Custom command to turn switch off.
 def switchoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('switch', 'off')
+    return buildhubaction(device, 'switch', 'off')
 }
 
 def beep()
 {
 	// ST will run the HubAction for us.
-    return buildhubaction('tone', 'beep', '', '', false)
+    return buildhubaction(device, 'tone', 'beep', '', '', false)
+}
+
+//
+// Play with the children.
+//
+
+def addchildren(names)
+{
+	logger("addchildren", "trace", names)
+
+	names.each
+    {
+    	newdevice -> 
+ 
+ 		def children = getChildDevices() 
+
+		def dni = newdevice.name.replaceAll("[^a-zA-Z0-9]+","")
+        def needed = true
+       
+        children.each
+        {
+        	existingchild ->
+
+        	if (dni == existingchild.deviceNetworkId) needed = false
+        }
+        
+        if (needed)
+        {
+        	addChildDevice("orangebucket", newdevice.type, dni, null, [isComponent: false, completedSetup: true, label: newdevice.name])
+
+			logger("addchildren", "debug", "Created ${newdevice.name} ${newdevice.type}")
+        }
+        else logger("addchildren", "debug", "${newdevice.name} already exists")      
+    }
+}
+
+
+def deletechildren(names)
+{
+	logger("deletechildren", "trace", names)
+
+	def children = getChildDevices()
+    
+    children.each
+    {
+    	existingchild -> 
+        
+    	def needed = false
+        
+        names.each
+        {
+        	newdevice ->
+           
+            def dni = newdevice.name.replaceAll("[^a-zA-Z0-9]+","")
+
+        	if (dni == existingchild.deviceNetworkId) needed = true
+        }
+        
+        if (!needed)
+        {
+ 			try
+            {
+				deleteChildDevice(existingchild.deviceNetworkId)
+                
+                logger("deletechildren", "debug", "Deleted ${existingchild}")
+			}
+			catch (e)
+            {
+				logger("deletechildren", "error", "Error deleting ${existingchild}")
+			}
+        }
+        else logger("deletechildren", "debug", "${existingchild} still required")      
+    }
+}
+
+def childspeak(childdevice, words)
+{
+    if (!words?.trim()) words = childdevice.name
+   
+   	logger("childspeak", "debug", "${childdevice} ${words}")
+    
+	// ST will run the HubAction for us.
+    return buildhubaction(childdevice, 'speechSynthesis', 'speak', words, '', false)
 }
