@@ -35,7 +35,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1.0	(15/10/2018) 
+ * Version:				1.1.1	(15/10/2018) 
  *
  * Comments:			
  *
@@ -45,6 +45,8 @@
  *
  * Changes:
  *
+ * 1.1.1		(15/10/2018)	Ongoing work following check-in. Add Speech Recognition
+ *								as a capability and child device.
  * 1.1.0		(15/10/2018)	Further work on working with child devices.
  *				(14/10/2018)	Support multiple child device handlers. Handle attribute
  *								changes for ETA children.
@@ -80,6 +82,7 @@ metadata
         capability "Power Source"
         capability "Relative Humidity Measurement"
         capability "Sensor"
+        capability "Speech Recognition"
         capability "Speech Synthesis"
 		capability "Switch"
         capability "Temperature Measurement"
