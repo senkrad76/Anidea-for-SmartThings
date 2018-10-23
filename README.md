@@ -54,10 +54,10 @@ Incoming HTTP POST requests are sent to <code>http://&lt;hub IP address&gt;:3950
         "state1 name":"state1 value",
         "state2 name":"state2 value"
     }
-    "devices": {
-        "child1 name":"child1 type",
-        "child2 name":"child2 type"
-    }
+    "devices": [
+        {name:"child1 name", type:"child1 type"},
+        {name:"child2 name", type:"child2 type"}
+    ]
 }</pre>
 
 The <code>"device":"Device Display Name",</code> entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
