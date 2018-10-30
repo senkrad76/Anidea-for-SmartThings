@@ -23,12 +23,13 @@
  *
  * Author:	Graham Johnson (orangebucket)
  *
- * Version:	1.0.0	(15/10/2018) 
+ * Version:	1.0.1	(30/10/2018) 
  *
  * Comments:			
  *
  * Changes:
  *
+ * 1.0.1	(30/10/2018)	Correct the parsing.
  * 1.0.0	(15/10/2018)	Initial version.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
@@ -56,7 +57,7 @@ definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author:
     {        
         valueTile("sst", "device.phraseSpoken", decoration: "flat", width: 3, height:1)
         {
-        	state "phraseSpoken", label:'ETA ${currentValue}'
+        	state "phraseSpoken", label:'${currentValue}'
     	} 
         
         main "sst"
@@ -112,11 +113,11 @@ def parse(description)
 		{
 			myname, myvalue ->
                                     
-        	if (myname == "sst")
+        	if (myname == "phraseSpoken")
         	{
 				logger("parse", "info", "attribute $myname $myvalue")
 
-				sendEvent(name: myname, value: $myvalue, isStateChange: true)
+				sendEvent(name: myname, value: myvalue, isStateChange: true)
 			}
         }
 	}
