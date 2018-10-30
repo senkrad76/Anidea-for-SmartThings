@@ -35,16 +35,23 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1.1	(15/10/2018) 
+ * Version:				1.1.2	(30/10/2018) 
  *
- * Comments:			
+ * Comments:
  *
- * A state change event is only triggered when a response to the request has been received. 
- * This doesn't mean it has 'worked', only that the remote device has received the request.
- * However it is a lot better than simply sending state change events in the commands.
+ * None.
  *
  * Changes:
  *
+ * 1.1.2		(30/10/2018)	Live Logging was randomly dropping many of the log entries
+ *								created when adding and creating child devices so they've
+ *								been replaced by a summary log statement. The installed()
+ *								method was calling updated() but the word is updated()
+ *								gets called anyway. Creation and deletion of child devices
+ *								has been moved to updated() as when called from configure()
+ *								subsequent calls to parse() failed on getChildDevices().
+ *								Parse of child devices also generated more logs than could 
+ *								be processed.
  * 1.1.1		(15/10/2018)	Ongoing work following check-in. Add Speech Recognition
  *								as a capability and child device.
  * 1.1.0		(15/10/2018)	Further work on working with child devices.
@@ -256,7 +263,7 @@ def installed()
 {
 	logger("installed")
     
-    updated()
+    // Used to call updated() here but the word is it will get called anyway.
 }
 
 
@@ -267,12 +274,18 @@ def updated()
 {
 	if (state.lastupdated && now() < state.lastupdated + 5000)
     {        
-        logger("updated", "Skipped as ran recently")
+        logger("updated", "debug", "Skipped as ran recently")
  
  		return
     }
         
  	state.lastupdated = now()
+    
+    // Adding and deleting children seems to be performed best here. Deleting
+    // children from configure() caused subsequent calls to getChildDevices in
+    // parse to fail.
+    addchildren()
+    deletechildren()
 
 	logger("updated")
     
@@ -314,7 +327,7 @@ def setdni()
   	  
 		device.setDeviceNetworkId(hex)
     }
-    else logger("setdni", "info", "(not needed)")
+    else logger("setdni", "debug", "(not needed)")
 }
 
 // Have own logging routine.
@@ -329,19 +342,23 @@ def parse(description)
 {
 	def msg = parseLanMessage(description)
     
-    // There should be a record of any state change requests in the state map.
+ 	// There should be a record of any state change requests in the state map.
     if ( state[msg.requestId] )
     {
     	def st = state[msg.requestId].split('=:=')
         def stcap = st[0]
         def stval = st[1]
+        
+        // A state change event is only triggered when a response to the request has been received. 
+		// This doesn't mean it has 'worked', only that the remote device has received the request.
+		// However it is a lot better than simply sending state change events in the commands.
           	
     	def stateevent = createEvent(name: stcap, value: stval)
         
         // This entry in the map is no longer required.
         state.remove(msg.requestId)
         
-		logger("parse", "info", "Set state of ${stcap} to ${stval}")
+		logger("parse", "debug", "Set state of ${stcap} to ${stval}")
 
 		// Let ST fire off the event.
         return stateevent
@@ -362,7 +379,7 @@ def parse(description)
                     
                     if (child.displayName == body.devicename)
                     {
-                    	logger("parse", "info", "Message passed to $child.displayName")
+                    	logger("parse", "debug", "Message passed to $child.displayName")
                     	child.parse(description)
                     }   
                 }
@@ -373,7 +390,7 @@ def parse(description)
         	}
         	else
             {
-        		logger("parse", "debug", "Ping received")
+        		logger("parse", "info", "Ping received")
            
                 body.attribute.each
 				{
@@ -385,27 +402,27 @@ def parse(description)
                     	{
                     		def mytime = Date.parse("yyyy-MM-dd'T'HH:mm:ssX", myvalue).format("HH:mm", location.getTimeZone())
                         
-                    		logger("parse", "info", "attribute $myname $myvalue (${mytime})")
+                    		logger("parse", "debug", "attribute $myname $myvalue (${mytime})")
                     
                     		sendEvent(name: myname, value: myvalue, isStateChange: true)
                     	}
                     	catch(Exception e)
                     	{
                     		// The returned value is not an ISO8601 date.
-                    		logger("parse", "info", "attribute $myname (value invalid)")
+                    		logger("parse", "debug", "attribute $myname (value invalid)")
 
                             sendEvent(name: myname, value: null, isStateChange: true)
                     	}
                 	}
 					else if (myname == "temperature")
 					{
-                 		logger("parse", "info", "attribute ${myname} $myvalue.value $myvalue.unit")
+                 		logger("parse", "debug", "attribute ${myname} $myvalue.value $myvalue.unit")
                         
                 		sendEvent(name: myname, value: myvalue.value, unit: myvalue.unit, isStateChange: true)
                     }
                     else
                		{
-                    	logger("parse", "info", "attribute ${myname} ${myvalue}")     
+                    	logger("parse", "debug", "attribute ${myname} ${myvalue}")     
  
  						sendEvent(name: myname, value: myvalue, isStateChange: true)
                     }
@@ -421,14 +438,14 @@ def parse(description)
                     	{
                     		def mytime = Date.parse("yyyy-MM-dd'T'HH:mm:ssX", myvalue).format("HH:mm", location.getTimeZone())
                         
-                    		logger("parse", "info", "state $myname $myvalue (${mytime})")
+                    		logger("parse", "debug", "state $myname $myvalue (${mytime})")
                     
                     		state."${myname}" = myvalue
                     	}
                     	catch(Exception e)
                     	{
                     		// The returned value is not an ISO8601 date.
-                    		logger("parse", "info", "state $myname (value invalid)")
+                    		logger("parse", "debug", "state $myname (value invalid)")
 
                             state."${myname}" = myvalue
                     	}
@@ -444,15 +461,21 @@ def parse(description)
                 if (body.devices) 
             	{
                  	def childlist = []
+                    
+                    def numberofchildren = 0
 
 					body.devices.each
 					{
-                		logger("parse", "info", "name: $it.name type: $it.type")
+         				numberofchildren++       		
                     
                     	childlist += [name: it.name, type: it.type]
                 	}
 
 					state.childdevicelist = childlist
+                    
+                    logger("parse", "info", "${numberofchildren} child devices received")
+                    
+                    // logger("parse", "trace", "$childlist")
                 }
           	}
         }
@@ -531,19 +554,19 @@ def both()
 
 def siren()
 {
-	return buildhubaction('alarm', 'siren')
+	return buildhubaction(device, 'alarm', 'siren')
 }
 
 def strobe()
 {
-	return buildhubaction('alarm', 'strobe')
+	return buildhubaction(device, 'alarm', 'strobe')
 }
 
 // Custom command to turn alarm off.
 def alarmoff()
 {
     // ST will run the HubAction for us.
-    return buildhubaction('alarm', 'off')
+    return buildhubaction(device, 'alarm', 'off')
 }
 
 //
@@ -586,12 +609,8 @@ def playTrackAndRestore(uri, level = null, anotherlevel = null)
 // Configuration
 //
 // The Configuration capability is intended for configuring an actual device rather than
-// setting up the device handler. 
-//
-// In this device handler it is also used to synchronise the list of child devices with
-// that sent from the remote device.
-//
-// The configure() command is only called by a tile in this device handler.
+// setting up the device handler. It could usefully be used to have the remote device
+// send an up to date list of children.
 //
 
 // The configure() command often, but not always, seems to be called twice. An attempt
@@ -610,8 +629,8 @@ def configure()
  
  	logger("configure", "debug", "$state.lastconfigure")
     
-    addchildren(state.childdevicelist)
-    deletechildren(state.childdevicelist)
+    // addchildren()
+    // deletechildren()
    
     // ST will run the HubAction for us.
     return buildhubaction(device, 'configuration', 'configure', '', '', false)
@@ -682,15 +701,19 @@ def beep()
 // Play with the children.
 //
 
-def addchildren(names)
+def addchildren()
 {
-	logger("addchildren", "trace", names)
+	// logger("addchildren", "trace", state.childdevicelist)
 
-	names.each
+	def children = getChildDevices() 
+        
+    def existingchildren = children.size
+    def requiredchildren = state.childdevicelist.size
+    def addedchildren = 0
+    
+    state.childdevicelist.each
     {
-    	newdevice -> 
- 
- 		def children = getChildDevices() 
+    	newdevice ->
 
 		def dni = newdevice.name.replaceAll("[^a-zA-Z0-9]+","")
         def needed = true
@@ -704,31 +727,39 @@ def addchildren(names)
         
         if (needed)
         {
-        	addChildDevice("orangebucket", newdevice.type, dni, null, [isComponent: false, completedSetup: true, label: newdevice.name])
+        	addedchildren++
+            
+            addChildDevice("orangebucket", newdevice.type, dni, null, [isComponent: false, completedSetup: true, label: newdevice.name])
 
 			logger("addchildren", "debug", "Created ${newdevice.name} ${newdevice.type}")
         }
-        else logger("addchildren", "debug", "${newdevice.name} already exists")      
     }
+        
+    logger("addchildren", "info", "${existingchildren} existing, ${requiredchildren} required, ${addedchildren} attempted additions")      
 }
 
 
-def deletechildren(names)
+def deletechildren()
 {
-	logger("deletechildren", "trace", names)
+	// logger("deletechildren", "trace", state.childdevicelist)
 
 	def children = getChildDevices()
+    
+    def existingchildren = children.size
+    def requiredchildren = state.childdevicelist.size
+    def deletedchildren = 0
+ 	def faileddeletions = 0
     
     children.each
     {
     	existingchild -> 
-        
+               
     	def needed = false
         
-        names.each
+        state.childdevicelist.each
         {
         	newdevice ->
-           
+            
             def dni = newdevice.name.replaceAll("[^a-zA-Z0-9]+","")
 
         	if (dni == existingchild.deviceNetworkId) needed = true
@@ -738,17 +769,22 @@ def deletechildren(names)
         {
  			try
             {
-				deleteChildDevice(existingchild.deviceNetworkId)
+				deletedchildren++
+                
+                deleteChildDevice(existingchild.deviceNetworkId)
                 
                 logger("deletechildren", "debug", "Deleted ${existingchild}")
-			}
+            }
 			catch (e)
             {
-				logger("deletechildren", "error", "Error deleting ${existingchild}")
+				faileddeletions++
+                
+                logger("deletechildren", "error", "Error deleting ${existingchild} $e")
 			}
         }
-        else logger("deletechildren", "debug", "${existingchild} still required")      
     }
+    
+    logger("deletechildren", "info", "${existingchildren} existing, ${requiredchildren} required, ${faileddeletions}/${deletedchildren} failed deletions")     
 }
 
 def childspeak(childdevice, words)
