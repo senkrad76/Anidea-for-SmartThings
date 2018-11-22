@@ -73,30 +73,3 @@ The device handler should not be used in automations that would respond immediat
 This device handler was created as a learning exercise. It implements a virtual switch that calls URLs for each of the 'on' and 'off' states. The URLs should be specified as full URLs with appropriate encoding. What makes it slightly more interesting is that, if the 'AutoRemote Key' is defined, the device handler will create URLs in the same format as the AutoRemote Send Message Service and the 'on' and 'off' options should be defined as AutoRemote messages instead.
 
 The 'AutoRemote Key' can be found by going to your 'personal URL' (the URL is shown when you open up the AutoRemote app on Android). If you start typing something in the 'Message' field a URL will appear in a dialog box on the page. This URL is of the form <code>htt<span>ps://auto</span>remotejoaomgcd.appspot.com/sendmessage?key=**&lt;key&gt;**&message ...</code> and <code>**&lt;key&gt;**</code> is the rather long bit that you need to copy into the device preferences.
-
-## AncillaryAT
-This is just something I am playing with that is currenty only in the repository so I can make some notes about the OAuth2 authentication flow for the REST API. In case you are wondering, though, ActionTiles doesn't support all of the current SmartThings capabilities, in particular Estimated Time Of Arrival or Speech Recognition, so I am seeing if there is anything I can come up with to try and cover for that deficiency.
-
-OAuth needs to be enabled in the SmartApp 'App Settings' in the IDE. This creates two code strings of hyphenated hex digits, the 'Client ID' and the 'Client Secret' which we'll refer to as **CLIENTID** and **CLIENTSECRET**. The CLIENTID code is then used to request an authorisation code for the app. This is something you need to do in a browser as you will be authenticating with SmartThings and specifying which devices you wish to authorise the app to access in the usual way for third party access. The URL will be:
-
-<code>https<span>:</span>//graph.api.smartthings.com/oauth/authorize?response_type=code&client_id=**CLIENTID**&scope=app&redirect_uri=http%3A%2F%2Flocalhost</code>
-
-If you successfully authenticate and authorise the app you will be redirected to <code>http<span>:</span>//localhost/?code=**AUTHCODE**</code> where AUTHCODE is a six character code that is valid for one use within twenty-four hours. You'll also get an error message but it is the URL that is important.
-
-The next step is to use AUTHCODE to get an OAuth2 authentication token. This involves the CLIENTID and the CLIENTSECRET codes. This may well work as an HTTP GET but the documentation uses HTTP PUT, which seems a better way of doing things. The following curl command does the job:
-
-<code>curl --data "grant_type=authorization_code&code=**AUTHCODE**&client_id=**CLIENTID**&client_secret=**CLIENTSECRET**&redirect_uri=http%3A%2F%2Flocalhost" https<span>:</span>//graph.api.smartthings.com/oauth/token</code>
-
-At the time of writing, using the same AUTHCODE twice seems to result in an 'Internal Error' page being returned rather than failing elegantly (assuming it is only valid for one use and is supposed to fail). All being well you should receive a JSON format associative array including <code>"access_token":"**ACCESSTOKEN**"</code> where ACCESSTOKEN is a code string of hyphenated hex digits.
-
-The next step is to get an endpoint for the application. Again this can be done using curl.
-
-<code>curl -H "Authorization: Bearer **ACCESSTOKEN**" https://graph.api.smartthings.com/api/smartapps/endpoints</code>
-
-This should return a JSON list of associative arrays including <code>"uri":"https://**HOST**:443/api/smartapps/installations/**ENDPOINT**"</code> (the HOST may vary, and ENDPOINT is again a hyphenated string of hex digits).
-
-You can then use this endpoint to talk to the SmartApp. So if you wanted to access '/devices' as defined in the app it would, in curl terms, be:
-
-<code>curl -H "Authorization: Bearer **ACCESSTOKEN**" https://**HOST**:443/api/smartapps/installations/**ENDPOINT**/devices</code>
-
-
