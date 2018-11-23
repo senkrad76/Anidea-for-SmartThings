@@ -24,5 +24,23 @@ You can then use this endpoint to talk to the SmartApp. So if you wanted to acce
 
 <code>curl -H "Authorization: Bearer **ACCESSTOKEN**" https://**HOST**:443/api/smartapps/installations/**ENDPOINT**/devices</code>
 
+In PHP:
 
+<code>
+&lt;?php
+
+    $resturl = 'https://**HOST**:443/api/smartapps/installations/**ENDPOINT**/devices';
+    $access_key = '**ACCESSTOKEN**';
+
+    $ch = curl_init($resturl);
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $access_key ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
+    curl_setopt($ch, CURLOPT_POST,           0 );
+
+    $resp =  curl_exec($ch);
+    curl_close($ch);
+
+    $json = json_decode($resp,true);
+?&gt;
+</code>
 
