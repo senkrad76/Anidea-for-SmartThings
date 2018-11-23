@@ -2,6 +2,66 @@
 
 I just wanted somewhere to keep some notes on how to get an OAuth2 access token for a Web Services SmartApp. This process can be automated in apps by tweaking the redirect URL. The docs on Service Manager SmartApps show apps being able to create their own access token and find their own endpoint. That procedure is supposedly for temporary tokens for use during authentication of third party services but it rather appears some SmartApps use them instead of going through the palaver below. That's all rather baffling. Anyway ...
 
+Here is a simple SmartApp:
+
+```groovy
+definition(
+    name: "REST API OAuth",
+    namespace: "orangebucket",
+    author: "Graham Johnson",
+    description: "Does things.",
+    category: "My Apps",
+    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
+    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
+    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
+    oauth: [displayName: "REST API OAuth", displayLink: "http://localhost"])
+
+
+preferences
+{
+	section ("Allow external service to control these things...")
+    {
+		input "etas", "capability.estimatedTimeOfArrival", multiple: true, required: true
+        input "stts", "capability.speechRecognition", multiple: true, required: true
+	}
+}
+
+mappings
+{
+	path("/devices")
+	{
+		action: [
+        	GET: "listdevices"
+    	]
+	}
+}
+
+def listdevices()
+{
+	def resp = []
+    
+    etas.each
+    {
+		log.debug "$it.displayName ${it.etaState["value"]}"
+        
+        // I rather expected currentValue("eta") to work, but no such luck.
+        resp << [name: it.displayName, value: it.etaState["value"]]
+    }
+    
+    stts.each
+    {
+		log.debug "$it.displayName ${it.phraseSpokenState["value"]}"
+        
+        resp << [name: it.displayName, value: it.phraseSpokenState["value"]]
+    }   
+    return resp
+}
+
+def installed() {}
+
+def updated() {}
+```
+
 OAuth needs to be enabled in the SmartApp 'App Settings' in the IDE. This creates two UUIDs, the 'Client ID' and the 'Client Secret' which we'll refer to as CLIENTID and CLIENTSECRET. The CLIENTID code is then used to request an authorisation code for the app. This is something you need to do in a browser as you will be authenticating with SmartThings and specifying which devices you wish to authorise the app to access in the usual way for third party access. The URL will be:
 
 `https://graph.api.smartthings.com/oauth/authorize?response_type=code&client_id=CLIENTID&scope=app&redirect_uri=http%3A%2F%2Flocalhost`
