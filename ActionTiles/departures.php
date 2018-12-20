@@ -46,16 +46,16 @@
 
     require("OpenLDBWS.php");
 
-    $OpenLDBWS = new OpenLDBWS( '<KEY>' );
+    $OpenLDBWS = new OpenLDBWS( 'ac564889-86ed-44e3-ad56-f229bdf9981c' );
 ?>
     <body>
+        <div class="wrapper">
 <?php       
     foreach ( [ 'departures', 'arrivals' ] as $direction)
     {
         $ldb = ( $direction == 'arrivals' ) ? $OpenLDBWS->GetArrivalBoard( 3, $to, $from, 'from' ) : $OpenLDBWS->GetDepartureBoard( 3, $from, $to );
 ?>
-        <div id="<?php echo $direction; ?>">
-            <div class="wrapper">
+            <div id="<?php echo $direction; ?>">
                 <div class="tiles">
 <?php
         $traincount = 0;
