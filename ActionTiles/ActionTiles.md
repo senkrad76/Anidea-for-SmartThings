@@ -17,6 +17,7 @@ You may have multiple iframes.
 ### To do
 * There needs to be a more flexible way of filtering the URL Shortcuts.
 * If ActionTiles develops the ability to specify targets on URL Shortcuts it will be useful to be able to define simpler names for the iframes. Until then the `iframe<at-tile-id>` format will be fine.
+* It probably needs to be implemented as functions.
 
 ## arrivals.php and departures.php
 These two PHP scripts are intended to provide content for an iframe, as above. The `arrivals.php` script querys the TfL Unified API for live arrivals details for buses and trams, and displays up to three times in a format compatible with an ActionTiles panel (the CSS has to be custom designed to work with a 3x2 iframe on a particular size of panel on a particular screen). The `departures.php` file does a similar thing for journeys between two defined National Rail stations, displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
