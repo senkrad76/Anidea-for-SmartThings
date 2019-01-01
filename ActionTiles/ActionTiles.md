@@ -24,3 +24,6 @@ These two PHP scripts are intended to provide content for an iframe, as above. T
 
 ## panel.php
 This is a frameset document that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a screen width of 1280 pixels, and adjusts the scaling for other displays it runs on.
+
+## weather.php
+This PHP script provides content for an iframe, as above. It queries the Met Office DataPoint API for the next three forecasts from the 3 hourly 5 day feed and presents the information similarly to the `arrivals.php` and `departures.php` scripts.
