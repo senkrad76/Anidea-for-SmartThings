@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <?php
-    $refresh   = isset( $_GET["refresh"]   ) ? $_GET["refresh"]   : '900';
+//
+// (C) Graham Johnson 2018
+//
+// weather.php
+// ===========
+// Present three three-hourly weather forecasts in a bespoke ActionTiles compatible
+// form, sourcing the data from Met Office DataPoint.
+//
+// Add the regional text forecasts from the same source.
+//
+    
+$refresh  = isset( $_GET["refresh"]   ) ? $_GET["refresh"]  : '1800';                                 // Default refresh of 30 minutes.
+$cityid   = isset( $_GET["cityid"]    ) ? $_GET["cityid"]   : '324152';                               // Default is Croydon.
+$regionid = isset( $_GET["regionid"]  ) ? $_GET["regionid"] : '514';                                  // Default is SE England.
+$apikey   = isset( $_GET["apikey"]    ) ? $_GET["apikey"]   : 'e6bf3e19-bfca-4a07-a2ae-a263a725b76b'; // DataPoint API Key.
+
+$showjson  = isset( $_GET["showjson"] ) ? $_GET["showjson"] : false;
 ?>
 <html lang="en-gb">
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <?php
-    if ( $refresh )
-    {
+if ( $refresh )
+{
 ?>
         <meta http-equiv="refresh" content="<?php echo $refresh; ?>">
 <?php
-    }
+}
 ?>
         <title>Weather Forecast</title>
         <style type="text/css">
@@ -32,7 +48,7 @@
             #d0                         { display: block; text-align: left;   }
             #d1                         { display: none;  text-align: center; }
             #d2                         { display: none;  text-align: right;  }
-            .stationname                { font-weight: bold; font-size: 18px; }
+            #textforecast               { color: #00c0c0; font-size: 14px; }
         </style>
         <script>
             function displaydesc(tile)
@@ -43,70 +59,69 @@
             }
         </script>
     </head>
-<?php
-    $weathertype = array(   'Clear night', 
-                            'Sunny day',
-                            'Partly cloudy (night)',
-                            'Partly cloudy (day)', 
-                            'Not used', 
-                            'Mist', 
-                            'Fog',
-                            'Cloudy',
-                            'Overcast',
-                            'Light rain shower (night)',
-                            'Light rain shower (day)',
-                            'Drizzle',
-                            'Light rain',
-                            'Heavy rain shower (night)',
-                            'Heavy rain shower (day)',
-                            'Heavy rain',
-                            'Sleet shower (night)',
-                            'Sleet shower (day)',
-                            'Sleet',
-                            'Hail shower (night)',
-                            'Hail shower (day)',
-                            'Hail',
-                            'Light snow shower (night)',
-                            'Light snow shower (day)',
-                            'Light snow',
-                            'Heavy snow shower (night)',
-                            'Heavy snow shower (day)',
-                            'Heavy snow',
-                            'Thunder shower (night)',
-                            'Thunder shower (day)',
-                            'Thunder' );
-    
-    
-    
-    $owm = 'http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/<CODE>?res=3hourly&key=<APIKEY>';
-
-	$ch = curl_init( $owm );
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-	curl_setopt($ch, CURLOPT_POST,           0 );
-
-	$resp =  curl_exec( $ch );
-	curl_close( $ch );
-
-	$json = json_decode( $resp, true );
-?>
     <body>
-        <!-- <pre><?php print_r( $json ); ?></pre> -->
-        <div class="wrapper">
+<?php
+$weathertype = array(   'Clear night', 
+                        'Sunny day',
+                        'Partly cloudy (night)',
+                        'Partly cloudy (day)', 
+                        'Not used', 
+                        'Mist', 
+                        'Fog',
+                        'Cloudy',
+                        'Overcast',
+                        'Light rain shower (night)',
+                        'Light rain shower (day)',
+                        'Drizzle',
+                        'Light rain',
+                        'Heavy rain shower (night)',
+                        'Heavy rain shower (day)',
+                        'Heavy rain',
+                        'Sleet shower (night)',
+                        'Sleet shower (day)',
+                        'Sleet',
+                        'Hail shower (night)',
+                        'Hail shower (day)',
+                        'Hail',
+                        'Light snow shower (night)',
+                        'Light snow shower (day)',
+                        'Light snow',
+                        'Heavy snow shower (night)',
+                        'Heavy snow shower (day)',
+                        'Heavy snow',
+                        'Thunder shower (night)',
+                        'Thunder shower (day)',
+                        'Thunder' );
+    
+$met = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/$cityid?res=3hourly&key=$apikey";
+
+$ch = curl_init( $met );
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
+curl_setopt($ch, CURLOPT_POST,           0 );
+
+$resp =  curl_exec( $ch );
+curl_close( $ch );
+
+$json = json_decode( $resp, true );
+
+if ( $showjson ) echo "\n<pre>\n" . print_r( $json, true ) . "\n</pre>\n";
+?>
+       <div class="wrapper">
             <div class="tiles">
 <?php
-    $count = 0;
+$count = 0;
     
-    $now = new DateTime();
+$now = new DateTime();
     
-    for ( $period = 0;  $period < 2; $period++ )
+for ( $period = 0;  $period < 2; $period++ )
+{
+    foreach ( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'Rep' ] as $forecast )
     {
-        foreach ( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'Rep' ] as $forecast )
-        {
-            // Have to check how this works with DST.
-            $fctime =  new DateTime( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'value'] );
-            $fctime->modify("+{$forecast[ '$' ]} minutes");
+        // Have to check how this works with DST.
+        $fctime =  new DateTime( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'value'] );
+        $fctime->modify("+{$forecast[ '$' ]} minutes");
             
-            if ( $fctime < $now ) continue;
+        if ( $fctime < $now ) continue;
 ?>
                 <div class="tile" onclick="displaydesc('d<?php echo $count; ?>')";>
                     <div class="fcrain">&#x2119(rain) <strong><?php echo $forecast[ 'Pp' ]; ?>%</strong></div>
@@ -114,39 +129,85 @@
                     <div class="fcfeels">Feels like <strong><?php echo $forecast[ 'F' ]; ?>&deg;</strong></div>
                 </div>
 <?php
-            if ( ++$count == 3 ) break;
-        }
-        
-        if ( $count == 3 ) break;
+        if ( ++$count == 3 ) break;
     }
+        
+    if ( $count == 3 ) break;
+}
 ?>
             </div>
 <?php
-    $count = 0;
+$count = 0;
     
-    for ( $period = 0;  $period < 2; $period++ )
+for ( $period = 0;  $period < 2; $period++ )
+{
+    foreach ( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'Rep' ] as $forecast )
     {
-        foreach ( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'Rep' ] as $forecast )
-        {
-            // Have to check how this works with DST.
-            $fctime =  new DateTime( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'value'] );
-            $fctime->modify("+{$forecast[ '$' ]} minutes");
+        // Have to check how this works with DST.
+        $fctime =  new DateTime( $json[ 'SiteRep' ][ 'DV' ][ 'Location' ][ 'Period' ][ $period ][ 'value'] );
+        $fctime->modify("+{$forecast[ '$' ]} minutes");
             
-            if ( $fctime < $now ) continue;
+        if ( $fctime < $now ) continue;
 ?>
-                <div class="description" id="d<?php echo $count; ?>";>
-                    <div><?php echo $fctime->format( 'l jS F Y H:i' ); ?></div>
-                    <div class="weathertype"><strong><?php echo $weathertype[ $forecast['W'] ]; ?></strong></div>
-                    <div>Wind <?php echo $forecast['S']; ?>mph from the <?php echo $forecast['D']; ?></div>
-                    <div>Max UV <?php echo $forecast['U']; ?></div>
-                </div>
+            <div class="description" id="d<?php echo $count; ?>";>
+                <div><?php echo $fctime->format( 'l jS F Y' ); ?> <strong><?php echo $fctime->format( 'H:i' ); ?></strong></div>
+                <div class="weathertype"><strong><?php echo $weathertype[ $forecast['W'] ]; ?></strong></div>
+                <div>Wind <?php echo $forecast['S']; ?>mph from the <?php echo $forecast['D']; ?></div>
+                <div>Max UV <?php echo $forecast['U']; ?></div>
+            </div>
 <?php
-            if ( ++$count == 3 ) break;
-        }
-        
-        if ( $count == 3 ) break;
+        if ( ++$count == 3 ) break;
     }
+        
+    if ( $count == 3 ) break;
+}
+
+$met = "http://datapoint.metoffice.gov.uk/public/data/txt/wxfcs/regionalforecast/json/$regionid?key=$apikey";
+    
+$ch = curl_init( $met );
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
+curl_setopt($ch, CURLOPT_POST,           0 );
+
+$resp =  curl_exec( $ch );
+curl_close( $ch );
+
+$json = json_decode( $resp, true );
+
+if ( $showjson ) echo "\n<pre>\n" . print_r( $json, true ) . "\n</pre>\n";
+
+?>
+            <div id="textforecast">
+<?php
+$periodcount = 0;
+
+//
+// The regional text forecast feed is divided into four periods. The first period covers
+// days 1-2 and is further divided into paragraphs, each with a title and text, to provide
+// more detail. The second period gives the brief outlook for days 3-5 and normally has
+// just the one paragraph. The next periods, covering days 6-15 and 16-30 are UK wide
+// and are skipped.
+// 
+foreach ( $json[ 'RegionalFcst' ][ 'FcstPeriods' ][ 'Period' ] as $period )	
+{
+    // Check if there are multiple paragraphs in an array, or just the one.
+    if ( is_array( $period[ 'Paragraph' ][ 0 ] ) ) foreach ( $period[ 'Paragraph' ] as $paragraph )
+    {
+?>
+                <p><strong><?php echo $paragraph[ 'title' ]; ?></strong> <?php echo $paragraph[ '$' ]; ?></p>
+<?php
+    }
+    else
+    {
+?>
+                <p><strong><?php echo $period[ 'Paragraph' ][ 'title' ]; ?></strong> <?php echo $period[ 'Paragraph' ][ '$' ]; ?></p>
+<?php
+    }
+    
+    // Longer range forecasts are UK wide so skip them.
+    if ( ++$periodcount == 2 ) break;
+}
 ?>
             </div>
+        </div>    
     </body>
 </html>
