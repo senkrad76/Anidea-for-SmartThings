@@ -20,10 +20,10 @@ You may have multiple iframes.
 * It probably needs to be implemented as functions.
 
 ## arrivals.php and departures.php
-These two PHP scripts are intended to provide content for an iframe, as above. The `arrivals.php` script querys the TfL Unified API for live arrivals details for buses and trams, and displays up to three times in a format compatible with an ActionTiles panel (the CSS has to be custom designed to work with a 3x2 iframe on a particular size of panel on a particular screen). The `departures.php` file does a similar thing for journeys between two defined National Rail stations, displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
+These two PHP scripts are intended to provide content for an iframe, as above. The `arrivals.php` script querys the TfL Unified API for live arrivals details for buses and trams, and displays up to three times in a format compatible with an ActionTiles panel (__the CSS has to be custom designed to work with a 3x2 iframe on a particular size of panel on a particular size of screen__). The `departures.php` file does a similar thing for journeys between two defined National Rail stations, displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
 
 ## panel.php
 This is a frameset document that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a screen width of 1280 pixels, and adjusts the scaling for other displays it runs on.
 
 ## weather.php
-This PHP script provides content for an iframe, as above. It queries the Met Office DataPoint API for the next three forecasts from the 3 hourly 5 day feed and presents the information similarly to the `arrivals.php` and `departures.php` scripts.
+This PHP script provides content for an iframe, as above. It queries the Met Office DataPoint API for the next three forecasts from the 3 hourly 5 day feed and presents the information similarly to the `arrivals.php` and `departures.php` scripts. The regional text forecast for the next five days is also included. The UK wide outlook out to thirty days is stripped off but could just as easily be an option.
