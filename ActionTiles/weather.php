@@ -14,7 +14,7 @@
 $refresh  = isset( $_GET["refresh"]   ) ? $_GET["refresh"]  : '1800';                                 // Default refresh of 30 minutes.
 $cityid   = isset( $_GET["cityid"]    ) ? $_GET["cityid"]   : '324152';                               // Default is Croydon.
 $regionid = isset( $_GET["regionid"]  ) ? $_GET["regionid"] : '514';                                  // Default is SE England.
-$apikey   = isset( $_GET["apikey"]    ) ? $_GET["apikey"]   : 'e6bf3e19-bfca-4a07-a2ae-a263a725b76b'; // DataPoint API Key.
+$apikey   = isset( $_GET["apikey"]    ) ? $_GET["apikey"]   : '<APIKEY>'; // DataPoint API Key.
 
 $showjson  = isset( $_GET["showjson"] ) ? $_GET["showjson"] : false;
 ?>
