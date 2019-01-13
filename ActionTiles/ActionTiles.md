@@ -17,7 +17,7 @@ The script needs to be edited to add the following information for each tile to 
 
 Each of the above are entered in separate arrays so the order needs to be the same in each (this is just how the code evolved).
 
-In order to allow the iframes to display ActionTiles panels, allowance also needs to be made for the gutter around tiles which will vary depending on the size of your screeen, your choice of tiles, and the contents of your panel. The actual iframe is made a defined number of pizels bigger than the tile it replaces.
+In order to allow the iframes to display ActionTiles panels, allowance also needs to be made for the gutter around tiles which will vary depending on the size of your screeen, your choice of tiles, and the contents of your panel. The actual iframe is made a defined number of pixels bigger than the tile it replaces.
 
 The script needs to be installed somewhere convenient and then needs to be called manually from the panel. This means defining it as a URL Shortcut with the URL `javascript: $.getScript('<path to this script>');`. If you are converting URL Shortcuts to iframes then one or more of them could have it as the underlying URL.
 
