@@ -11,8 +11,8 @@ _It is probably best to convert URL Shortcuts or blank tiles as they are essenti
 The top of script needs to be edited to define the following information:
 
 * For each tile to be converted:
-    * The `name` to be used for each iframe. This is used as the index of an associative array and as the name parameter of the HTML `<iframe>`.
-    * The `id` of the tile. This is the `at-tile-id` attribute of each tile's top level element, which is in UUID format. This can be found in a desktop version of Chrome, for example, by a right-click on a tile and choosing `Inspect`, then digging it out of the developer window.
+    * The `name` to be used for each iframe. This is used as the index of an associative array and as the 'name' attribute of the HTML iframe element.
+    * The `id` of the tile. This is the 'at-tile-id' attribute of each tile's top level element, which is in UUID format. This can be found in a desktop version of Chrome, for example, by a right-click on a tile and choosing 'Inspect', then digging it out of the developer window.
     * The `src` of the the iframe, which is a URL to be displayed in the iframe by default.
     * The `filter` which is a partial URL to be matched with the start of all of the URL Shortcuts in the panel, with matching URLs having their targets set to the `name`.
 * A array containing the iframe names in the order they are to be converted. The purpose of this is to allow a particular iframe to be created last so it is the one being targetted by any matching URL Shortcuts.
