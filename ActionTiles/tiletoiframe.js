@@ -1,38 +1,41 @@
 //
-// Here are the interesting configurables to save scrolling past the text below.
+// tiletoiframe.js (C) Graham Johnson 2018
+// =======================================
+// Version: 1.0.0   14/01/2019
 //
 
 //
-// Array defining the names to be used for each iframe.
+// Here are the interesting configurables to save scrolling past the text below.
 //
-var anideaiframename   = [ 'IFRAME1',
-                           'IFRAME2',
-                           'IFRAME3']
+
+// 
+// Order to initialise iframes in (useful to initialise a particular
+// iframe last so it is being targetted by shortcuts).
 //
-// Array defining the at-tile-id of each tile to be converted (same order as above).
+var anideaframeorder = [ 'IFRAME1', 'IFRAME3', 'IFRAME2'];
+
 //
-var anideatileid       = [ "<UUID1}",
-                           "<UUID2>",
-                           "<UUID3?" ];
+// Array defining the iframes.
 //
-// Array defining the default source for each iframe (same order as above).
-//
-var anideaiframesrc    = [ "<SRC1>",
-                           "<SRC2>",
-                           "<SRC3>" ];
-//
-// Array defining the filter to be applied to URL shortcuts for each iframe.
-//
-var anideahreffilter   = [ "<PREFIX1>",
-                           "<PREFIX2>",
-                           "<PREFIX3>" ];
+var anideaiframes   = [];
+
+anideaiframes['IFRAME1'] = { "id"  : "f4860aa0-ac88-4a5a-927b-99537c303937",
+                             "src" : "https://anidea.co.uk/actiontiles/weather.php",
+                             "filter" : "https://anidea.co.uk/actiontiles/" };
+                             
+anideaiframes['IFRAME2'] = { "id"  : "0bf9db0e-0ebb-4197-9f41-7a36b937297c",
+                             "src" : "https://app.actiontiles.com/panel/32468729-1619-486e-a9ee-b6337d844862",
+                             "filter" : "https://anidea.co.uk/actiontiles/" };
+
+anideaiframes['IFRAME3'] = { "id"  : "579700cc-4219-49fb-bc69-d0e9c7869c76",
+                             "src" : "https://app.actiontiles.com/panel/f88bf3f5-7f47-498e-ac21-cfcd80b63e03",
+                             "filter" : "https://anidea.co.uk/actiontiles/" };
+
 //
 // Number of pixels to adjust the size of the iframe by to account for the gutter around tiles.
 //
 var anideaiframeadjust = 4;
 
-//
-// (C) Graham Johnson 2018.
 //
 // ---------------------------------------------------------------------------------
 // Permission to use, copy, modify, and/or distribute this software for any purpose
@@ -48,17 +51,16 @@ var anideaiframeadjust = 4;
 // THIS SOFTWARE.
 // ---------------------------------------------------------------------------------
 //
-// This script defines a number of ActionTiles tiles, defined by a UUID, which are to have their
-// contents changed to be an iframe, and then converts them, initialising them with specified URLs
-// and then changing any URL shortcuts in the panel that start with a specified string to use the
-// iframe as their target.
+// This script defines a number of ActionTiles tiles which are to have their contents changed to 
+// be an iframe, and then converts them, initialising them with specified URLs and then changing
+// the target of any URL Shortcuts in the panel that start with a specified string to the iframe.
 //
 // The script needs to be called manually after a panel is loaded. This can conveniently be done by
-// using URL Shortcuts as the tiles to be converted and defining the URL of one or more of them as:
+// having at least one of the tiles to be converted be a URL Shortcut and defining the URL to be:
 //
 //      javascript: $.getScript('<path to this file>');
 //
-// Clicking on one of the tiles will then run this script.
+// Clicking on one the tile will then run this script.
 //
 // This URL exploits jQuery which is already loaded into ActionTiles. Obviously the entire script could
 // be written in jQuery and probably be all the better for it but I currently only know one bit of jQuery
@@ -67,15 +69,12 @@ var anideaiframeadjust = 4;
 // You may want to reset iframes to their default sources and/or make them active for URL Shortcuts. If
 // so you should add URL shortcuts containing:
 //
-//      javascript: anideatiletoiframe( index );
-//
-// The argument 'index' will be the integer index of the iframe in the global variable arrays, starting
-// with 0.
+//      javascript: anideatiletoiframe( '<IFRAME NAME>' );
 //
 
-anideatileid.forEach( anideatiletoiframe );
+anideaframeorder.forEach( anideatiletoiframe );
 
-function anideatiletoiframe( dummy, iframe = dummy )
+function anideatiletoiframe( iframe )
 {
     //
     // ActionTiles assigns each tile an 'at-tile-id' attribute with a UUID. You have to dig into the DOM to find this.
@@ -83,7 +82,7 @@ function anideatiletoiframe( dummy, iframe = dummy )
     //
     // The querySelector function is being used to search for the tile with the given at-tile-id.
     //
-    var anideatile = document.querySelector( '[at-tile-id="' + anideatileid[ iframe ] + '"]' );
+    var anideatile = document.querySelector( '[at-tile-id="' + anideaiframes[ iframe ][ 'id' ] + '"]' );
 
     //
     // There should be a tile found. Error checking might be a bit of a luxury had an external script
@@ -92,7 +91,7 @@ function anideatiletoiframe( dummy, iframe = dummy )
     //
     if ( anideatile )
     {
-        console.log( 'Info: Tile ' + anideatileid[ iframe ] + ' found.');
+        console.log( 'Info: Tile ' + anideaiframes[ iframe ][ 'id' ] + ' found.');
     
         //
         // Generate a unique name from the tile id and then if it hasn't already been done, replace the 
@@ -100,7 +99,7 @@ function anideatiletoiframe( dummy, iframe = dummy )
         // but might as well check it has been done.
         //
 
-        var anideaiframe     = document.querySelector( '[name="' + anideaiframename[ iframe ] + '"]');
+        var anideaiframe = document.querySelector( '[name="' + iframe + '"]');
 
         if ( anideaiframe === null )
         {
@@ -121,7 +120,7 @@ function anideatiletoiframe( dummy, iframe = dummy )
         
             anideaiframe = document.createElement( 'iframe' );
         
-            anideaiframe.setAttribute( "name", anideaiframename[ iframe ] );
+            anideaiframe.setAttribute( "name", iframe);
         
             anideaiframe.style.border = "0";
         
@@ -143,7 +142,7 @@ function anideatiletoiframe( dummy, iframe = dummy )
         // Might as well reset the contents every time this script gets run. That way
         // a URL Shortcut tile can act as a select and reset button for the iframe.
         //
-        anideaiframe.setAttribute( "src",  anideaiframesrc[ iframe ]  );
+        anideaiframe.setAttribute( "src",  anideaiframes[ iframe ][ 'src' ] );
         
         //
         // Look for all the links in the document. ActionTiles uses buttons for media tiles so these should all be
@@ -155,9 +154,9 @@ function anideatiletoiframe( dummy, iframe = dummy )
     
         for (var i = 0; i < anidealinks.length; i++)
         {
-            if (anidealinks[i].href.startsWith( anideahreffilter[ iframe ] ))
+            if (anidealinks[i].href.startsWith( anideaiframes[ iframe ][ 'filter' ] ))
             {
-                anidealinks[i].target  = anideaiframename[ iframe ];
+                anidealinks[i].target  = iframe;
             
                 anideachanged++;
             }
@@ -167,6 +166,6 @@ function anideatiletoiframe( dummy, iframe = dummy )
     }
     else
     {
-        console.log( 'Error: Tile ' + anideatileid[ iframe ] + ' not found.' );
+        console.log( 'Error: Tile ' + anideaiframes[ iframe ][ 'id' ] + ' not found.' );
     }
 }
