@@ -35,7 +35,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1.2	(30/10/2018) 
+ * Version:				1.1.3	(16/01/2019) 
  *
  * Comments:
  *
@@ -43,6 +43,7 @@
  *
  * Changes:
  *
+ * 1.1.3.       (16/01/2019)    Make switch the 'main' tile and tweak the mobile app UI.  
  * 1.1.2		(30/10/2018)	Live Logging was randomly dropping many of the log entries
  *								created when adding and creating child devices so they've
  *								been replaced by a summary log statement. The installed()
@@ -140,7 +141,7 @@ metadata
     {
     	// Start with a tile for the alarm status of the device. Either turns both alarms on, or turns both off.
         // Transitional states are shown while waiting for a response from the remote device.
-        standardTile("alarm", "device.alarm", width: 2, height: 2, canChangeIcon: true) 
+        standardTile("alarm", "device.alarm", width: 1, height: 1, canChangeIcon: true) 
         {
             state "off", label:'Off', action:'alarm.both', icon:"st.alarm.alarm.alarm", backgroundColor:"#ffffff", nextState: "bothon"         
             state "bothon", label: '-> Both', icon: "st.alarm.alarm.alarm", backgroundColor: "#c0c000"
@@ -252,9 +253,9 @@ metadata
     	} 
 
 		// Use the alarm as the main tile.
-        main "alarm"
+        main "switch"
         // Sort the tiles suitably.
-        details (["alarm", "siren", "strobe", "notification", "speechSynthesis", "tone", "switch", "alarmreset", "switchreset",
+        details (["switch", "alarmreset", "switchreset", "alarm", "siren", "strobe", "notification", "speechSynthesis", "tone",
         	      "configuration", "airquality", "battery", "eta", "humidity", "temperature", "uvindex"])
 	}
 }
