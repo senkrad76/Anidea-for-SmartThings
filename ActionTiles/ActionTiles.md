@@ -13,7 +13,7 @@ The top of script needs to be edited to define the following information:
 * For each tile to be converted:
     * The `name` attribute to be used for the HTML <iframe> element. This is also used as the index of an associative array.
     * The `id` of the tile. This is the _at-tile-id_ attribute of each tile's top level element, which is in UUID format. This can be found in a desktop version of Chrome, for example, by a right-click on a tile and choosing _Inspect_, then digging it out of the developer window.
-    * The `src` attributee of the HTML <iframe> element, which is a URL to be displayed in the <iframe> by default.
+    * The `src` attribute of the HTML <iframe> element, which is a URL to be displayed in the <iframe> by default.
     * The `filter` which is a partial URL to be matched with the start of all of the URL Shortcuts in the panel, with matching URLs having their _target+ attributes set to the name of the <iframe>.
 * A array containing the <iframe> _name_ attributes in the order they are to be converted. The purpose of this is to allow a particular <iframe> to be created last so it is the one being targetted by any matching URL Shortcuts.
 * A size adjustment for the <iframe> elements so that they overlap the gutter around the original tile. This is necessary when an ActionTiles panel is being loaded into an <iframe>. This size required will depend on the size of your screen, your choice of tiles, and the contents of your panel. 
