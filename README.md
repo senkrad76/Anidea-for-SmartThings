@@ -16,7 +16,7 @@ The device is specified by IP Address and Port in the Preferences, and the MAC a
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The HTTP GET requests are of the form <code>http://&lt;IP address on local LAN&gt;:&lt;Port&gt;/sendmessage?message=&lt;message&gt;</code> where the &lt;message&gt; is of the form <code>LANMultiThing&lt;DeviceName&gt;=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly. &lt;DeviceName&gt; is the display name of the parent or child device stripped of alphabetic or numeric characters to make it appropriate for a URL.
+The HTTP GET requests are of the form <code>http://&lt;IP address on local LAN&gt;:&lt;Port&gt;/sendmessage?message=&lt;message&gt;</code> where the &lt;message&gt; is of the form <code>LANMultiThing&lt;DeviceName&gt;=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly. &lt;DeviceName&gt; is the display name of the parent or child device stripped of non-alphanumeric characters to make it appropriate for a URL.
 
 If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
 
