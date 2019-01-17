@@ -22,7 +22,7 @@ The script needs to be installed somewhere convenient and then needs to be calle
 
 If you just want to display fixed URLs in each <iframe>, then that's all you need to do. Clicking the shortcut above will run the script and do the conversions for you.
 
-If you want to be able to dynamically change which <iframe> is targetted by URL Shortcuts, or want to reset the <iframe> to its default contents, you will need to use an extra URL Shortcuts for each tile with the URL `javascript: anideatiletoiframe( '<IFRAMENAME>' );` where `<IFRAMENAME>` is the _name_ of the appropriate <iframe>.
+If you want to be able to dynamically change which <iframe> is targetted by URL Shortcuts, or want to reset the <iframe> to its default contents, you will need to use an extra URL Shortcut for each tile with the URL `javascript: anideatiletoiframe( '<IFRAMENAME>' );` where `<IFRAMENAME>` is the _name_ of the appropriate <iframe>.
 
 ### To do
 * There needs to be a more flexible way of filtering the URL Shortcuts.
