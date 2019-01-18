@@ -28,7 +28,7 @@ If you want to be able to dynamically change which <iframe> is targetted by URL 
 * There needs to be a more flexible way of filtering the URL Shortcuts.
 
 ## arrivals.php and departures.php
-These two PHP scripts are intended to provide content for an <iframe> as created by __tiletoiframe.js__. The __arrivals.php__ script querys the TfL Unified API for live arrivals details for buses and trams, and displays up to three times in a format compatible with an ActionTiles panel (the CSS has to be custom designed to work with a 3x2 <iframe> on a particular size of panel on a particular size of screen). The `departures.php` file does a similar thing for journeys between two defined National Rail stations, displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
+These two PHP scripts are intended to provide content for an <iframe> as created by __tiletoiframe.js__. The __arrivals.php__ script querys the TfL Unified API for live arrivals details for buses and trams at a specified stop, and displays all the available times in in a format compatible with an ActionTiles panel (the CSS has to be custom designed to work with a 3x2 <iframe> on a particular size of panel on a particular size of screen). The `departures.php` file does a similar thing for journeys between two defined National Rail stations (limiting itself to a defined number of services), displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
 
 ## panel.php
 This is a frameset document that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a screen width of 1280 pixels, and adjusts the scaling for other displays it runs on.
