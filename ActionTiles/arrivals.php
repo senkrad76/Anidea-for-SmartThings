@@ -3,7 +3,7 @@
 //
 // arrivals.php (C) Graham Johnson 2018-2019
 // ========================================
-// Version: 1.1.0   18/01/2019
+// Version: 1.1.1   18/01/2019
 //
 // ---------------------------------------------------------------------------------
 // Permission to use, copy, modify, and/or distribute this software for any purpose
@@ -28,7 +28,7 @@ $route     = isset( $_GET[ "route" ]     ) ? $_GET[ "route" ]     : '';
 $direction = isset( $_GET[ "direction" ] ) ? $_GET[ "direction" ] : '';
 $towards   = isset( $_GET[ "towards" ]   ) ? $_GET[ "towards" ]   : '';
 $refresh   = isset( $_GET[ "refresh" ]   ) ? $_GET[ "refresh" ]   : '60';
-$appkey    = isset( $_GET[ "appkey" ]    ) ? $_GET[ "appkey" ]    : 'APPKEY'; // Unified API Key.
+$appkey    = isset( $_GET[ "appkey" ]    ) ? $_GET[ "appkey" ]    : 'API KEY'; // Unified API Key.
 ?>
 <html lang="en-gb">
     <head>
@@ -56,6 +56,7 @@ if ( $refresh )
             .destinationname            { font-size: 14px; }
             .description                { display: none; width: 308px; height: 96px; margin: 0 0 0 0; padding: 2px; 
                                           color: #c0c000; background: #000000; border: 1px solid #c0c000; text-align: center; }
+            #t0                         { background: #808000;}
             #d0                         { display: block; }
             .stationname                { font-weight: bold; font-size: 18px; }
         </style>
@@ -67,7 +68,7 @@ if ( $refresh )
                 
                 while ( ( tile = document.getElementById( 't' + i ) ) && ( desc = document.getElementById( 'd' + i ) ) )
                 {
-                    tile.style.background = ( tilenum == i ) ? '#808000' : '#c0c000';
+                    if ( tile.className != 'emptytile' ) tile.style.background = ( tilenum == i ) ? '#808000' : '#c0c000';
                     desc.style.display    = ( tilenum == i ) ? 'block' : 'none';
                     
                     i++;
@@ -132,7 +133,7 @@ foreach ( $buses as $bus )
 for ( ; $buscount < 3 ; ++$buscount )
 {
 ?>
-                <div class="emptytile" onclick="displaydesc('d<?php echo $buscount; ?>');">
+                <div class="emptytile" id="t<?php echo $buscount; ?>" onclick="displaydesc( <?php echo $buscount; ?> );">
 
                 </div>
 <?php
