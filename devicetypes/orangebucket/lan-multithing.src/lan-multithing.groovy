@@ -35,7 +35,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1.3	(16/01/2019) 
+ * Version:				1.1.4	(19/01/2019) 
  *
  * Comments:
  *
@@ -43,7 +43,10 @@
  *
  * Changes:
  *
- * 1.1.3.       (16/01/2019)    Make switch the 'main' tile and tweak the mobile app UI.  
+ * 1.1.5		(20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
+ * 1.1.4		(19/01/2019)	A new device will have a null state.childdevicelist so
+ *								updated() will fail and never set the DNI.
+ * 1.1.3        (16/01/2019)    Make switch the 'main' tile and tweak the mobile app UI.  
  * 1.1.2		(30/10/2018)	Live Logging was randomly dropping many of the log entries
  *								created when adding and creating child devices so they've
  *								been replaced by a summary log statement. The installed()
@@ -139,9 +142,32 @@ metadata
     //
 	tiles
     {
-    	// Start with a tile for the alarm status of the device. Either turns both alarms on, or turns both off.
+    	// Switch showing transitional states while awaiting device response. The 'canChangeIcon: true' argument
+        // allows the icon to be changed and only applies to the 'main' tile so should be moved if the 'main' 
+        // tile is changed.
+		standardTile("switch", "device.switch", width: 1, height: 1, canChangeIcon: true)
+        {
+			state "off", label: "Off", action: "switch.on",  icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState: "turnon"        
+            state "turnon", label: "-> On", icon: "st.switches.switch.on", backgroundColor: "#c0c000"
+			state "on", label: "On", action: "switchoff", icon: "st.switches.switch.on", backgroundColor: "#00a0dc", nextState: "turnoff"            
+			state "turnoff", label: "-> Off", icon: "st.switches.switch.off", backgroundColor: "#c0c000"
+        }
+                
+        // This tile will reset the switch to off regardless of current status.
+		standardTile("switchreset", "device.switch", width: 1, height: 1)
+        {
+			state "reset", label: 'Reset', action: "switchoff", icon: "st.switches.switch.off", backgroundColor: "#ff0000", defaultState: true
+		}
+        
+        // This tile will reset the alarm to off regardless of current status.
+		standardTile("alarmreset", "device.alarm", width: 1, height: 1)
+        {
+			state "reset", label: 'Reset', action: "alarmoff", icon: "st.alarm.alarm.alarm", backgroundColor: "#ff0000", defaultState: true
+		}
+        
+        // A tile for the alarm status of the device. Either turns both alarms on, or turns both off.
         // Transitional states are shown while waiting for a response from the remote device.
-        standardTile("alarm", "device.alarm", width: 1, height: 1, canChangeIcon: true) 
+        standardTile("alarm", "device.alarm", width: 1, height: 1) 
         {
             state "off", label:'Off', action:'alarm.both', icon:"st.alarm.alarm.alarm", backgroundColor:"#ffffff", nextState: "bothon"         
             state "bothon", label: '-> Both', icon: "st.alarm.alarm.alarm", backgroundColor: "#c0c000"
@@ -176,12 +202,6 @@ metadata
             state "both", label: 'Both', action:'alarmoff', icon:"st.Lighting.light13", backgroundColor:"#e86d13", nextState: "bothoff"
             state "bothoff", label: '-> Off', icon:"st.Lighting.light13", backgroundColor:"#c0c000"
         }
-
-        // This tile will reset the alarm to off regardless of current status.
-		standardTile("alarmreset", "device.alarm", width: 1, height: 1)
-        {
-			state "reset", label: 'Reset', action: "alarmoff", icon: "st.alarm.alarm.alarm", backgroundColor: "#ff0000", defaultState: true
-		}
         
         // This tile sends a sample notification.
         standardTile("notification", "device.notification", width: 1, height: 1)
@@ -194,23 +214,8 @@ metadata
         {
             state "speech", label:'Speak', action:'Speech Synthesis.speak', icon:"st.Entertainment.entertainment3", backgroundColor:"#800080", defaultState: true
         }
-        
-		// Switch showing transitional states while awaiting device response.
-		standardTile("switch", "device.switch", width: 1, height: 1)
-        {
-			state "off", label: "Off", action: "switch.on",  icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState: "turnon"        
-            state "turnon", label: "-> On", icon: "st.switches.switch.on", backgroundColor: "#c0c000"
-			state "on", label: "On", action: "switchoff", icon: "st.switches.switch.on", backgroundColor: "#00a0dc", nextState: "turnoff"            
-			state "turnoff", label: "-> Off", icon: "st.switches.switch.off", backgroundColor: "#c0c000"
-        }
-                
-        // This tile will reset the switch to off regardless of current status.
-		standardTile("switchreset", "device.switch", width: 1, height: 1)
-        {
-			state "reset", label: 'Reset', action: "switchoff", icon: "st.switches.switch.off", backgroundColor: "#ff0000", defaultState: true
-		}
-        
-        // This tile sens the beep command.
+               
+        // This tile sends the beep command.
         standardTile("tone", "device.tone", width: 1, height: 1)
         {
             state "tone", label:'Tone', action:"tone.beep", icon:"st.alarm.beep.beep", backgroundColor: "#800080", defaultState: true
@@ -252,9 +257,10 @@ metadata
         	state "ultravioletIndex", label:'UV ${currentValue}'
     	} 
 
-		// Use the alarm as the main tile.
+		// The 'main' tile is the one that appears in the things list in the mobile app.
         main "switch"
-        // Sort the tiles suitably.
+        
+        // Sort the tiles suitably for the UI in the mobile app.
         details (["switch", "alarmreset", "switchreset", "alarm", "siren", "strobe", "notification", "speechSynthesis", "tone",
         	      "configuration", "airquality", "battery", "eta", "humidity", "temperature", "uvindex"])
 	}
@@ -285,8 +291,11 @@ def updated()
     // Adding and deleting children seems to be performed best here. Deleting
     // children from configure() caused subsequent calls to getChildDevices in
     // parse to fail.
-    addchildren()
-    deletechildren()
+    if ( state.childdevicelist != null )
+    {
+    	addchildren()
+    	deletechildren()
+    }
 
 	logger("updated")
     
