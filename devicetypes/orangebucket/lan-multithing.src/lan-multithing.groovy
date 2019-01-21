@@ -35,7 +35,7 @@
  *
  * Author:				Graham Johnson (orangebucket)
  *
- * Version:				1.1.4	(19/01/2019) 
+ * Version:				1.2.0	(21/01/2019) 
  *
  * Comments:
  *
@@ -43,7 +43,8 @@
  *
  * Changes:
  *
- * 1.2.0		(21/02/2019)	Tweak the remote command format a bit.
+ * 1.2.0		(21/02/2019)	Tweak the remote command format a bit. Allow for an empty
+ *								'devices' array in parse() so can delete child devices.
  * 1.1.5		(20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
  * 1.1.4		(19/01/2019)	A new device will have a null state.childdevicelist so
  *								updated() will fail and never set the DNI.
@@ -468,8 +469,8 @@ def parse(description)
  						state."${myname}" = myvalue
                     }
                 }
-                           
-                if (body.devices) 
+                 
+                if (body.containsKey('devices'))
             	{
                  	def childlist = []
                     
@@ -530,7 +531,7 @@ def buildhubaction(devicename, cap, capcomm, capfree = '', capextra = '', comman
     // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
     // decoding so it would break things if the whole query string was encoded.
     // However do it on the remaining components of the command anyway.
-    def encdevicename = URLEncoder.encode(device.displayName, 'UTF-8')
+    def encdevicename = URLEncoder.encode(devicename.displayName, 'UTF-8')
     def enccap        = URLEncoder.encode(cap,                'UTF-8')
     def enccapcomm    = URLEncoder.encode(capcomm,            'UTF-8')
     def enccapfree    = URLEncoder.encode(capfree,            'UTF-8')
@@ -549,7 +550,7 @@ def buildhubaction(devicename, cap, capcomm, capfree = '', capextra = '', comman
     // Save any state change associated with this request.
     if (commandstate) state[hubaction.requestId] = "${cap}=:=${capcomm}"
 
-	logger("buildhubaction", "debug", "${dth}${devicenamestrip} ${cap} ${capcomm} ${hex}")
+	logger("buildhubaction", "debug", "${dth} ${devicename} ${cap} ${capcomm} ${hex}")
     
 	return hubaction
 }
