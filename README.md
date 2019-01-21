@@ -16,11 +16,13 @@ The device is specified by IP Address and Port in the Preferences, and the MAC a
 
 For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
 
-The HTTP GET requests are of the form <code>http://&lt;IP address on local LAN&gt;:&lt;Port&gt;/sendmessage?message=&lt;message&gt;</code> where the &lt;message&gt; is of the form <code>LANMultiThing&lt;DeviceName&gt;=:=&lt;capability&gt;=:=&lt;command&gt;=:=&lt;free text&gt;=:=&lt;extra&gt;</code>. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of &lt;extra&gt;, as Tasker doesn't really handle them elegantly. &lt;DeviceName&gt; is the display name of the parent or child device stripped of non-alphanumeric characters to make it appropriate for a URL.
+The HTTP GET requests are of the form <code>http://LAN IP ADDRESS:PORT&gt;/sendmessage?message=MESSAGE</code> where the MESSAGE is of the form `DEVICENAME=:=DEVICE DISPLAY NAME=:=CAPABILITY;=:=COMMAND=:=FREE TEXT=:=EXTRA`. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of EXTRA, as Tasker doesn't really handle them elegantly. DEVICENAME is the 'name' property of the device with the spaces stripped out. So if you create your device with the name 'LAN MultiThing' it will be 'LANMultiThing'. DEVICE DISPLAY NAME is the 'displayName' property of the device, which may be different to the 'name' if you have defined it (it is called the 'label' in the IDE). DEVICE DISPLAY NAME, CAPABILITY, COMMAND, FREE TEXT and EXTRA are all URL encoded.
 
-If the free text used with the Notification or Speech Synthesis is of the form <code>&lt;command&gt;=:=&lt;free text&gt;</code> the &lt;command&gt; and &lt;free text&gt; will be extracted.
+*The author likes to define the 'name' of a device, as shown in the IDE, as either the name of the device type handler (as in 'LAN MultiThing') or the specific make and model number of the device.*
 
-|capability|command/state|free text|extra||
+If the free text used with the Notification or Speech Synthesis commands is of the form `COMMAND=:=FREE TEXT` the COMMAND and FREE TEXT will be extracted.
+
+|CAPABILITY|COMMAND (State)|FREE TEXT|EXTRA||
 |---|---|---|---|---|
 |alarm|off|off|||
 |alarm|siren|siren|||
@@ -42,7 +44,7 @@ If the free text used with the Notification or Speech Synthesis is of the form <
 |switch|on|on|||
 |tone|beep|beep|||
 
-Incoming HTTP POST requests are sent to <code>http://&lt;hub IP address&gt;:39500/</code>, the content type is <code>application/json</code> and the data is of the form:
+Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the content type is `application/json` and the data is of the form:
   
 <pre>{
     "device":"Device Display Name",
@@ -60,7 +62,7 @@ Incoming HTTP POST requests are sent to <code>http://&lt;hub IP address&gt;:3950
     ]
 }</pre>
 
-The <code>"device":"Device Display Name",</code> entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
+The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
 
 ## HTTP Response Motion Sensor
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
