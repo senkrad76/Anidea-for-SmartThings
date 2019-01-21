@@ -44,7 +44,7 @@ If the free text used with the Notification or Speech Synthesis commands is of t
 |switch|on|on|||
 |tone|beep|beep|||
 
-Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the content type is `application/json` and the data is of the form:
+Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the content type is `application/json`, and the data is of the form:
   
 <pre>{
     "device":"Device Display Name",
