@@ -43,6 +43,7 @@
  *
  * Changes:
  *
+ * 1.2.0		(21/02/2019)	Tweak the remote command format a bit.
  * 1.1.5		(20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
  * 1.1.4		(19/01/2019)	A new device will have a null state.childdevicelist so
  *								updated() will fail and never set the DNI.
@@ -523,21 +524,22 @@ def buildhubaction(devicename, cap, capcomm, capfree = '', capextra = '', comman
     // Don't allow capfree to be empty.
     if (!capfree) capfree = capcomm
     
-    // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
-    // decoding so it would break things if the whole query string was encoded. So
-    // just encode the variable that might have relatively free text in it.
-    def enccapfree = URLEncoder.encode(capfree, 'UTF-8');
-    
-    // AutoApps Commands aren't strictly compatible with URLs because of spaces so
-    // remove them from the device names. This does make things a bit messier at
-    // the remote end unfortunately.
-    def devicenamestrip = devicename.displayName.replaceAll("[^a-zA-Z0-9]+","")
+    // Strip spaces from device handler name to use as an AutoRemote filter.
     def dth = device.name.replaceAll("[^a-zA-Z0-9]+","")
+    
+    // URL encoding is probably a bit redundant and AutoRemote doesn't seem to do any
+    // decoding so it would break things if the whole query string was encoded.
+    // However do it on the remaining components of the command anyway.
+    def encdevicename = URLEncoder.encode(device.displayName, 'UTF-8')
+    def enccap        = URLEncoder.encode(cap,                'UTF-8')
+    def enccapcomm    = URLEncoder.encode(capcomm,            'UTF-8')
+    def enccapfree    = URLEncoder.encode(capfree,            'UTF-8')
+    def enccapextra   = URLEncoder.encode(capextra,           'UTF-8')
 	
 	def hubaction = new physicalgraph.device.HubAction(
         method	: "GET",
         path	: "/sendmessage",
- 		query	:	[ "message": "${dth}${devicenamestrip}=:=${cap}=:=${capcomm}=:=${enccapfree}=:=${capextra}" ],          	
+ 		query	:	[ "message": "${dth}=:=${encdevicename}=:=${enccap}=:=${enccapcomm}=:=${enccapfree}=:=${enccapextra}" ],          	
         headers	:
             [
             	"HOST": "${hex}",
