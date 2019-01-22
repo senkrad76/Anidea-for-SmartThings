@@ -3,7 +3,7 @@
 //
 // arrivals.php (C) Graham Johnson 2018-2019
 // ========================================
-// Version: 1.1.2   18/01/2019
+// Version: 1.2.0   22/01/2019
 //
 // ---------------------------------------------------------------------------------
 // Permission to use, copy, modify, and/or distribute this software for any purpose
