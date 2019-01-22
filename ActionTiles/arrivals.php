@@ -3,7 +3,7 @@
 //
 // arrivals.php (C) Graham Johnson 2018-2019
 // ========================================
-// Version: 1.1.1   18/01/2019
+// Version: 1.1.2   18/01/2019
 //
 // ---------------------------------------------------------------------------------
 // Permission to use, copy, modify, and/or distribute this software for any purpose
@@ -23,12 +23,18 @@
 // ActionTiles panel.
 //
 
-$stop      = isset( $_GET[ "stop" ]      ) ? $_GET[ "stop" ]      : 'STOPID';
-$route     = isset( $_GET[ "route" ]     ) ? $_GET[ "route" ]     : '';
-$direction = isset( $_GET[ "direction" ] ) ? $_GET[ "direction" ] : '';
-$towards   = isset( $_GET[ "towards" ]   ) ? $_GET[ "towards" ]   : '';
-$refresh   = isset( $_GET[ "refresh" ]   ) ? $_GET[ "refresh" ]   : '60';
-$appkey    = isset( $_GET[ "appkey" ]    ) ? $_GET[ "appkey" ]    : 'API KEY'; // Unified API Key.
+//
+// Read the 'anidea.ini' file for configuration information.
+//
+$ini = parse_ini_file( 'anidea.ini', true );
+
+$refresh   = isset( $_GET[ "refresh" ]   ) ? $_GET[ "refresh" ]   : $ini[ 'arrivals' ][ 'refresh' ];
+$stop      = isset( $_GET[ "stop" ]      ) ? $_GET[ "stop" ]      : $ini[ 'arrivals' ][ 'stop' ];
+$route     = isset( $_GET[ "route" ]     ) ? $_GET[ "route" ]     : $ini[ 'arrivals' ][ 'route' ];
+$direction = isset( $_GET[ "direction" ] ) ? $_GET[ "direction" ] : $ini[ 'arrivals' ][ 'direction' ];
+$towards   = isset( $_GET[ "towards" ]   ) ? $_GET[ "towards" ]   : $ini[ 'arrivals' ][ 'towards' ];
+$app_id    = isset( $_GET[ "app_id" ]    ) ? $_GET[ "app_id" ]    : $ini[ 'arrivals' ][ 'app_id' ];
+$appkey    = isset( $_GET[ "appkey" ]    ) ? $_GET[ "appkey" ]    : $ini[ 'arrivals' ][ 'appkey' ];
 ?>
 <html lang="en-gb">
     <head>
@@ -56,7 +62,7 @@ if ( $refresh )
             .destinationname            { font-size: 14px; }
             .description                { display: none; width: 308px; height: 96px; margin: 0 0 0 0; padding: 2px; 
                                           color: #c0c000; background: #000000; border: 1px solid #c0c000; text-align: center; }
-            #t0                         { background: #808000;}
+            #t0 .expectedarrival        { text-decoration: overline underline;}
             #d0                         { display: block; }
             .stationname                { font-weight: bold; font-size: 18px; }
         </style>
@@ -68,7 +74,7 @@ if ( $refresh )
                 
                 while ( ( tile = document.getElementById( 't' + i ) ) && ( desc = document.getElementById( 'd' + i ) ) )
                 {
-                    if ( tile.className != 'emptytile' ) tile.style.background = ( tilenum == i ) ? '#808000' : '#c0c000';
+                    if ( tile.className != 'emptytile' ) tile.children[1].style.textDecoration = ( tilenum == i ) ? 'overline underline' : 'none';
                     desc.style.display    = ( tilenum == i ) ? 'block' : 'none';
                     
                     i++;
@@ -83,7 +89,7 @@ $filtervalue = $towards ? $towards  : ( $direction ? $direction  : $route );
 // The Unified API can be used for bus, tram or rail (London Overground)
 // but you don't see departure times so it isn't much use at a terminus.
     
-$tfl = 'https://api.tfl.gov.uk/StopPoint/' . $stop . '/Arrivals?app_id=9acf314e&app_key=' . $appkey;
+$tfl = 'https://api.tfl.gov.uk/StopPoint/' . $stop . '/Arrivals?app_id=' . $app_id . '&app_key=' . $appkey;
 
 $ch = curl_init($tfl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -133,9 +139,7 @@ foreach ( $buses as $bus )
 for ( ; $buscount < 3 ; ++$buscount )
 {
 ?>
-                <div class="emptytile" id="t<?php echo $buscount; ?>" onclick="displaydesc( <?php echo $buscount; ?> );">
-
-                </div>
+                <div class="emptytile" id="t<?php echo $buscount; ?>" onclick="displaydesc( <?php echo $buscount; ?> );"></div>
 <?php
 }
 ?>
