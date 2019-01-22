@@ -1,6 +1,9 @@
 # ActionTiles Support Files
 Hosted files to support an ActionTiles installation.
 
+## anidea.ini
+The __anidea.ini__ file is a configuration file for the various PHP scripts.
+
 ## tiletoiframe.js
 
 This script converts specified tiles in a panel into <iframe> elements which can be used to display any chosen URL. It also allows an <iframe> to be added as the _target_ attribute for other URL Shortcuts in the panel so the contents can be dynamically changed.
