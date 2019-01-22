@@ -33,7 +33,9 @@ These two PHP scripts are intended to provide content for an <iframe> as created
 The scripts are configured using the `[arrivals]` and `[departures]` sections of __anidea.ini__.
 
 ## panel.php
-This is a frameset document that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a screen width of 1280 pixels, and adjusts the scaling for other displays it runs on.
+This is a frameset that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a defined screen width in CSS pixels, and adjusts the scaling for other displays it runs on. The frameset will run as a web application when saved on mobile devices.
+
+The script is configured using the `[panel]` section of __anidea.ini__. If installed under the name `FILENAME.php` it will use the `[FILENAME]` section.
 
 ## weather.php
 This PHP script provides content for an <iframe> as created by __tiletoiframe.js__. It is designed for a 3x2 tile and the CSS has been custom designed for a particular size of panel on a particular size of screen. It displays a row of three 1x1 tiles showing the currrent weather for a location using a feed from OpenWeatherMap. It then displays another row of 1x1 tiles displaying the forecasts from the 3 hourly 5 day feed provided by the Met Office DataPoint API (they may be scrolled horizontally as required). This is followed by a 3x1 tile expanding on each of the forecasts (this can be brought into view by clicking on the appropriate forecast tile). The regional text forecast for the next five days from the Met Office DataPoint API follows. The UK outlook out to thirty days is stripped off but could just as easily be an option.
