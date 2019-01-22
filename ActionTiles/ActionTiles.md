@@ -45,4 +45,4 @@ _OpenWeatherMap is used for the current observations because the Met Office Data
 The script is configured using the `[weather]` section of __anidea.ini__.
 
 ## anidea.ini
-The __anidea.ini__ file is a configuration file for the various PHP scripts. The PHP scripts allow the various parameters to be overridden by the query string.
+The __anidea.ini__ file is a configuration file for the various PHP scripts. The PHP scripts allow the various parameters to be overridden by the query string (except for __panel.php__).
