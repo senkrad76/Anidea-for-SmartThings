@@ -1,9 +1,6 @@
 # ActionTiles Support Files
 Hosted files to support an ActionTiles installation.
 
-## anidea.ini
-The __anidea.ini__ file is a configuration file for the various PHP scripts.
-
 ## tiletoiframe.js
 
 This script converts specified tiles in a panel into <iframe> elements which can be used to display any chosen URL. It also allows an <iframe> to be added as the _target_ attribute for other URL Shortcuts in the panel so the contents can be dynamically changed.
@@ -32,6 +29,8 @@ If you want to be able to dynamically change which <iframe> is targetted by URL 
 
 ## arrivals.php and departures.php
 These two PHP scripts are intended to provide content for an <iframe> as created by __tiletoiframe.js__. The __arrivals.php__ script querys the TfL Unified API for live arrivals details for buses and trams at a specified stop, and displays all the available times in in a format compatible with an ActionTiles panel (the CSS has to be custom designed to work with a 3x2 <iframe> on a particular size of panel on a particular size of screen). The `departures.php` file does a similar thing for journeys between two defined National Rail stations (defaulting to a maximum of ten services), displaying the live departures from the origin but with an option to toggle to live arrivals at the destination.
+   
+The scripts are configured using the `[arrivals]` and `[departures]` sections of __anidea.ini__.
 
 ## panel.php
 This is a frameset document that can be configured to call an ActionTiles panel. It accommodates panels designed for a tablet with a screen width of 1280 pixels, and adjusts the scaling for other displays it runs on.
@@ -42,3 +41,6 @@ This PHP script provides content for an <iframe> as created by __tiletoiframe.js
 _OpenWeatherMap is used for the current observations because the Met Office DataPoint API (my preferred source) only provides hourly current observations and these can take half an hour to reach the feed, meaning the data can be up to an hour and a half old. OpenWeatherMap observations are updated every half an hour and appear in the feed within about twenty minutes._
 
 The script is configured using the `[weather]` section of __anidea.ini__.
+
+## anidea.ini
+The __anidea.ini__ file is a configuration file for the various PHP scripts. The PHP scripts allow the various parameters to be overridden by the query string.
