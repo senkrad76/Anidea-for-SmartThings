@@ -29,7 +29,7 @@
 //
 $ini = parse_ini_file( 'anidea.ini', true );
     
-$refresh  = isset( $_GET["refresh"]   ) ? $_GET["refresh"]  : $ini[ 'weather' ][ 'owmid'];
+$refresh  = isset( $_GET["refresh"]   ) ? $_GET["refresh"]  : $ini[ 'weather' ][ 'refresh'];
 
 // OWM.
 $owmid    = isset( $_GET["owmid"]    )  ? $_GET["owmid"]    : $ini[ 'weather' ][ 'owmid' ];
