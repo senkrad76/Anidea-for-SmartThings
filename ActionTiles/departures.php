@@ -1,33 +1,5 @@
-<!DOCTYPE html>
-<?php
-//
-// departures.php (C) Graham Johnson 2018-2019
-// ===========================================
-// Version: 1.1.0   18/01/2019
-//
-// ---------------------------------------------------------------------------------
-// Permission to use, copy, modify, and/or distribute this software for any purpose
-// with or without fee is hereby granted, provided that the copyright notice below
-// and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH 
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-// FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
-// OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER 
-// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
-// THIS SOFTWARE.
-// ---------------------------------------------------------------------------------
-//
-// Present departures/arrivals data from the LDBWS in a form sympathetic to an 
-// ActionTiles panel.
-//
 
-$from     = isset( $_GET[ 'from' ]     ) ? $_GET[ 'from' ]     : 'ECR';
-$to       = isset( $_GET[ 'to' ]       ) ? $_GET[ 'to' ]       : 'CTK';
-$services = isset( $_GET[ 'services' ] ) ? $_GET[ 'services' ] : 10;                                     // Number of services to look for.
-$key      = isset( $_GET[ 'key' ]      ) ? $_GET[ 'to' ]       : 'KEY';                                  // LDBWS Key.
-?>
+<!DOCTYPE html>
 <html lang="en-gb">
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -49,7 +21,8 @@ $key      = isset( $_GET[ 'key' ]      ) ? $_GET[ 'to' ]       : 'KEY';         
             .destinationname            { font-size: 14px;}
             .description                { width: 308px; height: 96px; margin: 0 0 0 0; padding: 2px; 
                                          color: #c000c0; background: #000000; border: 1px solid #c000c0; text-align: center; }
-            #departurest0, #arrivalst0  { background: #800080; }
+            #departurest0 .departure,
+            #arrivalst0 .departure      { text-decoration: overline underline; }
             #departuresd0, #arrivalsd0  { display: block; }
             .stationname                { font-weight: bold; font-size: 18px;}
         </style>
@@ -67,7 +40,7 @@ $key      = isset( $_GET[ 'key' ]      ) ? $_GET[ 'to' ]       : 'KEY';         
                 
                 while ( ( tile = document.getElementById( direction + 't' + i ) ) && ( desc = document.getElementById( direction + 'd' + i ) ) )
                 {
-                    if ( tile.className != 'emptytile' ) tile.style.background = ( tilenum == i ) ? '#800080' : '#c000c0';
+                    if ( tile.className != 'emptytile' ) tile.children[1].style.textDecoration = ( tilenum == i ) ? 'overline underline' : 'none';
                     
                     desc.style.display = ( tilenum == i ) ? 'block' : 'none';
                     
@@ -76,76 +49,276 @@ $key      = isset( $_GET[ 'key' ]      ) ? $_GET[ 'to' ]       : 'KEY';         
             }
         </script>
     </head>
-<?php
-require("OpenLDBWS.php");
-
-$OpenLDBWS = new OpenLDBWS( $key );
-?>
     <body>
         <div class="wrapper">
-<?php       
-foreach ( [ 'departures', 'arrivals' ] as $direction)
-{
-    $ldb = ( $direction == 'arrivals' ) ? $OpenLDBWS->GetArrivalBoard( $services, $to, $from, 'from' ) : $OpenLDBWS->GetDepartureBoard( $services, $from, $to );
-?>
-            <div id="<?php echo $direction; ?>">
+            <div id="departures">
                 <div class="tiles">
-<?php
-    $traincount = 0;
-    
-    if ( isset( $ldb->GetStationBoardResult->trainServices ) ) foreach ( $ldb->GetStationBoardResult->trainServices->service as $train )
-    {
-?>
-                    <div class="tile" id="<?php echo $direction; ?>t<?php echo $traincount; ?>" onclick="displaydesc( '<?php echo $direction; ?>', <?php echo $traincount; ?> );">
-                        <div class="etd"><?php echo isset( $train->eta ) ? $train->eta : $train->etd; ?></div>
-                        <div class="departure"><?php echo isset( $train->sta ) ? $train->sta : $train->std; ?></div>
-                        <div class="destinationname"><?php echo $train->destination->location->locationName; ?></div>
+                    <div class="tile" id="departurest0" onclick="displaydesc( 'departures', 0 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:15</div>
+                        <div class="destinationname">Peterborough</div>
                     </div>
-<?php
-        ++$traincount;
-    }
-        
-    for ( ; $traincount < 3 ; ++$traincount )
-    {
-?>
-                    <div class="emptytile" id="<?php echo $direction; ?>t<?php echo $traincount; ?>" onclick="displaydesc( '<?php echo $direction; ?>', <?php echo $traincount; ?> );"></div>           
-<?php
-    }
-?>
+                    <div class="tile" id="departurest1" onclick="displaydesc( 'departures', 1 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:21</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="departurest2" onclick="displaydesc( 'departures', 2 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:33</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="departurest3" onclick="displaydesc( 'departures', 3 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:45</div>
+                        <div class="destinationname">Peterborough</div>
+                    </div>
+                    <div class="tile" id="departurest4" onclick="displaydesc( 'departures', 4 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:51</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="departurest5" onclick="displaydesc( 'departures', 5 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:01</div>
+                        <div class="destinationname">Cambridge</div>
+                    </div>
+                    <div class="tile" id="departurest6" onclick="displaydesc( 'departures', 6 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:03</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="departurest7" onclick="displaydesc( 'departures', 7 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:15</div>
+                        <div class="destinationname">Peterborough</div>
+                    </div>
+                    <div class="tile" id="departurest8" onclick="displaydesc( 'departures', 8 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:21</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="departurest9" onclick="displaydesc( 'departures', 9 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:33</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
                 </div>
-<?php
-    $traincount = 0;
-
-    if ( isset( $ldb->GetStationBoardResult->trainServices ) ) foreach ( $ldb->GetStationBoardResult->trainServices->service as $train )
-    {
-?>
-                <div class="description" id="<?php echo $direction; ?>d<?php echo $traincount; ?>">
-                    <div class="stationname"><?php print_r($ldb->GetStationBoardResult->locationName); ?></div>
-                    <div><strong><?php echo $train->origin->location->locationName; ?></strong> to <strong><?php echo $train->destination->location->locationName; ?></strong></div>
-                    <div><strong><?php echo $train->operator; ?></strong></div>
-                    <div><?php echo ucfirst( $direction ) . ' ' . ( ($direction == 'departures') ? "from $from to $to" : "at $to from $from" ); ?></div>
-                    <a href="#" onclick="displaydirection('<?php echo $direction; ?>'); return false;">
-                    <?php echo ($direction == 'departures') ? "Arrivals at $to" : "Departures from $from"; ?></a>
+                <div class="description" id="departuresd0">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Three Bridges</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
                 </div>
-<?php
-        ++$traincount;
-    }
-        
-    for ( ; $traincount < 3 ; ++$traincount )
-    {
-?>
-                <div class="description" id="<?php echo $direction; ?>d<?php echo $traincount; ?>">
-                    <div>No information</div>
-                    <a href="#" onclick="displaydirection('<?php echo $direction; ?>'); return false;">
-                    <?php echo ($direction == 'departures') ? "Arrivals at $to" : "Departures from $from"; ?></a>
-                </div>           
-<?php
-    }
-?>
+                <div class="description" id="departuresd1">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Brighton</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd2">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd3">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Horsham</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd4">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Brighton</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd5">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Brighton</strong> to <strong>Cambridge</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd6">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd7">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Horsham</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd8">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Brighton</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
+                <div class="description" id="departuresd9">
+                    <div class="stationname">East Croydon</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Departures from ECR to CTK</div>
+                    <a href="#" onclick="displaydirection('departures'); return false;">
+                    Arrivals at CTK</a>
+                </div>
             </div>
-<?php
-}
-?>
+            <div id="arrivals">
+                <div class="tiles">
+                    <div class="tile" id="arrivalst0" onclick="displaydesc( 'arrivals', 0 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:23</div>
+                        <div class="destinationname">Cambridge</div>
+                    </div>
+                    <div class="tile" id="arrivalst1" onclick="displaydesc( 'arrivals', 1 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:28</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="arrivalst2" onclick="displaydesc( 'arrivals', 2 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:38</div>
+                        <div class="destinationname">Peterborough</div>
+                    </div>
+                    <div class="tile" id="arrivalst3" onclick="displaydesc( 'arrivals', 3 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:43</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="arrivalst4" onclick="displaydesc( 'arrivals', 4 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">13:58</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="arrivalst5" onclick="displaydesc( 'arrivals', 5 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:08</div>
+                        <div class="destinationname">Peterborough</div>
+                    </div>
+                    <div class="tile" id="arrivalst6" onclick="displaydesc( 'arrivals', 6 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:13</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="arrivalst7" onclick="displaydesc( 'arrivals', 7 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:23</div>
+                        <div class="destinationname">Cambridge</div>
+                    </div>
+                    <div class="tile" id="arrivalst8" onclick="displaydesc( 'arrivals', 8 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:28</div>
+                        <div class="destinationname">Bedford</div>
+                    </div>
+                    <div class="tile" id="arrivalst9" onclick="displaydesc( 'arrivals', 9 );">
+                        <div class="etd">On time</div>
+                        <div class="departure">14:38</div>
+                        <div class="destinationname">Peterborough</div>
+                    </div>
+                </div>
+                <div class="description" id="arrivalsd0">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Brighton</strong> to <strong>Cambridge</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd1">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd2">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Three Bridges</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd3">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Brighton</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd4">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd5">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Horsham</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd6">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Brighton</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd7">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Brighton</strong> to <strong>Cambridge</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd8">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Gatwick Airport</strong> to <strong>Bedford</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+                <div class="description" id="arrivalsd9">
+                    <div class="stationname">City Thameslink</div>
+                    <div><strong>Horsham</strong> to <strong>Peterborough</strong></div>
+                    <div><strong>Thameslink</strong></div>
+                    <div>Arrivals at CTK from ECR</div>
+                    <a href="#" onclick="displaydirection('arrivals'); return false;">
+                    Departures from ECR</a>
+                </div>
+            </div>
         </div>
     </body>
 </html>
