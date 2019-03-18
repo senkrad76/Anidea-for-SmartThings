@@ -51,14 +51,14 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
     "attribute": {
         "attribute1 name":"attribute1 value",
         "attribute2 name":{"attribute2 field1 name":"attribute2 field1 value"}
-    }
+    },
     "state": {
         "state1 name":"state1 value",
         "state2 name":"state2 value"
-    }
+    },
     "devices": [
-        {name:"child1 name", type:"child1 type"},
-        {name:"child2 name", type:"child2 type"}
+        {"name":"child1 name", "type":"child1 type"},
+        {"name":"child2 name", "type":"child2 type"}
     ]
 }</pre>
 
