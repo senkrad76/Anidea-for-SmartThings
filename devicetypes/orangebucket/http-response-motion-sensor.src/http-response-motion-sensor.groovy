@@ -17,10 +17,12 @@
  *
  * HTTP Response Motion Sensor
  * ===========================
+ * Version: 19.08.23.00
+ *
  * This device handler implements a virtual motion sensor which is active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
- * minutes the status is reset to inactive and then checked again so it should not
- * be used for automations that trigger immediately when a motion sensor changes to inactive.
+ * minutes the status is checked and set to active if a response is received. If
+ * no response is received within 60 seconds it is set to inactive.
  *
  * The capabilities supported are:
  *
@@ -32,16 +34,6 @@
  * (*) The Actuator and Sensor capabilities are shown as deprecated in the Capabilities
  * references, yet their use is also encouraged as best practice. The Actuator capability
  * just means the device has commands. The Sensor capability means it has attributes.
- *
- * Author:				Graham Johnson (orangebucket)
- *
- * Version:				1.2		(08/10/2018)
- *
- * Comments:			
- *
- * Changes:				1.1		(08/10/2018)	Set DNI from IP and Port in preferences.
- *						1.0		(08/10/2018)	Wash and brush up.
- *						0.1		(07/10/2018)	Initial version.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -147,6 +139,7 @@ def parse(description)
 
     log.debug "${device}: parse"
         
+    state.waitingforresponse = false
     def stateevent = createEvent(name: 'motion', value: 'active')
         
     return stateevent
@@ -169,13 +162,26 @@ def refresh()
 {    
     log.debug "${device}: refresh"
     
+    runIn(60, responsecheck)
+    
+    state.waitingforresponse = true
+    
     return buildhubaction()
+}
+
+def responsecheck()
+{
+    if (state.waitingforresponse)
+    {   	
+    	log.debug "${device}: responsecheck - no response so assumed inactive"
+                
+        sendEvent(name: 'motion', value: 'inactive')
+    }
+    else log.debug "${device}: responsecheck - response has been received"
 }
 
 def buildhubaction()
 {
-	sendEvent(name: 'motion', value: 'inactive')
-
     def hex = device.getDeviceNetworkId()
 
 	def hubaction = new physicalgraph.device.HubAction(
