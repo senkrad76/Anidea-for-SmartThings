@@ -17,22 +17,13 @@
  *
  * Lan MultiThing STT Child
  * ========================
- * This device handler implements a child Speech Recognition (STT) device to work
- * with LAN MultiThing. The Speech Recognition capability only has an attribute so
- * could be used for generic text.
+ * This device handler implements a motion sensor device to work with LAN MultiThing.
  *
  * Author:	Graham Johnson (orangebucket)
  *
  * Version:	19.08.30.0
  *
  * Comments:			
- *
- * Changes:
- *
- * 19.08.30.0			Switch to date based version number and remove stray line from
- *						parse method.
- * 1.0.1 (30/10/2018)	Correct the parsing.
- * 1.0.0 (15/10/2018)	Initial version.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -44,10 +35,10 @@ preferences
 
 metadata
 {
-definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author: "Graham Johnson")
+	definition (name: "LAN MultiThing Motion Sensor Child", namespace: "orangebucket", author: "Graham Johnson")
     {
 		capability "Sensor"
-        capability "Speech Recognition" 
+        capability "Motion Sensor" 
 	}
         
 	// One day I will investigate this.
@@ -57,14 +48,15 @@ definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author:
 
 	tiles
     {        
-        valueTile("sst", "device.phraseSpoken", decoration: "flat", width: 3, height:1)
+		standardTile("motion", "device.motion", width: 2, height: 2)
         {
-        	state "phraseSpoken", label:'${currentValue}'
-    	} 
+			state "active", label:'active', icon:"st.motion.motion.active", backgroundColor:"#00a0dc"
+			state "inactive", label:'inactive', icon:"st.motion.motion.inactive", backgroundColor:"#ffffff"
+        }
         
-        main "sst"
+        main "motion"
         // Sort the tiles suitably.
-        details (["sst"])
+        details (["motion"])
 	}
 }
 
@@ -114,7 +106,7 @@ def parse(description)
 		{
 			myname, myvalue ->
                                     
-        	if (myname == "phraseSpoken")
+        	if (myname == "motion")
         	{
 				logger("parse", "info", "attribute $myname $myvalue")
 

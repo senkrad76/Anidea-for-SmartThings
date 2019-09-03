@@ -33,9 +33,9 @@
  * handler. These messages may include sensor attributes, state variables and the
  * current list of child devices.
  *
- * Author:				Graham Johnson (orangebucket)
+ * Author:	Graham Johnson (orangebucket)
  *
- * Version:				1.2.0	(21/01/2019) 
+ * Version:	19.08.30.1 
  *
  * Comments:
  *
@@ -43,30 +43,32 @@
  *
  * Changes:
  *
- * 1.2.0		(21/02/2019)	Tweak the remote command format a bit. Allow for an empty
- *								'devices' array in parse() so can delete child devices.
- * 1.1.5		(20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
- * 1.1.4		(19/01/2019)	A new device will have a null state.childdevicelist so
- *								updated() will fail and never set the DNI.
- * 1.1.3        (16/01/2019)    Make switch the 'main' tile and tweak the mobile app UI.  
- * 1.1.2		(30/10/2018)	Live Logging was randomly dropping many of the log entries
- *								created when adding and creating child devices so they've
- *								been replaced by a summary log statement. The installed()
- *								method was calling updated() but the word is updated()
- *								gets called anyway. Creation and deletion of child devices
- *								has been moved to updated() as when called from configure()
- *								subsequent calls to parse() failed on getChildDevices().
- *								Parse of child devices also generated more logs than could 
- *								be processed.
- * 1.1.1		(15/10/2018)	Ongoing work following check-in. Add Speech Recognition
- *								as a capability and child device.
- * 1.1.0		(15/10/2018)	Further work on working with child devices.
- *				(14/10/2018)	Support multiple child device handlers. Handle attribute
- *								changes for ETA children.
- *				(13/10/2018)	Acts as a composite device, bridging individual child
- *								devices.
- * 1.0.0		(12/10/2018)	Rename the app with a more generic name and reset the
- *								version number. Do logging via a logger() method.
+ * 19.08.30.1			Removed a stray line of code.
+ * 19.08.30.0			Changed to a date based version number.
+ * 1.2.0 (21/02/2019)	Tweak the remote command format a bit. Allow for an empty
+ *						'devices' array in parse() so can delete child devices.
+ * 1.1.5 (20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
+ * 1.1.4 (19/01/2019)	A new device will have a null state.childdevicelist so
+ *						updated() will fail and never set the DNI.
+ * 1.1.3 (16/01/2019)   Make switch the 'main' tile and tweak the mobile app UI.  
+ * 1.1.2 (30/10/2018)	Live Logging was randomly dropping many of the log entries
+ *						created when adding and creating child devices so they've
+ *						been replaced by a summary log statement. The installed()
+ *						method was calling updated() but the word is updated()
+ *						gets called anyway. Creation and deletion of child devices
+ *						has been moved to updated() as when called from configure()
+ *						subsequent calls to parse() failed on getChildDevices().
+ *						Parse of child devices also generated more logs than could 
+ *						be processed.
+ * 1.1.1 (15/10/2018)	Ongoing work following check-in. Add Speech Recognition
+ *						as a capability and child device.
+ * 1.1.0 (15/10/2018)	Further work on working with child devices.
+ *		 (14/10/2018)	Support multiple child device handlers. Handle attribute
+ *						changes for ETA children.
+ *		 (13/10/2018)	Acts as a composite device, bridging individual child
+ *						devices.
+ * 1.0.0 (12/10/2018)	Rename the app with a more generic name and reset the
+ *						version number. Do logging via a logger() method.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -91,6 +93,7 @@ metadata
         capability "Bridge"
         capability "Configuration"
         capability "Estimated Time Of Arrival"
+        capability "Motion Sensor"
         capability "Notification"
         capability "Power Source"
         capability "Relative Humidity Measurement"
@@ -249,6 +252,12 @@ metadata
         	state "humidity", label:'Humidity ${currentValue}%'
     	} 
         
+        standardTile("motion", "device.motion", width: 1, height: 1)
+        {
+			state "active", label:'active', icon:"st.motion.motion.active", backgroundColor:"#00a0dc"
+			state "inactive", label:'inactive', icon:"st.motion.motion.inactive", backgroundColor:"#ffffff"
+        }
+        
         valueTile("temperature", "device.temperature", decoration: "flat", width: 1, height:1)
         {
         	state "temperature", label:'Temp ${currentValue} C'
@@ -264,7 +273,7 @@ metadata
         
         // Sort the tiles suitably for the UI in the mobile app.
         details (["switch", "alarmreset", "switchreset", "alarm", "siren", "strobe", "notification", "speechSynthesis", "tone",
-        	      "configuration", "airquality", "battery", "eta", "humidity", "temperature", "uvindex"])
+        	      "configuration", "airquality", "battery", "eta", "humidity", "motion", "temperature", "uvindex"])
 	}
 }
 
