@@ -33,42 +33,8 @@
  * handler. These messages may include sensor attributes, state variables and the
  * current list of child devices.
  *
- * Author:	Graham Johnson (orangebucket)
- *
- * Version:	19.08.30.1 
- *
- * Comments:
- *
- * None.
- *
- * Changes:
- *
- * 19.08.30.1			Removed a stray line of code.
- * 19.08.30.0			Changed to a date based version number.
- * 1.2.0 (21/02/2019)	Tweak the remote command format a bit. Allow for an empty
- *						'devices' array in parse() so can delete child devices.
- * 1.1.5 (20/01/2019)	Forgot to move 'canChangeIcon: true' to new main tile.
- * 1.1.4 (19/01/2019)	A new device will have a null state.childdevicelist so
- *						updated() will fail and never set the DNI.
- * 1.1.3 (16/01/2019)   Make switch the 'main' tile and tweak the mobile app UI.  
- * 1.1.2 (30/10/2018)	Live Logging was randomly dropping many of the log entries
- *						created when adding and creating child devices so they've
- *						been replaced by a summary log statement. The installed()
- *						method was calling updated() but the word is updated()
- *						gets called anyway. Creation and deletion of child devices
- *						has been moved to updated() as when called from configure()
- *						subsequent calls to parse() failed on getChildDevices().
- *						Parse of child devices also generated more logs than could 
- *						be processed.
- * 1.1.1 (15/10/2018)	Ongoing work following check-in. Add Speech Recognition
- *						as a capability and child device.
- * 1.1.0 (15/10/2018)	Further work on working with child devices.
- *		 (14/10/2018)	Support multiple child device handlers. Handle attribute
- *						changes for ETA children.
- *		 (13/10/2018)	Acts as a composite device, bridging individual child
- *						devices.
- * 1.0.0 (12/10/2018)	Rename the app with a more generic name and reset the
- *						version number. Do logging via a logger() method.
+ * Author:	 Graham Johnson (orangebucket)
+ * Version:	 19.09.27.0 
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
@@ -131,19 +97,12 @@ metadata
     //
     // White (#ffffff) is the standard for 'off'-like states.
     // Blue (#00a0dc) is the standard for 'on'-like states.
-    // Orange (#e86d13) is the standard for devices requiring attention.
+    // Orange (#e86d13) is the standard for devices requiring attention (meaning alarms etc).
     // Grey (#cccccc) is the standard for inactive or offline devices.
-    //
-    // Orange is used for the alarm 'Siren', 'Strobe' and 'Both' states as that is what is meant by
-    // a device requiring attention.
-    //
-    // The standards suggest that transitional states should use the colour for the transitioned to state.
-    // This seems such a baffling choice that it has been ignored. There also doesn't seem to be any conventions
-    // for tiles used for test and reset purposes.
-    //
-    // Yellow (#c0c000) is being used for transitional states to highlight possible technical issues.
-    // Purple (#800080) is being used for test tiles for notification, speech and tone.
-    // Red (#ff0000) is being used by tiles that reset the alarm and switch to off.
+    // Yellow (#c0c000) is the author's standard for transitional states.
+    // Purple (#800080) is the author's standard for test buttons.
+    // Red (#ff0000) is author's standard for buttons that force things to be 'off'.
+    // Green (#00ff00) is the author's standard for buttons that force things to be 'on'.
     //
 	tiles
     {
