@@ -70,3 +70,5 @@ A light in a room is switched automatically by a motion sensor at certain times 
 This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. A refresh command can also be used to check the status out of band.
 
 *Polling more frequently than every fifteen minutes just seems like 'a bad thing'.*
+
+*A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
