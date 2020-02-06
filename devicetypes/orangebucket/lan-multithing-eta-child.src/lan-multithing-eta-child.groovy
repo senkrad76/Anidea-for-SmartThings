@@ -17,26 +17,13 @@
  *
  * Lan MultiThing ETA Child
  * ========================
+ * Version: 20.02.06.00
+ *
  * This device handler implements a child ETA device to work with LAN MultiThing.
- *
- * Author:	Graham Johnson (orangebucket)
- *
- * Version:	1.0.0	(15/10/2018) 
- *
- * Comments:			
- *
- * Changes:
- *
- * 1.0.0	(15/10/2018)	Sort out the parsing.
- *			(14/10/2018) Initial noodlings.
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
  */
-
-preferences
-{
-}
 
 metadata
 {
@@ -46,6 +33,10 @@ metadata
         capability "Estimated Time Of Arrival" 
 	}
         
+	preferences
+	{
+	}
+    
 	// One day I will investigate this.
 	simulator
     {

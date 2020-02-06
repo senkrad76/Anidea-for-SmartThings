@@ -17,21 +17,13 @@
  *
  * Lan MultiThing STT Child
  * ========================
+ * Version:	20.02.06.00
+ *
  * This device handler implements a motion sensor device to work with LAN MultiThing.
- *
- * Author:	Graham Johnson (orangebucket)
- *
- * Version:	19.08.30.0
- *
- * Comments:			
  *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
  */
-
-preferences
-{
-}
 
 metadata
 {
@@ -41,6 +33,10 @@ metadata
         capability "Motion Sensor" 
 	}
         
+	preferences
+	{
+	}
+
 	// One day I will investigate this.
 	simulator
     {

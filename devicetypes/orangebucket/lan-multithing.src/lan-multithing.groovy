@@ -17,6 +17,8 @@
  *
  * LAN MultiThing
  * ==============
+ * Version:	 20.02.06.00
+ *
  * The LAN MultiThing is a device handler for a remote device on the local network
  * that implements a number of actuator and sensor capabilities, and can also
  * act as a bridge to other devices. No specific remote device implementation is 
@@ -33,19 +35,9 @@
  * handler. These messages may include sensor attributes, state variables and the
  * current list of child devices.
  *
- * Author:	 Graham Johnson (orangebucket)
- * Version:	 19.09.27.0 
- *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
  */
-
-preferences
-{
-   	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
-    input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
-    input name: "mac", type: "text", title: "MAC Address (optional)", description: "e.g. aa:bb:cc:dd:ee:ff", required: false
-}
 
 metadata
 {
@@ -87,6 +79,14 @@ metadata
     	// Commands for child devices.
     	command "childspeak"
     }
+    
+    // 06/02/2020 - For some reason I had this outside the metadata section. It still worked there.
+    preferences
+	{
+   		input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
+    	input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
+    	input name: "mac", type: "text", title: "MAC Address (optional)", description: "e.g. aa:bb:cc:dd:ee:ff", required: false
+	}
     
 	// One day I will investigate this.
 	simulator

@@ -17,7 +17,7 @@
  *
  * HTTP Response Motion Sensor
  * ===========================
- * Version: 19.08.23.00
+ * Version: 20.02.06.00
  *
  * This device handler implements a virtual motion sensor which is active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
@@ -39,12 +39,6 @@
  * format differently when viewed outside that environment.
  */
 
-preferences
-{
-    input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
-    input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
-}
-
 metadata
 {
 	definition (name: "HTTP Response Motion Sensor", namespace: "orangebucket", author: "Graham Johnson")
@@ -54,7 +48,13 @@ metadata
         capability "Refresh"
         capability "Sensor"
 	}
-    
+
+	preferences
+	{
+    	input name: "ip", type: "text", title: "IP Address", description: "e.g. 192.168.1.2", required: true
+    	input name: "port", type: "text", title: "Port", description: "e.g. 8000", required: true
+	}
+
 	// One day I will investigate this.
 	simulator
     {

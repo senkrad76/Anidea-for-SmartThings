@@ -17,30 +17,15 @@
  *
  * Lan MultiThing STT Child
  * ========================
+ * Version:	20.02.06.00
+ *
  * This device handler implements a child Speech Recognition (STT) device to work
  * with LAN MultiThing. The Speech Recognition capability only has an attribute so
  * could be used for generic text.
  *
- * Author:	Graham Johnson (orangebucket)
- *
- * Version:	19.08.30.0
- *
- * Comments:			
- *
- * Changes:
- *
- * 19.08.30.0			Switch to date based version number and remove stray line from
- *						parse method.
- * 1.0.1 (30/10/2018)	Correct the parsing.
- * 1.0.0 (15/10/2018)	Initial version.
- *
  * Please be aware that this file is created in the SmartThings Groovy IDE and it may
  * format differently when viewed outside that environment.
  */
-
-preferences
-{
-}
 
 metadata
 {
@@ -50,6 +35,10 @@ definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author:
         capability "Speech Recognition" 
 	}
         
+	preferences
+	{
+	}
+    
 	// One day I will investigate this.
 	simulator
     {
