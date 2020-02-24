@@ -8,6 +8,9 @@ The handler supports the same buttons as the 'bspranger' handler but only the 'o
 
 *The handler does not include any 'tiles' for the Classic app as that is part of the past. It works well with the 'new' app, Automation and Smart Lighting. The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
 
+## Anidea for Aqara Motion
+In a similar fashion to the Anidea for Aqara Button handler, this is a clean up of the 'bspranger' handler for the Aqara motion sensor.
+
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
 
