@@ -1,4 +1,4 @@
-# REST API OAuth
+# Web Services SmartApp OAuth
 
 I just wanted somewhere to keep some notes on how to get an OAuth2 access token for a Web Services SmartApp. This process can be automated in apps by tweaking the redirect URL. The docs on Service Manager SmartApps show apps being able to create their own access token and find their own endpoint. That procedure is supposedly for temporary tokens for use during authentication of third party services but it rather appears some SmartApps use them instead of going through the palaver below. That's all rather baffling. Anyway ...
 
@@ -19,7 +19,7 @@ definition(
 
 preferences
 {
-	section ("Allow external service to control these things...")
+    section ("Allow external service to control these things...")
     {
 		input "etas", "capability.estimatedTimeOfArrival", multiple: true, required: true
         input "stts", "capability.speechRecognition", multiple: true, required: true
