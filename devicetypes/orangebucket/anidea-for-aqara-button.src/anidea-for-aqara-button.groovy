@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.02.24.00
+ * Version:	 20.02.24.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -93,7 +93,7 @@ def installed()
 }
 
 // updated() seems to be called after installed(), and also when the settings are updated via the mobile app.
-// It often seems to be called twice in quick succession so many developers like debounce it.
+// It often seems to be called twice in quick succession so many developers like to debounce it.
 def updated()
 {
 	logger( 'updated', 'debug', '' )
