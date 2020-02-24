@@ -238,9 +238,9 @@ Map battery( raw )
 	def minvolts = 2.7
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
-	def desc = "Battery ${rawvolts} V"
+	def desc = "${rawvolts} V"
 
-	logger( "battery" , "debug", desc )
+	logger( 'battery', 'debug', desc )
     
-	return [ name: "battery", value: percent, unit: "%" ]
+	return [ name: 'battery', value: percent, unit: '%' ]
 }

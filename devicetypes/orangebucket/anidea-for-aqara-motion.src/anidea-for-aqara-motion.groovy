@@ -103,7 +103,8 @@ def parse( String description )
     {
         map = readattr( description )
     }
-    else if (description?.startsWith('catchall:')) {
+    else if (description?.startsWith( 'catchall:' ) )
+    {
         map = catchall( description )
     }
 
@@ -156,13 +157,13 @@ def resetmotion()
 	}
 } 
 
-// Check catchall for battery voltage data to pass to getBatteryResult for conversion to percentage report
+// Check catchall for battery voltage data
 Map catchall( String description )
 {
 	Map result = [:]
 	def catchall = zigbee.parse( description )
 	
-    logger( 'catchall', 'debug', description )
+    logger( 'catchall', 'debug', catchall )
 
 	if ( catchall.clusterId == 0x0000 )
     {
@@ -176,7 +177,7 @@ Map catchall( String description )
                 {
                 	// check the data ID and data type
 					// next two bytes are the battery voltage
-					result = battery( ( catchall.data.get( i+2 ) << 8 ) + catchall.data.get( i+1) )
+					result = battery( ( catchall.data.get( i+2 ) << 8 ) + catchall.data.get( i+1 ) )
 					break
 				}
 			}
@@ -185,14 +186,19 @@ Map catchall( String description )
 	return result
 }
 
-// Convert raw 4 digit integer voltage value into percentage based on minvolts/maxvolts range
 Map battery( raw )
 {
-    def rawvolts = raw / 1000
-	def minvolts = 2.7
-    def maxvolts = 3.2
-    
-    def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / (maxvolts - minvolts) ) )
+	// Experience shows that a new battery in an Aqara sensor reads about 3.2V, and they need
+	// changing when you get down to about 2.7V. It really isn't worth messing around with 
+	// preferences to fine tune this.
 
-    return result = [ name: 'battery', value: percent, unit: "%" ]
+	def rawvolts = raw / 1000
+	def minvolts = 2.7
+	def maxvolts = 3.2
+	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
+	def desc = "${rawvolts} V"
+
+	logger( 'battery', 'debug', desc )
+    
+	return [ name: 'battery', value: percent, unit: '%' ]
 }
