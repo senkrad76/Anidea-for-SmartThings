@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.02.24.01
+ * Version:	 20.02.25.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -45,6 +45,8 @@ metadata
         capability "Battery"
 		// The 'Health Check' support is copied from the IKEA button handler.
 		capability "Health Check"
+        // This brings the configure() command method into play.
+        capability "Configuration"
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
         // webCoRE uses it when selecting devices.
 		capability "Sensor"
@@ -69,7 +71,7 @@ metadata
 // installed() is called when the device is paired, and when the device is updated in the IDE.
 def installed()
 {	
-	logger( 'installed', 'debug', '' )
+	logger( 'installed', 'info', '' )
         
 	// This basically tells Device Health to assume the button is online unless the hub if offline.
     sendEvent( name: "DeviceWatch-Enroll", value: JsonOutput.toJson( [protocol: "zigbee", scheme:"untracked"] ), displayed: false )
@@ -92,19 +94,20 @@ def installed()
 	sendEvent(name: "button", value: "pushed", displayed: false)
 }
 
-// updated() seems to be called after installed(), and also when the settings are updated via the mobile app.
-// It often seems to be called twice in quick succession so many developers like to debounce it.
+// updated() seems to be called after installed() when the handler is first installed, but not when
+// it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It is often 
+// seen running twice in quick succession, so is often debounced.
 def updated()
 {
-	logger( 'updated', 'debug', '' )
+	logger( 'updated', 'info', '' )
 }
 
 // configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
-// sometimes even with the same timestamp. It isn't clear when it is called automatically, and if that depends
-// on the Configure capability (which this handler doesn't have).
+// sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
+// handler has the 'Configuration' capability. It isn't really needed in this handler.
 def configure()
 {
-	logger( 'updated', 'configure', '' )
+	logger( 'configure', 'info', '' )
 }
 
 def logger(method, level = "debug", message ="")
@@ -115,7 +118,7 @@ def logger(method, level = "debug", message ="")
 // parse() is called when the hub receives a message from a device.
 def parse( String description )
 {
-	logger( 'parse', 'debug', '' )
+	logger( 'parse', 'debug', description )
     
 	def result = [:]
 
@@ -139,12 +142,16 @@ def parse( String description )
 		result = catchall( description )
 	}
     
+    logger( 'parse', 'info', result )
+    
 	return createEvent( result )
 }
 
 Map readattr(String description)
 {
-	// This method of extracting the data is inherited.
+	logger( 'readattr', 'info', '' )
+    
+    // This method of extracting the data is inherited.
 	def cluster  = description.split(",").find { it.split(":")[0].trim() == "cluster"}?.split(":")[1].trim()
 	def attrid   = description.split(",").find { it.split(":")[0].trim() == "attrId" }?.split(":")[1].trim()
 	def valuehex = description.split(",").find { it.split(":")[0].trim() == "value"  }?.split(":")[1].trim()
@@ -185,6 +192,8 @@ Map readattr(String description)
 // Parse WXKG11LM (original revision) button message: press, double-click, triple-click, & quad-click
 private buttons11( attrid, value )
 {
+	logger( 'buttons11', 'info', "$attrid, $value" )
+    
 	def click = [ 'pushed', 'pushed_2x', 'pushed_3x', 'pushed_4x' ]
 	def result = [:]
     
@@ -198,6 +207,8 @@ private buttons11( attrid, value )
 // Create map of values to be used for button events
 Map buttons( value )
 {
+	logger( 'buttons', 'info', value )
+    
 	// WXKG11LM (new revision) message values: 0: hold, 1 = push, 2 = double-click, 255 = release
 	// WXKG12LM message values: 1 = push, 2 = double-click, 16 = hold, 17 = release, 18 = shaken
     
@@ -211,7 +222,9 @@ Map buttons( value )
 // It seems the battery voltage data is included in catchall messages.
 Map catchall( String description )
 {
-	Map result = [:]
+	logger( 'catchall', 'info', '' )
+    
+    Map result = [:]
 	def catchall = zigbee.parseDescriptionAsMap( description )
 
 	// Parse battery voltage data from catchall messages with payload value data larger than 10 bytes
@@ -235,12 +248,12 @@ Map battery( raw )
 	// preferences to fine tune this.
 
 	def rawvolts = raw / 1000
+    
+	logger( 'battery', 'debug', "$ravvolts V" )
+    
 	def minvolts = 2.7
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
-	def desc = "${rawvolts} V"
-
-	logger( 'battery', 'debug', desc )
     
-	return [ name: 'battery', value: percent, unit: '%' ]
+	return [ name: 'battery', value: percent ]
 }
