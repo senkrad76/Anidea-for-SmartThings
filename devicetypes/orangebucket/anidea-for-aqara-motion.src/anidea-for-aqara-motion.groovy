@@ -17,13 +17,12 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.02.25.00
+ * Version:	 20.02.25.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
- * most of its preferences, and much of the logging. The Health Check has been switched to
- * be untracked rather than implementing a 'checkinterval' as it isn't clear it was implemented
- * correctly. There wasn't a 'ping()', for example, but should there be?
+ * most of its preferences, and much of the logging. The Health Check has been copied from the
+ * IKEA motion sensor handler.
  */
 
 import groovy.json.JsonOutput
@@ -31,28 +30,28 @@ import physicalgraph.zigbee.zcl.DataType
 
 metadata
 {
-    definition( name: "Anidea for Aqara Motion", namespace: "orangebucket", author: "Graham Johnson", ocfDeviceType: "x.com.st.d.sensor.motion" )
+    definition( name: 'Anidea for Aqara Motion', namespace: 'orangebucket', author: 'Graham Johnson', ocfDeviceType: 'x.com.st.d.sensor.motion' )
     {
-        capability "Motion Sensor"
-        capability "Illuminance Measurement"
+        capability 'Motion Sensor'
+        capability 'Illuminance Measurement'
         // The 'Battery' capability is obviously useful.
-        capability "Battery"
+        capability 'Battery'
         // The 'Configuration' capability brings the configure() method into play.
-        capability "Configuration"
+        capability 'Configuration'
         // The 'Health Check' support is copied from the IKEA button handler.
-		capability "Health Check"
+		capability 'Health Check'
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
         // webCoRE uses it when selecting devices.
-		capability "Sensor"
+		capability 'Sensor'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
-        fingerprint endpointId: "01", profileId: "0104", deviceId: "0107", inClusters: "0000, FFFF, 0406, 0400, 0500, 0001, 0003", outClusters: "0000, 0019", manufacturer: "LUMI", model: "lumi.sensor_motion.aq2", deviceJoinName: "Aqara Motion Sensor"
-        fingerprint                   profileId: "0104", deviceId: "0104", inClusters: "0000, 0400, 0406, FFFF",                   outClusters: "0000, 0019", manufacturer: "LUMI", model: "lumi.sensor_motion",     deviceJoinName: "Aqara Motion Sensor"
+        fingerprint endpointId: '01', profileId: '0104', deviceId: '0107', inClusters: '0000, FFFF, 0406, 0400, 0500, 0001, 0003', outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion.aq2', deviceJoinName: 'Aqara Motion Sensor'
+        fingerprint                   profileId: "0104", deviceId: "0104", inClusters: "0000, 0400, 0406, FFFF",                   outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion',     deviceJoinName: 'Aqara Motion Sensor'
     }
 
 	preferences
     {
-		input "motionreset", "number", title: "Motion Reset Period", description: "Enter number of seconds (default = 60)", range: "1..7200"
+		input 'motionreset', 'number', title: 'Motion Reset Period', description: 'Enter number of seconds (default = 60)', range: '1..7200'
 	}	
 }
 
@@ -62,11 +61,13 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
     
-    // It might be that a "checkInterval" is more appropriate in the longer term, but it isn't clear
-    // if that should have a ping() method that generates a response so it seems better not to bother.
-sendEvent( name: 'checkInterval', value: null)
-	// This basically tells Device Health to assume the button is online unless the hub if offline.
-    sendEvent( name: 'DeviceWatch-Enroll', value: JsonOutput.toJson( [protocol: 'zigbee', scheme: 'untracked' ] ), displayed: false )
+    // The SmartThings handlers seem keen on initialising the attributes, so ...
+    sendEvent( name: 'motion', value: 'inactive', displayed: false )
+    sendEvent( name: 'illuminance', value: 0, displayed: false )
+    
+    // This has been copied from the IKEA motion sensor handler and then edited. 
+    // The motion sensor sends a report every 55 minutes so a two hour check should suffice.
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
 // updated() seems to be called after installed() when the handler is first installed, but not when
@@ -85,7 +86,7 @@ def configure()
 	logger( 'configure', 'info', '' )
 }
 
-def logger(method, level = "debug", message ="")
+def logger( method, level = 'debug', message = '' )
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
