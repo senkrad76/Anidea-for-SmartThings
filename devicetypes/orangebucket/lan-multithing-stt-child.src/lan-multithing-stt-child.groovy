@@ -29,7 +29,7 @@
 
 metadata
 {
-definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author: "Graham Johnson")
+	definition (name: "LAN MultiThing STT Child", namespace: "orangebucket", author: "Graham Johnson")
     {
 		capability "Sensor"
         capability "Speech Recognition" 
