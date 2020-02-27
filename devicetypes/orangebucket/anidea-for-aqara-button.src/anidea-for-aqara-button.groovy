@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.02.25.00
+ * Version:	 20.02.27.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -249,7 +249,7 @@ Map battery( raw )
 
 	def rawvolts = raw / 1000
     
-	logger( 'battery', 'debug', "$ravvolts V" )
+	logger( 'battery', 'debug', "$rawvolts V" )
     
 	def minvolts = 2.7
 	def maxvolts = 3.2
