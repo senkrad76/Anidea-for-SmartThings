@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.02.25.01
+ * Version:	 20.02.26.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -30,22 +30,27 @@ import physicalgraph.zigbee.zcl.DataType
 
 metadata
 {
-    definition( name: 'Anidea for Aqara Motion', namespace: 'orangebucket', author: 'Graham Johnson', ocfDeviceType: 'x.com.st.d.sensor.motion' )
+    // The metadata is still being explored to see if organisation device profiles work.
+    definition( name: 'Anidea for Aqara Motion', namespace: 'orangebucket', author: 'Graham Johnson', 
+    			vid: 'anidea-aqara-motion', mnmn: '0AQ5' )
+                // ocfDeviceType: 'x.com.st.d.sensor.motion' )
     {
+        //
         capability 'Motion Sensor'
+        //
         capability 'Illuminance Measurement'
         // The 'Battery' capability is obviously useful.
         capability 'Battery'
         // The 'Configuration' capability brings the configure() method into play.
         capability 'Configuration'
-        // The 'Health Check' support is copied from the IKEA button handler.
+        // The 'Health Check' support is based on the IKEA button handler.
 		capability 'Health Check'
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
         // webCoRE uses it when selecting devices.
 		capability 'Sensor'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
-        fingerprint endpointId: '01', profileId: '0104', deviceId: '0107', inClusters: '0000, FFFF, 0406, 0400, 0500, 0001, 0003', outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion.aq2', deviceJoinName: 'Aqara Motion Sensor'
+        fingerprint endpointId: '01', profileId: '0104', deviceId: '0107', inClusters: '0000, FFFF, 0406, 0400, 0500, 0001, 0003', outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion.aq2', deviceJoinName: 'Aqara Motion RTCGQ11LM'
         fingerprint                   profileId: "0104", deviceId: "0104", inClusters: "0000, 0400, 0406, FFFF",                   outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion',     deviceJoinName: 'Aqara Motion Sensor'
     }
 
@@ -66,8 +71,8 @@ def installed()
     sendEvent( name: 'illuminance', value: 0, displayed: false )
     
     // This has been copied from the IKEA motion sensor handler and then edited. 
-    // The motion sensor sends a report every 55 minutes so a two hour check should suffice.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+    // The motion sensor sends a report every 55 minutes so allow for having missed one, and then give it some slack.
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
 // updated() seems to be called after installed() when the handler is first installed, but not when
@@ -175,17 +180,17 @@ Map catchall( String description )
 
 	if ( catchall.clusterId == 0x0000 )
     {
-		def MsgLength = catchall.data.size()
+		def length = catchall.data.size()
 		
         // Xiaomi CatchAll does not have identifiers, first UINT16 is Battery
 		if ( ( catchall.data.get( 0 ) == 0x01 || catchall.data.get( 0 ) == 0x02 ) && ( catchall.data.get( 1 ) == 0xFF ) ) {
-			for ( int i = 4; i < ( MsgLength - 3 ); i++)
+			for ( int i = 4; i < ( length - 3 ); i++ )
             {
 				if ( catchall.data.get( i ) == 0x21 )
                 {
                 	// check the data ID and data type
 					// next two bytes are the battery voltage
-					result = battery( ( catchall.data.get( i+2 ) << 8 ) + catchall.data.get( i+1 ) )
+					result = battery( ( catchall.data.get( i + 2 ) << 8 ) + catchall.data.get( i + 1 ) )
 					break
 				}
 			}
@@ -202,7 +207,7 @@ Map battery( raw )
 
 	def rawvolts = raw / 1000
     
-    logger( 'battery', 'info', "${rawvolts} V" )
+    logger( 'battery', 'info', "$rawvolts V" )
         
 	def minvolts = 2.7
 	def maxvolts = 3.2
