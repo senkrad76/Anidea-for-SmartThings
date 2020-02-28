@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.02.27.00
+ * Version:	 20.02.28.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -36,8 +36,10 @@ import physicalgraph.zigbee.zcl.DataType
 
 metadata
 {
-	// The 'ocfDeviceType' comes from the IKEA button handler, as does the absence of a 'vid'.
-	definition( name: "Anidea for Aqara Button", namespace: "orangebucket", author: "Graham Johnson", ocfDeviceType: "x.com.st.d.remotecontroller" )
+    // The metadata is still being explored to see if organisation device profiles work.
+	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
+    			vid: 'anidea-aqara-button', mnmn: '0AQ5' )
+    			// ocfDeviceType: "x.com.st.d.remotecontroller" )
     {
     	// The main capability is 'Button' as no other button capability has been documented in the new environment.
 		capability "Button"
