@@ -30,10 +30,8 @@ import physicalgraph.zigbee.zcl.DataType
 
 metadata
 {
-    // The metadata is still being explored to see if organisation device profiles work.
     definition( name: 'Anidea for Aqara Motion', namespace: 'orangebucket', author: 'Graham Johnson', 
-    			vid: 'anidea-aqara-motion', mnmn: '0AQ5' )
-                // ocfDeviceType: 'x.com.st.d.sensor.motion' )
+    			ocfDeviceType: 'x.com.st.d.sensor.motion', vid: 'anidea-aqara-motion', mnmn: '0AQ5' )
     {
         //
         capability 'Motion Sensor'

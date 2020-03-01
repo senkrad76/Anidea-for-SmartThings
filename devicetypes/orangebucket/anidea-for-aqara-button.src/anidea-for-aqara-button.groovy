@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.02.28.00
+ * Version:	 20.03.01.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -36,19 +36,17 @@ import physicalgraph.zigbee.zcl.DataType
 
 metadata
 {
-    // The metadata is still being explored to see if organisation device profiles work.
 	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
-    			vid: 'anidea-aqara-button', mnmn: '0AQ5' )
-    			// ocfDeviceType: "x.com.st.d.remotecontroller" )
+    			ocfDeviceType: 'x.com.st.d.remotecontroller', vid: 'anidea-aqara-button', mnmn: '0AQ5' )
     {
     	// The main capability is 'Button' as no other button capability has been documented in the new environment.
 		capability "Button"
         // The 'Battery' capability is obviously useful.
         capability "Battery"
-		// The 'Health Check' support is copied from the IKEA button handler.
-		capability "Health Check"
         // This brings the configure() command method into play.
         capability "Configuration"
+		// The 'Health Check' support is copied from the IKEA button handler.
+		capability "Health Check"
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
         // webCoRE uses it when selecting devices.
 		capability "Sensor"

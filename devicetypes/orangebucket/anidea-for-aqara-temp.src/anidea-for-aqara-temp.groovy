@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temp
  * =====================
- * Version:	 20.02.28.00
+ * Version:	 20.03.01.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -26,152 +26,185 @@
  * been added as despite the shedload of other attributes, the pressure wasn't one of them.
  */
  
- metadata
+metadata
 {
 	definition ( name: 'Anidea for Aqara Temp', namespace: 'orangebucket', author: 'Graham Johnson',
-				 vid: 'anidea-aqara-temp', mnmn: '0AQ5' )
+				 ocfDeviceType: 'oic.d.thermostat', vid: 'anidea-aqara-temp', mnmn: '0AQ5' )
 	{
             capability 'Temperature Measurement'
-            capability "Relative Humidity Measurement"
-            capability "Battery"
-            capability "Health Check"
-            capability "Sensor"
+            capability 'Relative Humidity Measurement'
+            capability 'Battery'
+            capability 'Health Check'
+            capability 'Configuration'
+            capability 'Sensor'
 
 			attribute 'atmosphericPressure', 'number'
 
-			fingerprint profileId: "0104", deviceId: "5F01", inClusters: "0000, 0003, FFFF, 0402, 0403, 0405", outClusters: "0000, 0004, FFFF", manufacturer: "LUMI", model: "lumi.weather", deviceJoinName: "Aqara Temperature Sensor"
+			fingerprint profileId: '0104', deviceId: '5F01', inClusters: '0000, 0003, FFFF, 0402, 0403, 0405', outClusters: '0000, 0004, FFFF', manufacturer: 'LUMI', model: 'lumi.weather', deviceJoinName: 'Aqara Temperature Sensor'
 	}
 
 	preferences
     {
-		input "tempOffset", "decimal", title:"Temperature Offset", description:"Adjust temperature by this many degrees", range:"*..*"
-		input "humidOffset", "number", title:"Humidity Offset", description:"Adjust humidity by this many percent", range: "*..*"
-		input "pressOffset", "number", title:"Pressure Offset", description:"Adjust pressure by this many units", range: "*..*"
+		input 'tempoffset',  'decimal', title: 'Temperature Offset', description: 'Adjust temperature by this many degrees', range: '*..*'
+		input 'humidoffset', 'number',  title: 'Humidity Offset',    description: 'Adjust humidity by this many percent',    range: '*..*'
+		input 'pressoffset', 'number',  title: 'Pressure Offset',    description: 'Adjust pressure by this many units',      range: '*..*'
 	}
+}
+
+// installed() is called when the device is paired, and when the device is updated in the IDE.
+def installed()
+{	
+	logger( 'installed', 'info', '' )
+        
+	// Try with a 2 hour 10 minute check interval. Need to check how often any update comes.
+    sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+}
+
+// updated() seems to be called after installed() when the handler is first installed, but not when
+// it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It is often 
+// seen running twice in quick succession, so is often debounced.
+def updated()
+{
+	logger( 'updated', 'info', '' )
+}
+
+// configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
+// sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
+// handler has the 'Configuration' capability. It isn't really needed in this handler.
+def configure()
+{
+	logger( 'configure', 'info', '' )
+}
+
+def logger(method, level = "debug", message ="")
+{
+	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
 
 // Parse incoming device messages to generate events
 def parse(String description)
 {
-    log.debug "${device.displayName}: Parsing description: ${description}"
+    logger( 'parse', 'debug', description )
 
 	// getEvent automatically retrieves temp and humidity in correct unit as integer
-	Map map = zigbee.getEvent(description)
+	Map map = zigbee.getEvent( description )
 
 	// Send message data to appropriate parsing function based on the type of report
-	if (map.name == "temperature") {
-        def temp = parseTemperature(description)
-		map.value = displayTempInteger ? (int) temp : temp
-		map.descriptionText = "${device.displayName} temperature is ${map.value}°${temperatureScale}"
+	if ( map.name == 'temperature' )
+    {
+        map.value = temperature( description )
+        
 		map.translatable = true
-	} else if (map.name == "humidity") {
-		map.value = humidOffset ? (int) map.value + (int) humidOffset : (int) map.value
-	} else if (description?.startsWith('catchall:')) {
-		map = parseCatchAllMessage(description)
-	} else if (description?.startsWith('read attr - raw:')) {
-		map = parseReadAttr(description)
-	} else {
-		log.debug "${device.displayName}: was unable to parse ${description}"
+	} 
+    else if ( map.name == 'humidity' )
+    {
+		map.value = humidoffset ? (int) map.value + (int) humidoffset : (int) map.value
+	}
+    else if ( description?.startsWith( 'catchall:' ) )
+    {
+		map = catchall( description )
+	}
+    else if ( description?.startsWith( 'read attr - raw:' ) )
+    {
+		map = readattr( description )
+	} else
+    {
+		// Not really interested.
 	}
 
-	if (map) {
-		log.debug "${device.displayName}: Parse returned ${map}"
-		return createEvent(map)
-	} else
-		return [:]
+	logger( 'parse', 'info', map )
+    
+	return createEvent(map)
 }
 
-// Calculate temperature with 0.1 precision in C or F unit as set by hub location settings
-private parseTemperature( String description )
+def temperature( String description )
 {
-	def temp = ((description - "temperature: ").trim()) as Float
-	def offset = tempOffset ? tempOffset : 0
+	def temp = ( (description - "temperature: ").trim() ) as Float
+	def offset = tempoffset ? tempoffset : 0
 	temp = (temp > 100) ? (100 - temp) : temp
-    temp = (temperatureScale == "F") ? ((temp * 1.8) + 32) + offset : temp + offset
+    
+    temp = ( temperatureScale == "F" ) ? ( ( temp * 1.8) + 32 ) + offset : temp + offset
+    
 	return temp.round(1)
 }
 
 // Check catchall for battery voltage data to pass to getBatteryResult for conversion to percentage report
-private Map parseCatchAllMessage( String description )
+Map catchall( String description )
 {
-	Map resultMap = [:]
-	def catchall = zigbee.parse(description)
-	log.debug catchall
+	logger( 'catchall', 'debug', description )
 
-	if (catchall.clusterId == 0x0000)
+    Map result = [:]
+	def catchall = zigbee.parse( description )
+
+	if ( catchall.clusterId == 0x0000 )
     {
 		def length = catchall.data.size()
 		// Original Xiaomi CatchAll does not have identifiers, first UINT16 is Battery
-		if ((catchall.data.get(0) == 0x01 || catchall.data.get(0) == 0x02) && (catchall.data.get(1) == 0xFF))
+		if ( (catchall.data.get( 0 ) == 0x01 || catchall.data.get( 0 ) == 0x02 ) && ( catchall.data.get( 1 ) == 0xFF ) )
         {
-			for (int i = 4; i < ( length - 3 ); i++)
+			for ( int i = 4; i < ( length - 3 ); i++ )
             {
-				if ( catchall.data.get(i) == 0x21 )
+				if ( catchall.data.get( i ) == 0x21 )
                 { // check the data ID and data type
 					// next two bytes are the battery voltage
-					resultMap = getBatteryResult( ( catchall.data.get( i + 2 ) << 8 ) + catchall.data.get( i + 1 ) )
+					result = battery( ( catchall.data.get( i + 2 ) << 8 ) + catchall.data.get( i + 1 ) )
 					break
 				}
 			}
 		}
 	}
-	return resultMap
+	return result
 }
 
 // Parse pressure report or battery report on reset button press
-private Map parseReadAttr(String description)
+Map readattr( String description )
 {
-	Map resultMap = [:]
+	logger( 'readattr', 'debug', description )
+    
+    Map map = [:]
 
-	def cluster = description.split(",").find {it.split(":")[0].trim() == "cluster"}?.split(":")[1].trim()
-	def attrId = description.split(",").find {it.split(":")[0].trim() == "attrId"}?.split(":")[1].trim()
-	def value = description.split(",").find {it.split(":")[0].trim() == "value"}?.split(":")[1].trim()
+	def cluster = description.split( "," ).find { it.split( ":" )[ 0 ].trim() == "cluster" }?.split( ":" )[ 1 ].trim()
+	def attrid  = description.split( "," ).find { it.split( ":" )[ 0 ].trim() == "attrId"  }?.split( ":" )[ 1 ].trim()
+	def value   = description.split( "," ).find { it.split( ":" )[ 0 ].trim() == "value"   }?.split( ":" )[ 1 ].trim()
 
-	if ((cluster == "0403") && (attrId == "0000")) {
+	if ( ( cluster == "0403" ) && ( attrid == "0000" ) )
+    {
 		def result = value[ 0..3 ]
-		float pressureval = Integer.parseInt(result, 16)
+		float pressureval = Integer.parseInt( result, 16 )
 
 		// mbar
-		pressureval = (pressureval/10) as Float
+		pressureval = ( pressureval/ 10 ) as Float
 		pressureval = pressureval.round( 1 );
 
-        if (settings.pressOffset) {
-		pressureval = (pressureval + settings.pressOffset)
+        if ( settings.pressoffset )
+        {
+			pressureval = ( pressureval + settings.pressoffset )
 		}
 
-		pressureval = pressureval.round(2);
+		pressureval = pressureval.round( 2 );
 
-		resultMap = [ name: 'atmosphericPressure', value: pressureval, unit: 'mbar' ]
+		map = [ name: 'atmosphericPressure', value: pressureval, unit: 'mbar' ]
 	} 
-    else if (cluster == "0000" && attrId == "0005")  {
+    else if (cluster == "0000" && attrid == "0005")  {
 		// Not interested.
 	}
-	return resultMap
-}
-
-// Convert raw 4 digit integer voltage value into percentage based on minVolts/maxVolts range
-private Map getBatteryResult(rawValue) {
-    // raw voltage is normally supplied as a 4 digit integer that needs to be divided by 1000
-    // but in the case the final zero is dropped then divide by 100 to get actual voltage value 
-    def rawVolts = rawValue / 1000
-    def minVolts = 2.7
-    def maxVolts = 3.2
     
-    def pct = (rawVolts - minVolts) / (maxVolts - minVolts)
-    def roundedPct = Math.min(100, Math.round(pct * 100))
-
-    return [ name: 'battery', value: roundedPct ]
+	return map
 }
 
-// installed() runs just after a sensor is paired using the "Add a Thing" method in the SmartThings mobile app
-def installed() {
-    sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
-}
+Map battery( raw )
+{
+	// Experience shows that a new battery in an Aqara sensor reads about 3.2V, and they need
+	// changing when you get down to about 2.7V. It really isn't worth messing around with 
+	// preferences to fine tune this.
 
-// configure() runs after installed() when a sensor is paired
-def configure() {
-}
-
-// updated() will run twice every time user presses save in preference settings page
-def updated() {
+	def rawvolts = raw / 1000
+    
+	logger( 'battery', 'debug', "$rawvolts V" )
+    
+	def minvolts = 2.7
+	def maxvolts = 3.2
+	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
+    
+	return [ name: 'battery', value: percent ]
 }
