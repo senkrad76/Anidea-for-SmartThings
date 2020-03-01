@@ -12,7 +12,7 @@ The handler supports the same buttons as the 'bspranger' handler but only the 'o
 In a similar fashion to the Anidea for Aqara Button handler, this is a clean up of the 'bspranger' handler for the Aqara motion sensor.
 
 ## Anidea for Aqara Temp
-This is another clean up of a 'bspranger' handler. The atmospheric pressure reading has been made an attribute as this seems to have been overlooked previously. Just the one unit (mbar) is being supported.
+This is another clean up of a 'bspranger' handler. The 'proposed' capability named 'Atmospheric Pressure Reading' capability has been added. The attribute is 'atmosphericPressure' but it isn't clear what the accepted units are. Just 'mbar' is being used for the time being.
 
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
