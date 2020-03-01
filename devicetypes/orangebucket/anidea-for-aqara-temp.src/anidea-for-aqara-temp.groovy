@@ -17,13 +17,13 @@
  *
  * Anidea for Aqara Temp
  * =====================
- * Version:	 20.03.01.00
+ * Version:	 20.03.01.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
  * custom attributes, most of its preferences, and much of the logging. The Health Check has been
- * copied from the IKEA motion sensor handler and modified. An atmosphericPressure attribute has
- * been added as despite the shedload of other attributes, the pressure wasn't one of them.
+ * copied from the IKEA motion sensor handler and modified. The proposed Atmospheric Pressure
+ * Measurement has been added (previously, not even a custom attribute was defined).
  */
  
 metadata
@@ -33,12 +33,13 @@ metadata
 	{
             capability 'Temperature Measurement'
             capability 'Relative Humidity Measurement'
+            // There seems to be a 'proposed' atmospheric pressure capability with
+            // the attribute atmosphericPressure, but the default units are unknown.
+            capability 'Atmospheric Pressure Measurement'
             capability 'Battery'
             capability 'Health Check'
             capability 'Configuration'
             capability 'Sensor'
-
-			attribute 'atmosphericPressure', 'number'
 
 			fingerprint profileId: '0104', deviceId: '5F01', inClusters: '0000, 0003, FFFF, 0402, 0403, 0405', outClusters: '0000, 0004, FFFF', manufacturer: 'LUMI', model: 'lumi.weather', deviceJoinName: 'Aqara Temperature Sensor'
 	}
