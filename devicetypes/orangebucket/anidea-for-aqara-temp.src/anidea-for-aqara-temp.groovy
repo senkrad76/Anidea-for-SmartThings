@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temp
  * =====================
- * Version:	 20.03.01.01
+ * Version:	 20.03.02.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -29,7 +29,7 @@
 metadata
 {
 	definition ( name: 'Anidea for Aqara Temp', namespace: 'orangebucket', author: 'Graham Johnson',
-				 ocfDeviceType: 'oic.d.thermostat', vid: 'anidea-aqara-temp', mnmn: '0AQ5' )
+				 vid: 'anidea-aqara-temp', mnmn: '0AQ5' )
 	{
             capability 'Temperature Measurement'
             capability 'Relative Humidity Measurement'
@@ -58,18 +58,25 @@ def installed()
 	logger( 'installed', 'info', '' )
         
 	// Try with a 2 hour 10 minute check interval. Need to check how often any update comes.
-    sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [protocol: 'zigbee', hubHardwareId: device.hub.hardwareID] )
+    
+    // There may, or may not, be any technical reason for setting these attributes (it is something 
+    // ST written handlers seeem to do a lot). However it is handy for seeing when readings from the
+    // sensor are being received.
+    sendEvent( name: 'temperature', value: 0, displayed: false )
+    sendEvent( name: 'humidity', value: 100, displayed: false )
+    sendEvent( name: 'atmosphericPressure', value: 1000, displayed: false )
 }
 
-// updated() seems to be called after installed() when the handler is first installed, but not when
-// it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It is often 
-// seen running twice in quick succession, so is often debounced.
+// updated() seems to be called after installed() when the handler is first installed, and when it is updated
+// using the IDE, provided something has actually changed.  It runs whenever settings are updated. It was often 
+// seen running twice in quick successed, so many developers chose to debounce it.
 def updated()
 {
 	logger( 'updated', 'info', '' )
 }
 
-// configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
+// configure() seems to be intended for configuring the remote device, and like updated() was often called twice,
 // sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
 // handler has the 'Configuration' capability. It isn't really needed in this handler.
 def configure()

@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.01.00
+ * Version:	 20.03.02.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -37,7 +37,7 @@ import physicalgraph.zigbee.zcl.DataType
 metadata
 {
 	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
-    			ocfDeviceType: 'x.com.st.d.remotecontroller', vid: 'anidea-aqara-button', mnmn: '0AQ5' )
+    			vid: 'anidea-aqara-button', mnmn: '0AQ5' )
     {
     	// The main capability is 'Button' as no other button capability has been documented in the new environment.
 		capability "Button"
@@ -72,7 +72,7 @@ metadata
 def installed()
 {	
 	logger( 'installed', 'info', '' )
-        
+
 	// This basically tells Device Health to assume the button is online unless the hub if offline.
     sendEvent( name: "DeviceWatch-Enroll", value: JsonOutput.toJson( [protocol: "zigbee", scheme:"untracked"] ), displayed: false )
 
@@ -94,20 +94,20 @@ def installed()
 	sendEvent(name: "button", value: "pushed", displayed: false)
 }
 
-// updated() seems to be called after installed() when the handler is first installed, but not when
-// it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It is often 
-// seen running twice in quick succession, so is often debounced.
-def updated()
-{
-	logger( 'updated', 'info', '' )
-}
-
 // configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
 // sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
 // handler has the 'Configuration' capability. It isn't really needed in this handler.
 def configure()
 {
 	logger( 'configure', 'info', '' )
+}
+
+// updated() seems to be called after installed() (and configure()) when the handler is first installed,
+// but not when it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It 
+// is often seen running twice in quick succession, so is often debounced.
+def updated()
+{
+	logger( 'updated', 'info', '' )
 }
 
 def logger(method, level = "debug", message ="")
