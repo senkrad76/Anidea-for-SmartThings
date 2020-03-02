@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.02.02
+ * Version:	 20.03.02.04
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -37,7 +37,7 @@ import physicalgraph.zigbee.zcl.DataType
 metadata
 {
 	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
-    			vid: 'anidea-aqara-button', mnmn: '0AQ5' )
+    			vid: 'anidea-aqara-button-01', mnmn: '0AQ5' )
     {
     	// The main capability is 'Button' as no other button capability has been documented in the new environment.
 		capability 'Button'
@@ -94,7 +94,7 @@ def installed()
     }
 	sendEvent(name: "supportedButtonValues", value: supportedbuttons.encodeAsJSON(), displayed: false)
 	sendEvent(name: "numberOfButtons", value: 1, displayed: false)
-	sendEvent(name: "button", value: "pushed", displayed: false)
+	sendEvent(name: "button", value: "pushed", isStateChange: true, displayed: false)
 }
 
 // configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
