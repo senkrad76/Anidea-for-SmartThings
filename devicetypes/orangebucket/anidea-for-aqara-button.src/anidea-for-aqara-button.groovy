@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.02.01
+ * Version:	 20.03.02.02
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -40,16 +40,19 @@ metadata
     			vid: 'anidea-aqara-button', mnmn: '0AQ5' )
     {
     	// The main capability is 'Button' as no other button capability has been documented in the new environment.
-		capability "Button"
+		capability 'Button'
+        // Add a 'Momentary' capability so the app can press a button.
+        capability 'Momentary'
         // The 'Battery' capability is obviously useful.
-        capability "Battery"
+        capability 'Battery'
         // This brings the configure() command method into play.
-        capability "Configuration"
+        capability 'Configuration'
 		// The 'Health Check' support is copied from the IKEA button handler.
-		capability "Health Check"
-        // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
-        // webCoRE uses it when selecting devices.
-		capability "Sensor"
+		capability 'Health Check'
+        // These have been deprecated for years but ActionTiles was once said to look for them, and certainly
+        // webCoRE uses them when selecting devices.
+        capability 'Actuator'
+		capability 'Sensor'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
 
@@ -113,6 +116,14 @@ def updated()
 def logger(method, level = "debug", message ="")
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
+}
+
+// push() is the command for the Momentary capability. Make it press the button once.
+def push()
+{
+	logger( 'push', 'info', '' )
+    
+    sendEvent( name: 'button', value: 'pushed', isStateChange: true )
 }
 
 // parse() is called when the hub receives a message from a device.
