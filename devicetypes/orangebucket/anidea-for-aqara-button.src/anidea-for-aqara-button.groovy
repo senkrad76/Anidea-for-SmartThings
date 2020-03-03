@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.03.02
+ * Version:	 20.03.03.04
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -79,18 +79,21 @@ def installed()
     
     // The 'pushed_6x' attribute value represents the button being shaken.
 	// The 'double' attribute value is being used to represent the hold release.
+    // The 'down_6x' attribute value is being used to see the button attribute. This is something ST
+    // seem to do in their handlers, but using 'pushed' seems a bit silly with so many otherwise
+    // unused values available.
     switch( device.getDataValue( "model" ) )
     {
-    	case 'lumi.sensor_switch.aq2':	supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_3x', 'pushed_4x' ]
+    	case 'lumi.sensor_switch.aq2':	supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_3x', 'pushed_4x', 'down_6x' ]
         								break
-        case 'lumi.remote.b1acn01':		supportedbuttons = [ 'pushed', 'pushed_2x', 'held', 'double' ]
+        case 'lumi.remote.b1acn01':		supportedbuttons = [ 'pushed', 'pushed_2x', 'held', 'double', 'down_6x' ]
         								break
-        default:						supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_6x', 'held', 'double' ]
+        default:						supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_6x', 'held', 'double', 'down_6x' ]
         								break
     }
-	sendEvent(name: "supportedButtonValues", value: supportedbuttons.encodeAsJSON(), displayed: false)
-	sendEvent(name: "numberOfButtons", value: 1, displayed: false)
-	sendEvent(name: "button", value: "pushed", isStateChange: true, displayed: false)
+	sendEvent(name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false)
+	sendEvent(name: 'numberOfButtons', value: 1, displayed: false)
+	sendEvent(name: 'button', value: 'down_6x', isStateChange: true, displayed: false)
 }
 
 // updated() seems to be called after installed() (and configure()) when the handler is first installed,
@@ -262,5 +265,6 @@ Map battery( raw )
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
     
-	return [ name: 'battery', value: percent ]
+    // Try isStateChange true in case that is needed by Health Check.
+	return [ name: 'battery', value: percent, isStateChange: true ]
 }
