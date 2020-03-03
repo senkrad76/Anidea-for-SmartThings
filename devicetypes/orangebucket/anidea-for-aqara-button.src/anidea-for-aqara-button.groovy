@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.02.04
+ * Version:	 20.03.03.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -31,7 +31,6 @@
  * been tested with the WXKG11LM with what is said to be older firmware.
  */
 
-import groovy.json.JsonOutput
 import physicalgraph.zigbee.zcl.DataType
 
 metadata
@@ -39,18 +38,13 @@ metadata
 	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
     			vid: 'anidea-aqara-button-01', mnmn: '0AQ5' )
     {
-    	// The main capability is 'Button' as no other button capability has been documented in the new environment.
+    	//
 		capability 'Button'
-        // Add a 'Momentary' capability so the app can press a button.
         capability 'Momentary'
-        // The 'Battery' capability is obviously useful.
         capability 'Battery'
-        // This brings the configure() command method into play.
-        capability 'Configuration'
-		// The 'Health Check' support is copied from the IKEA button handler.
+		// 
 		capability 'Health Check'
-        // These have been deprecated for years but ActionTiles was once said to look for them, and certainly
-        // webCoRE uses them when selecting devices.
+        //
         capability 'Actuator'
 		capability 'Sensor'
 
@@ -76,8 +70,8 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
 
-	// This basically tells Device Health to assume the button is online unless the hub if offline.
-    sendEvent( name: "DeviceWatch-Enroll", value: JsonOutput.toJson( [protocol: "zigbee", scheme:"untracked"] ), displayed: false )
+	// Might be better to use 'checkInterval' if there are regular battery events.
+    sendEvent( name: "DeviceWatch-Enroll", value: [protocol: "zigbee", scheme:"untracked"].encodeAsJSON(), displayed: false )
 
 	def supportedbuttons = []
     
@@ -95,14 +89,6 @@ def installed()
 	sendEvent(name: "supportedButtonValues", value: supportedbuttons.encodeAsJSON(), displayed: false)
 	sendEvent(name: "numberOfButtons", value: 1, displayed: false)
 	sendEvent(name: "button", value: "pushed", isStateChange: true, displayed: false)
-}
-
-// configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
-// sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
-// handler has the 'Configuration' capability. It isn't really needed in this handler.
-def configure()
-{
-	logger( 'configure', 'info', '' )
 }
 
 // updated() seems to be called after installed() (and configure()) when the handler is first installed,
