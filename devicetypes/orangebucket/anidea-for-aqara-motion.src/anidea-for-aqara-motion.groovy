@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.03.03
+ * Version:	 20.03.03.04
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -166,25 +166,26 @@ def resetmotion()
 
 // Check catchall for battery voltage data
 Map catchall( String description )
-{
-    logger( 'catchall', 'info', catchall )
+{    
+    logger( 'catchall', 'info', '' )
     
     Map result = [:]
-	def catchall = zigbee.parse( description )
+	def parsedcatchall = zigbee.parse( description )
 
-	if ( catchall.clusterId == 0x0000 )
+	if ( parsedcatchall.clusterId == 0x0000 )
     {
-		def length = catchall.data.size()
+		def length = parsedcatchall.data.size()
 		
         // Xiaomi CatchAll does not have identifiers, first UINT16 is Battery
-		if ( ( catchall.data.get( 0 ) == 0x01 || catchall.data.get( 0 ) == 0x02 ) && ( catchall.data.get( 1 ) == 0xFF ) ) {
+		if ( ( parsedcatchall.data.get( 0 ) == 0x01 || parsedcatchall.data.get( 0 ) == 0x02 ) && ( parsedcatchall.data.get( 1 ) == 0xFF ) )
+        {
 			for ( int i = 4; i < ( length - 3 ); i++ )
             {
-				if ( catchall.data.get( i ) == 0x21 )
+				if ( parsedcatchall.data.get( i ) == 0x21 )
                 {
                 	// check the data ID and data type
 					// next two bytes are the battery voltage
-					result = battery( ( catchall.data.get( i + 2 ) << 8 ) + catchall.data.get( i + 1 ) )
+					result = battery( ( parsedcatchall.data.get( i + 2 ) << 8 ) + parsedcatchall.data.get( i + 1 ) )
 					break
 				}
 			}
