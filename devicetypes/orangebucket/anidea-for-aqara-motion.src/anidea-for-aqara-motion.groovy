@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.02.01
+ * Version:	 20.03.02.02
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -39,8 +39,6 @@ metadata
         capability 'Illuminance Measurement'
         // The 'Battery' capability is obviously useful.
         capability 'Battery'
-        // The 'Configuration' capability brings the configure() method into play.
-        capability 'Configuration'
         // The 'Health Check' support is based on the IKEA button handler.
 		capability 'Health Check'
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
@@ -68,8 +66,9 @@ def installed()
     sendEvent( name: 'motion', value: 'inactive', displayed: false )
     sendEvent( name: 'illuminance', value: 0, displayed: false )
     
-    // This has been copied from the IKEA motion sensor handler and then edited. 
-    // The motion sensor sends a report every 55 minutes so allow for having missed one, and then give it some slack.
+    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
+    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
+    // add a bit of slack on top.
     sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
@@ -81,17 +80,14 @@ def updated()
 	logger( 'updated', 'info', '' )
 }
 
-// configure() seems to be intended for configuring the remote device, and like updated() is often called twice,
-// sometimes even with the same timestamp. It seems to be called after installed(), but only when the 
-// handler has the 'Configuration' capability. It isn't really needed in this handler.
-def configure()
-{
-	logger( 'configure', 'info', '' )
-}
-
 def logger( method, level = 'debug', message = '' )
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
+}
+
+def ping()
+{
+	logger( 'ping', 'info', '' )
 }
 
 // parse() is called when the hub receives a message from a device.
