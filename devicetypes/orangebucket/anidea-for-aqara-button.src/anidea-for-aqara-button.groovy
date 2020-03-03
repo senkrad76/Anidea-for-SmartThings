@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.03.00
+ * Version:	 20.03.03.02
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -70,8 +70,10 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
 
-	// Might be better to use 'checkInterval' if there are regular battery events.
-    sendEvent( name: "DeviceWatch-Enroll", value: [protocol: "zigbee", scheme:"untracked"].encodeAsJSON(), displayed: false )
+    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
+    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
+    // add a bit of slack on top.
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 
 	def supportedbuttons = []
     
@@ -102,6 +104,14 @@ def updated()
 def logger(method, level = "debug", message ="")
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
+}
+
+// ping() is the command for the Health Check capability. It is suspected that it is used when 
+// the checkInterval period expires without any activity, in order to try and prompt a response.
+// Here it is just present for completeness.
+def ping()
+{
+	logger( 'ping', 'info', '' )
 }
 
 // push() is the command for the Momentary capability. Make it press the button once.
