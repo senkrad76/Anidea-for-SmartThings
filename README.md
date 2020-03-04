@@ -1,18 +1,29 @@
 # Anidea-SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs.
 
-## Anidea for Aqara Button
-The 'bspranger' handler for the Aqara brand of Zigbee buttons (made by Lumi but more often referred to as Xiaomi buttons) does a good job. However it is very much rooted in the Classic environment and is rather bloated with excessive logging and custom attributes that don't really add much. On closer examination, even all its settings are pretty much redundant (why have a UK / US date format setting when log messages are already timestamped?). This handler strips all the unnecessary stuff out, and uses the expanded range of 'button' attribute values instead of the 'buttonNumber' fudge.
+## Anidea for Aqara Button / Aqara Motion / Aqara Temp
+The 'bspranger' device handlers are the results of a cumulative effort to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic enviroment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
-The handler supports the same buttons as the 'bspranger' handler but only the 'original version' of the WXKG11LM button has actually been tested. The others hopefully should work but there is always the possibility that cosmetic changes to the code, and the odd bit of butchery, may have broken things.
+The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' environment. This includes completely removing the 'Tiles' and replacing with suitable metadata. This metadata currently uses custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably are not available to all.
 
-*The handler does not include any 'tiles' for the Classic app as that is part of the past. It works well with the 'new' app, Automation and Smart Lighting. The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
+### Anidea for Aqara Button
+This handler supports the same buttons as the 'bspranger' handler for Aqara buttons, but only the 'original version' of the WXKG11LM button has actually been tested. The others hopefully should work but there is always the possibility that cosmetic changes to the code, and the odd bit of butchery, may have broken things. The most significant change is that it uses a broader ranger of button attribute values instead of using button numbers. The values used across the various buttons are:
 
-## Anidea for Aqara Motion
-In a similar fashion to the Anidea for Aqara Button handler, this is a clean up of the 'bspranger' handler for the Aqara motion sensor.
+* **pushed** (also used for the Momentary capability)
+* **pushed_2x** (note, NOT double)
+* **pushed_3x**
+* **pushed_4x**
+* **pushed_6x** (to represent 'shaken')
+* **double** (to represent the hold release)
+* **down_6x** (for a button press in the installation routine)
+
+*The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
+
+### Anidea for Aqara Motion
+This supports the same Aqara motion sensors as the original, providing both Motion and Illuminance.
 
 ## Anidea for Aqara Temp
-This is another clean up of a 'bspranger' handler. The 'proposed' capability named 'Atmospheric Pressure Reading' capability has been added. The attribute is 'atmosphericPressure' but it isn't clear what the accepted units are. Just 'mbar' is being used for the time being.
+This supports the Aqara temperature and humidity sensors. The original extracted the atmospheric pressure but never gave it an attribute. It now uses the proposed Atmospheric Pressure Measurement capability with the `atmosphericPressure` attribute. Only the 'mbar' unit is currently being supported, pending information on the actual units in the capability.
 
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
