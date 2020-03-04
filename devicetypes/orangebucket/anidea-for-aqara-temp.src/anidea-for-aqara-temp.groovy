@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temp
  * =====================
- * Version:	 20.03.03.04
+ * Version:	 20.03.04.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -69,13 +69,13 @@ def installed()
 
 // updated() seems to be called after installed() when the handler is first installed, and when it is updated
 // using the IDE, provided something has actually changed.  It runs whenever settings are updated. It was often 
-// seen running twice in quick successed, so many developers chose to debounce it.
+// seen running twice in quick succession, so many developers chose to debounce it.
 def updated()
 {
 	logger( 'updated', 'info', '' )
 }
 
-def logger(method, level = "debug", message ="")
+def logger( method, level = 'debug', message = '' )
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
@@ -86,7 +86,7 @@ def ping()
 }
 
 // Parse incoming device messages to generate events
-def parse(String description)
+def parse( String description )
 {
     logger( 'parse', 'debug', description )
 
@@ -96,9 +96,15 @@ def parse(String description)
 	// Send message data to appropriate parsing function based on the type of report
 	if ( map.name == 'temperature' )
     {
+    	// Get a (possibly converted) value with more precision.
         map.value = temperature( description )
         
-		map.translatable = true
+        // Lose the unwanted bits.
+        map.remove( 'descriptionText' )
+        map.remove( 'translatable' )
+        
+        // The unit is already in the map so need to tweak if converted.
+		map.unit = temperatureScale
 	} 
     else if ( map.name == 'humidity' )
     {
@@ -118,9 +124,10 @@ def parse(String description)
 
 	logger( 'parse', 'info', map )
     
-	return createEvent(map)
+	return createEvent( map )
 }
 
+// This goes back to the original description as zigbee.getEvent() rounded it to an integer.
 def temperature( String description )
 {
 	def temp = ( (description - "temperature: ").trim() ) as Float
