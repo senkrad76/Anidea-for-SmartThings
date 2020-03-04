@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.03.04
+ * Version:	 20.03.04.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -70,11 +70,6 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
 
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
-
 	def supportedbuttons = []
     
     // The 'pushed_6x' attribute value represents the button being shaken.
@@ -94,6 +89,11 @@ def installed()
 	sendEvent(name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false)
 	sendEvent(name: 'numberOfButtons', value: 1, displayed: false)
 	sendEvent(name: 'button', value: 'down_6x', isStateChange: true, displayed: false)
+
+    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
+    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
+    // add a bit of slack on top.
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
 // updated() seems to be called after installed() (and configure()) when the handler is first installed,

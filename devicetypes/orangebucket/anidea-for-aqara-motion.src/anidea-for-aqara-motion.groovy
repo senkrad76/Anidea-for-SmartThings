@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.03.04
+ * Version:	 20.03.04.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -61,15 +61,15 @@ metadata
 def installed()
 {	
 	logger( 'installed', 'info', '' )
+ 
+    // The SmartThings handlers seem keen on initialising the attributes, so ...
+    sendEvent( name: 'motion', value: 'inactive', displayed: false )
+    sendEvent( name: 'illuminance', value: 0, displayed: false )   
     
     // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
     // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
     // add a bit of slack on top.
     sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
- 
- // The SmartThings handlers seem keen on initialising the attributes, so ...
-    sendEvent( name: 'motion', value: 'inactive', displayed: false )
-    sendEvent( name: 'illuminance', value: 0, displayed: false )   
 }
 
 // updated() seems to be called after installed() when the handler is first installed, but not when
