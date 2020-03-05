@@ -17,7 +17,7 @@
  *
  * LAN MultiThing
  * ==============
- * Version:	 20.02.06.00
+ * Version:	 20.03.05.00
  *
  * The LAN MultiThing is a device handler for a remote device on the local network
  * that implements a number of actuator and sensor capabilities, and can also
@@ -565,25 +565,25 @@ def playTrack(uri, level = null)
 {
 	logger("playTrack")
     
-    return buildhubaction(device, 'audioNotification', 'playTrack', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrack', uri, (level != null) ? level.toString() : level, false)
 }
 
 def playTrackAndResume(uri, level = null, anotherlevel = null)
 {
-	if (otherVolume) level = anotherlevel
+	if (anotherlevel) level = anotherlevel
         
 	logger("playTrackandResume")
         
-    return buildhubaction(device, 'audioNotification', 'playTrackAndResume', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrackAndResume', uri, (level != null) ? level.toString() : level, false)
 }
 
 def playTrackAndRestore(uri, level = null, anotherlevel = null)
 {
- 	if (otherVolume) level = anotherlevel
+ 	if (anotherlevel) level = anotherlevel
 
 	logger("playTrackandRestore")
     
-    return buildhubaction(device, 'audioNotification', 'playTrackAndRestore', uri, level, false)
+    return buildhubaction(device, 'audioNotification', 'playTrackAndRestore', uri, (level != null) ? level.toString() : level, false)
 }
 
 //
