@@ -1,4 +1,4 @@
-# Anidea-SmartThings &copy; Graham Johnson (orangebucket)
+# Anidea for SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs.
 
 ## Anidea for Aqara Button / Aqara Motion / Aqara Temperature
