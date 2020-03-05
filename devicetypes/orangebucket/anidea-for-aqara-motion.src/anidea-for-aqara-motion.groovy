@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.04.00
+ * Version:	 20.03.05.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -31,7 +31,7 @@ import physicalgraph.zigbee.zcl.DataType
 metadata
 {
     definition( name: 'Anidea for Aqara Motion', namespace: 'orangebucket', author: 'Graham Johnson', 
-    			vid: 'anidea-aqara-motion-01', mnmn: '0AQ5' )
+    			ocfDeviceType: 'x.com.st.d.sensor.motion' )
     {
         //
         capability 'Motion Sensor'
