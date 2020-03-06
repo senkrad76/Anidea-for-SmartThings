@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temoerature
  * ============================
- * Version:	 20.03.06.00
+ * Version:	 20.03.06.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -53,7 +53,10 @@ metadata
 def installed()
 {	
 	logger( 'installed', 'info', '' )
-    
+         
+	// Try with a 2 hour 10 minute check interval.
+    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+   
     // There may, or may not, be any technical reason for setting these attributes (it is something 
     // ST written handlers seeem to do a lot). However it is handy for seeing when readings from the
     // sensor are being received.
@@ -61,9 +64,6 @@ def installed()
     sendEvent( name: 'humidity', 			value: 100,		unit: '%',		displayed: false )
     sendEvent( name: 'atmosphericPressure', value: 1000, 	unit: 'mbar',	displayed: false )
     sendEvent( name: 'battery', 			value: 50, 		unit: '%',		displayed: false )
-        
-	// Try with a 2 hour 10 minute check interval.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
 // updated() seems to be called after installed() when the handler is first installed, and when it is updated
