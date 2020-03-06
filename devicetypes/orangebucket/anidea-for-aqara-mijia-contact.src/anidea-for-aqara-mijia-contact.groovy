@@ -17,17 +17,15 @@
  *
  * Anidea for Aqara/Mijia Contact
  * ==============================
- * Version:	 20.03.06.00
+ * Version:	 20.03.06.03
  *
  * This device handler is a reworking of the 'Xiaomi' Door and Window Sensors DTHs by 'bspranger'
  * that combines and adapt them for the 'new' environment. It has been stripped of the 'tiles', custom 
  * attributes, all its preferences and most of the logging. Health Check support has been tidied.
  * The layout of braces and spacing in brackets has been adjusted for personal taste, along with any 
- * local use of camel case. The commands for manually forcing the open/close status to a particular
- * value have been renamed for compatibility with the Simulated Contact Sensor, which could reasonably
- * be considered the de facto standard.
+ * local use of camel case.
  *
- * Code has been ported for the MCCGQ01LM (Mijia) and MCCGQ11LM (Aqara). Apart from the fingerprints,
+ * Code has been ported for the MCCGQ01LM (Mijia) and MCCGQ11LM (Aqara).  Apart from the fingerprints,
  * the only difference was in how the same on/off event was process
  */
 
@@ -40,9 +38,11 @@ metadata
 		capability 'Health Check'
 		capability 'Sensor'
 
-		// Use these command names for compatibility with the Simulated Contact Sensor.
-   		command "open"
-   		command "close"
+		// These commands may be used to set the contact status to a particular value, in the event the sensor
+        // does not correctly report open/close events.  They should be used with caution as if the sensor
+        // genuinely doesn't know it is closed, it cannot send an open report.
+   		command "setopen"
+   		command "setclosed"
    
 		fingerprint endpointId: '01', profileId: '0104', deviceId: '0104', inClusters: '0000, 0003, FFFF, 0019', outClusters: '0000, 0004, 0003, 0006, 0008, 0005 0019', manufacturer: 'LUMI', model: 'lumi.sensor_magnet',     deviceJoinName: 'Lumi Mijia MCCGQ01LM'
    		fingerprint endpointId: "01", profileId: "0104", deviceId: "5F01", inClusters: "0000, 0003, FFFF, 0006", outClusters: "0000, 0004, FFFF", 						 manufacturer: "LUMI", model: "lumi.sensor_magnet.aq2", deviceJoinName: "Lumi Aqara MCCGQ11LM"
@@ -58,9 +58,14 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
  
-    // The SmartThings handlers seem keen on initialising the attributes, so ...
-    sendEvent( name: 'contact',	value: 'closed', 			displayed: false )
-    sendEvent( name: 'battery', value: 50,		 unit: '%', displayed: false )   
+    // In the absence of any information about how to make the sensor report its settings on demand,
+    // fake some default values for the attributes. For binary attributes, use whichever one seems to
+    // attract the most attention.
+    sendEvent( name: 'contact',	value: 'open',			  displayed: false )
+    sendEvent( name: 'battery', value: 50,	   unit: '%', displayed: false )   
+    
+    // Record that the contact state was set manually.
+    state.manualcontact = true
     
     // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
     // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
@@ -94,19 +99,27 @@ def parse( String description )
     
     def map = [:]
     
-    def event = zigbee.getEvent( description )
+    def event
     
-    if ( event )
-    {
-        map = event;
-    }
-    else if (description?.startsWith( 'catchall:' ) )
+    if (description?.startsWith( 'catchall:' ) )
     {
         map = catchall( description )
     }
     else if ( description?.startsWith( 'read attr - raw:' ) )
     {
         // Only seems to give the model, so really not interested.  
+    }
+    else if ( ( event = zigbee.getEvent( description ) ) )
+    {
+        map = [ name: 'contact', value: event.value == 'off' ? 'closed' : 'open' ] 
+        
+        // If the contact state has been overridden, set the isStateChange flag to true to
+        // make sure the correct state propagates.
+        if ( state.manualcontact )
+        {
+			map.isStateChange = true
+            state.manualcontact = false
+        }
     }
 
 	logger( 'parse', 'debug', map )
@@ -158,16 +171,20 @@ Map catchall( String description )
 	return map
 }
 
-def open()
+def setopen()
 {
-	logger( 'open', 'info', '')
+	logger( 'setopen', 'info', '')
     
-	sendEvent( name: 'contact', value: 'open',   descriptionText: 'Manual.' )
+    state.manualcontact = true
+    
+	sendEvent( name: 'contact', value: 'open', descriptionText: 'Contact status has been set manually.' )
 }
 
-def closed()
+def setclosed()
 {
-	logger( 'open', 'info', '')
+	logger( 'setclosed', 'info', '')
     
-    sendEvent( name: 'contact', value: 'closed', descriptionText: 'Manual.' )
+    state.manualcontact = true
+        
+    sendEvent( name: 'contact', value: 'closed', descriptionText: 'Contact status has been set manually.' )
 } 
