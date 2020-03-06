@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temoerature
  * ============================
- * Version:	 20.03.05.01
+ * Version:	 20.03.06.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 

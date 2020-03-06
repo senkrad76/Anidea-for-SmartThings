@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.05.00
+ * Version:	 20.03.06.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -96,9 +96,10 @@ def installed()
     sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
-// updated() seems to be called after installed() (and configure()) when the handler is first installed,
-// but not when it is updated in the IDE.  It runs whenever settings are updated in the mobile app. It 
-// is often seen running twice in quick succession, so is often debounced.
+// updated() seems to be called after installed() when the device is first installed, but not when
+// it is updated in the IDE without there having been any actual changes.  It runs whenever settings
+// are updated in the mobile app. It often used to be seen running twice in quick succession so was
+// debounced in many handlers.
 def updated()
 {
 	logger( 'updated', 'info', '' )
