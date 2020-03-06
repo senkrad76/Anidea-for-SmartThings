@@ -15,9 +15,9 @@
  * THIS SOFTWARE.
  * ---------------------------------------------------------------------------------
  *
- * Anidea for Aqara/Mijia Contact
- * ==============================
- * Version:	 20.03.06.04
+ * Anidea for Aqara Contact
+ * ========================
+ * Version:	 20.03.06.05
  *
  * This device handler is a reworking of the 'Xiaomi' Door and Window Sensors DTHs by 'bspranger'
  * that combines and adapt them for the 'new' environment. It has been stripped of the 'tiles', custom 
@@ -31,7 +31,7 @@
 
 metadata
 {
-	definition( name: 'Anidea for Aqara/Mijia Contact', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition( name: 'Anidea for Aqara Contact', namespace: 'orangebucket', author: 'Graham Johnson' )
 	{
    		capability 'Contact Sensor'
         capability 'Battery'
