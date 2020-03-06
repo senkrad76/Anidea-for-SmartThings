@@ -1,7 +1,7 @@
 # Anidea for SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs.
 
-## Anidea for Aqara Button | Aqara/Mijia Contact | Aqara Motion | Aqara Temperature | Aqara Vibration
+## Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact
 The [bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic enviroment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
 The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' environment. This includes completely removing the 'Tiles' and replacing with suitable metadata. This metadata was using custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably would not be available to all, but, although these could be made to work for the device pages, the dashboard tiles just wouldn't play ball. At the time of writing, the app has big problems with devices whose tiles display the device connection status, and with the architecture being undocumented, the Developer Workspace seemingly lagging well behind reality, and the support of capabilities being inconsistent, it seemed easier to concede defeat and just work with what is available generically.
@@ -19,8 +19,8 @@ This handler supports the same buttons as the 'bspranger' handler for Aqara butt
 
 *The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
 
-### Anidea for Aqara/Mijia Contact
-The handlers for the Mijia and Aqara Door and Window sensors only truly differed in the fingerprints of the devices and how exactly the same on/off event was handled.
+### Anidea for Aqara Contact
+The handlers for the Mijia and Aqara Door and Window sensors only truly differed in the fingerprints of the devices and how exactly the same on/off event was handled, so one handler now covers both options. Please be aware that the handler sets the status of the sensor to 'open' when it is installed (or updated via the IDE). This is believed to help keep Health Check happy.
 
 ### Anidea for Aqara Motion
 This supports the same Aqara motion sensors as the original, providing both Motion and Illuminance.
@@ -32,7 +32,7 @@ This supports the Aqara temperature and humidity sensors. The original extracted
 A handler for the vibration sensor will follow in time. It needs a bit more thinking about to decide what stays and goes, as there seems to be quite a bit of added stuff in the handler. For example, it has a Contact Sensor capability which in this case really means something like a door being open or closed. That is perhaps best implemented in the handler if it is to appear anywhere.
 
 ### Anidea for Mijia Contact
-The Aqara sensors are effectively revised versions of earlier sensors that seemed to be marketed under the Mijia brand in places. It is probably worth keeping the handlers separate. This one will again follow in time.
+The [Anidea for Aqara Contact](#anidea-for-aqara-contact) covers both ranges.
 
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
