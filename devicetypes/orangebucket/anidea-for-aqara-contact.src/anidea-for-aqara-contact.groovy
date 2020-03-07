@@ -17,16 +17,17 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.03.06.05
+ * Version:	 20.03.07.01
  *
- * This device handler is a reworking of the 'Xiaomi' Door and Window Sensors DTHs by 'bspranger'
- * that combines and adapt them for the 'new' environment. It has been stripped of the 'tiles', custom 
- * attributes, all its preferences and most of the logging. Health Check support has been tidied.
- * The layout of braces and spacing in brackets has been adjusted for personal taste, along with any 
- * local use of camel case.
+ * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
+ * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
+ * been stripped of the 'tiles', custom attributes, all its preferences and most of the logging. Health 
+ * Check support has been tidied. The layout of braces and spacing in brackets has been adjusted for 
+ * personal taste, along with any local use of camel case.
  *
- * Code has been ported for the MCCGQ01LM (Mijia) and MCCGQ11LM (Aqara).  Apart from the fingerprints,
- * the only difference was in how the same on/off event was process
+ * The code has been tested with both the MCCGQ01LM (Mijia) and the MCCGQ11LM (Aqara).  Apart from the 
+ * fingerprints, the only real difference between the handlers was in the way that the same on/off event
+ * from the device was being processed.
  */
 
 metadata
@@ -38,11 +39,16 @@ metadata
 		capability 'Health Check'
 		capability 'Sensor'
 
-		// These commands may be used to set the contact status to a particular value, in the event the sensor
-        // does not correctly report open/close events.  They should be used with caution as if the sensor
-        // genuinely doesn't know it is closed, it cannot send an open report.
-   		command "setopen"
-   		command "setclosed"
+		// There may be occasions where it will be useful to 'manually' set the status of the contact
+        // sensor to 'open' or 'closed'.  For example, a contact on a door may fail to report that is 
+        // has closed, even when the door is closed and secured, or it may be desirable to leave a door
+        // open without triggering any alerts.  For these occasions, the custom commands 'open' and
+        // 'closed' may be used, matching the commands used by the Simulated Contact Sensor device
+        // handler. The handler sets a flag when the contact status has been set 'manually' so that
+        // the next open or closed event from the device can be forced to propagate regardless of
+        // whether the state has changed.
+   		command "open"
+   		command "closed"
    
 		fingerprint endpointId: '01', profileId: '0104', deviceId: '0104', inClusters: '0000, 0003, FFFF, 0019', outClusters: '0000, 0004, 0003, 0006, 0008, 0005 0019', manufacturer: 'LUMI', model: 'lumi.sensor_magnet',     deviceJoinName: 'Lumi Mijia MCCGQ01LM'
    		fingerprint endpointId: "01", profileId: "0104", deviceId: "5F01", inClusters: "0000, 0003, FFFF, 0006", outClusters: "0000, 0004, FFFF", 						 manufacturer: "LUMI", model: "lumi.sensor_magnet.aq2", deviceJoinName: "Lumi Aqara MCCGQ11LM"
@@ -145,7 +151,9 @@ Map battery( raw )
 	def minvolts = 2.7
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) ) 
-    
+
+	// Battery events are sent with the 'isStateChange: true' flag to make sure there are regular
+    // propagated events available Health Check to monitor (if that is what it needs).
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
 
@@ -176,18 +184,18 @@ Map catchall( String description )
 	return map
 }
 
-def setopen()
+def open()
 {
-	logger( 'setopen', 'info', '')
+	logger( 'open', 'info', '')
     
     state.manualcontact = true
     
 	sendEvent( name: 'contact', value: 'open', descriptionText: 'Contact status has been set manually.' )
 }
 
-def setclosed()
+def close()
 {
-	logger( 'setclosed', 'info', '')
+	logger( 'closed', 'info', '')
     
     state.manualcontact = true
         
