@@ -15,7 +15,7 @@
  * THIS SOFTWARE.
  * ---------------------------------------------------------------------------------
  *
- * Anidea for Aqara Temoerature
+ * Anidea for Aqara Temperature
  * ============================
  * Version:	 20.03.06.01
  *
