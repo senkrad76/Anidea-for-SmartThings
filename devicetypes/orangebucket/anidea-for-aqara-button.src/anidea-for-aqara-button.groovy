@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.06.01
+ * Version:	 20.03.09.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -47,6 +47,9 @@ metadata
         //
         capability 'Actuator'
 		capability 'Sensor'
+        
+        // Using an obviously custom attribute to expose routing information.
+        attribute 'anidearoute', 'string'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
 
@@ -94,6 +97,8 @@ def installed()
 	sendEvent(name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false)
 	sendEvent(name: 'numberOfButtons', value: 1, displayed: false)
 	sendEvent(name: 'button', value: 'down_6x', isStateChange: true, displayed: false)
+    
+    meshinfo()
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -129,7 +134,9 @@ def push()
 // parse() is called when the hub receives a message from a device.
 def parse( String description )
 {
-	logger( 'parse', 'debug', description )
+	meshinfo()
+    
+    logger( 'parse', 'debug', description )
     
 	def result = [:]
 
@@ -269,3 +276,21 @@ Map battery( raw )
     // Try isStateChange true in case that is needed by Health Check.
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
+
+import groovy.json.JsonSlurper
+
+def meshinfo()
+{
+	def meshinfo = new JsonSlurper().parseText( device.getDataValue( 'meshInfo' ) )
+    def route = device.getDeviceNetworkId()
+    
+    for ( hop in meshinfo[ 'route' ] )
+    {
+		route += " -> ${hop[ 'deviceId' ]}"
+    }
+
+	logger 'meshinfo', 'info', route 
+
+	sendEvent( name: 'anidearoute', value: route )
+}
+    
