@@ -17,12 +17,11 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.06.01
+ * Version:	 20.03.11.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
- * most of its preferences, and much of the logging. The Health Check has been copied from the
- * IKEA motion sensor handler.
+ * most of its preferences, and much of the logging. The Health Check has been tidied up.
  */
 
 import groovy.json.JsonOutput
@@ -52,7 +51,10 @@ metadata
 
 	preferences
     {
-		input 'motionreset', 'number', title: 'Motion Reset Period', description: 'Enter number of seconds (default = 60)', range: '1..7200'
+    	// The sensor sleeps for a minute after detecting motion and does not send an 'inactive' report.
+        // The device handler will, by default, reset the motion state after sixty-five seconds to allow
+        // a prompt new motion report to arrive first and restart the timer.
+		input 'motionreset', 'number', title: 'Motion Reset Period', description: 'Enter number of seconds (default = 65)', range: '1..7200'
 	}	
 }
 
@@ -141,7 +143,7 @@ Map readattr( String description )
 	// The sensor only sends a motion detected message so the reset to no motion is performed in code
     if ( cluster == "0406" & value == "01" )
     {       
-		def seconds = motionreset ? motionreset : 60
+		def seconds = motionreset ? motionreset : 65
 		result = [ name: 'motion', value: 'active' ]
         
 		runIn( seconds, resetmotion )
