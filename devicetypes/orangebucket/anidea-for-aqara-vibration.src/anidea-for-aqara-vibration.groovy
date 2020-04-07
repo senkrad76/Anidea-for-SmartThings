@@ -15,9 +15,9 @@
  * THIS SOFTWARE.
  * ---------------------------------------------------------------------------------
  *
- * Anidea for Aqara Temperature
- * ============================
- * Version:	 20.04.07.01
+ * Anidea for Aqara Vibration
+ * ==========================
+ * Version:	 20.04.07.03
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Vibration Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -28,10 +28,10 @@ metadata
 {
 	definition ( name: 'Anidea for Aqara Vibration', namespace: 'orangebucket', author: 'Graham Johnson' )
 	{
-		// Vibration is reported as motion.
-		capability "Motion Sensor"   	
-        // Tilt is reported as acceleration.
-		capability 'Acceleration Sensor'
+		// Vibration is reported as acceleration (for consistency with the 'new' app).
+		capability "Acceleration Sensor"   	
+        // Tilt is reported as motion.
+		capability 'Motion Sensor'
         // Drop is reported as a button press.
 		capability 'Button'
         // Defined positions are reported as open and closed.
@@ -63,7 +63,7 @@ metadata
 
 	preferences
     {
-		input "motionreset", "number", title: "", description: "Number of seconds (default = 65)", range: "1..7200"
+		input "vibrationreset", "number", title: "", description: "Number of seconds (default = 65)", range: "1..7200"
 	}
 }
 
@@ -83,8 +83,8 @@ def installed()
 
 	// The SmartThings handlers seem keen on initialising the attributes and doing so seems to
     // prevent the 'new' app displaying 'Getting status' on tiles pending the attributes being set.
-    sendEvent( name: 'motion',       value: 'inactive',  displayed: false )
     sendEvent( name: 'acceleration', value: 'inactive',  displayed: false )
+    sendEvent( name: 'motion',       value: 'inactive',  displayed: false )
     sendEvent( name: 'button',       value: 'down_6x',   displayed: false ) 
     sendEvent( name: 'contact',      value: 'closed',    displayed: false )
     sendEvent( name: 'threeAxis',    value: [ 0, 0, 0 ], displayed: false )
@@ -116,28 +116,27 @@ Map mapSensorEvent( value )
 {
 	logger( 'sensorevent', 'info', value )
     
-	def seconds = ( value == 1 || value == 4 ) ? ( motionreset ? motionreset : 65 ) : 2
+	def seconds = ( value == 1 || value == 4 ) ? ( vibrationreset ? vibrationreset : 65 ) : 2
     
-	def statustype = [ "stationary", "vibration", "tilt", 		  "drop", 	"", 	     "" ]
-	def eventname =  [ "", 			 "motion", 	  "acceleration", "button", "motion",   "acceleration" ]
-	def eventtype =  [ "", 			 "active", 	  "active", 	  "pushed", "inactive", "inactive" ]
+	def eventname =  [ "", "acceleration", "motion", "button", "acceleration", "motion" ]
+	def eventtype =  [ "", "active", 	   "active", "pushed", "inactive",     "inactive" ]
     
-	def eventmessage = [ '', 'Vibration or movement (motion)', 'Tilted (acceleration)', 'Dropped (button)', 'Reset motion', 'Reset acceleration' ]
+	def eventmessage = [ '', 'Vibration (acceleration)', 'Tilt (motion)', 'Drop (button)', 'Reset vibration', 'Reset motion' ]
     
-	if (value == 0)
+	if ( value == 0 )
 		return
-	else if (value == 1)
+	else if ( value == 1 )
     {
-		runIn( seconds, clearmotionEvent )
-		state.motionactive = 1
+		runIn( seconds, clearvibration )
+		state.vibrationactive = 1
 	}
-	else if (value == 2)
+	else if ( value == 2 )
     {
-		runIn( seconds, clearaccelEvent )
+		runIn( seconds, cleartilt )
     }
-	else if (value == 3)
+	else if ( value == 3 )
     {
-		runIn( seconds, cleardropEvent)
+		runIn( seconds, cleardrop )
     }
 
 	return [
@@ -311,34 +310,25 @@ Map battery( raw )
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
 
-def clearmotionEvent() {
+def clearvibration()
+{
 	def result = [:]
 	result = mapSensorEvent(4)
-	state.motionactive = 0
+	state.vibrationactive = 0
 	displayDebugLog(": Sending event $result")
 	sendEvent( result )
 }
 
-def clearaccelEvent() {
+def cleartilt()
+{
 	def result = [:]
-	if (device.currentState('sensorStatus')?.value == "Tilt") {
-		if (state.motionactive == 1)
-			sendEvent(name: "sensorStatus", value: "Vibration", displayed: false)
-		else
-			mapSensorEvent(0)
-	}
 	result = mapSensorEvent(5)
 	displayDebugLog(": Sending event $result")
 	sendEvent(result)
 }
 
-def cleardropEvent() {
-	if (device.currentState('sensorStatus')?.value == "Drop") {
-		if (state.motionactive == 1)
-			sendEvent(name: "sensorStatus", value: "Vibration", displayed: false)
-		else
-			mapSensorEvent(0)
-	}
+def cleardrop()
+{
 }
 
 def setClosedPosition() {
@@ -384,13 +374,6 @@ def changeSensitivity() {
 	def descText = ": Sensitivity level set to ${levelText[state.sensitivity]}"
 	zigbee.writeAttribute(0x0000, 0xFF0D, 0x20, attrValue[state.sensitivity], [mfgCode: 0x115F])
 	zigbee.readAttribute(0x0000, 0xFF0D, [mfgCode: 0x115F])
-/**  ALTERNATE METHOD FOR WRITE & READ ATTRUBUTE COMMANDS
-	def cmds = zigbee.writeAttribute(0x0000, 0xFF0D, 0x20, attrValue[level], [mfgCode: 0x115F]) + zigbee.readAttribute(0x0000, 0xFF0D, [mfgCode: 0x115F])
-	for (String cmdString : commands) {
-		sendHubCommand([cmdString].collect {new physicalgraph.device.HubAction(it)}, 0)
-	}
-*/
-	sendEvent(name: "accelSensitivity", value: levelText[state.sensitivity], isStateChange: true, descriptionText: descText)
 	displayInfoLog(descText)
 }
 
@@ -402,50 +385,4 @@ def displayDebugLog(String message) {
 def displayInfoLog(String message) {
 	if (infoLogging || state.prefsSetCount < 3)
 		log.info "$device.displayName$message"
-}
-
-def refresh() {
-	displayInfoLog(": Refreshing UI display")
-	if (!state.sensitivity) {
-		state.sensitivity = 0
-		changeSensitivity()
-	}
-	if (device.currentValue('tiltAngle') == null)
-		sendEvent(name: 'tiltAngle', value: "--", isStateChange: true, displayed: false)
-	if (device.currentValue('activityLevel') == null)
-		sendEvent(name: 'activityLevel', value: "--", isStateChange: true, displayed: false)
-	zigbee.readAttribute(0x0000, 0xFF0D, [mfgCode: 0x115F])
-}
-
-def formatDate(batteryReset) {
-		def correctedTimezone = ""
-		def timeString = clockformat ? "HH:mm:ss" : "h:mm:ss aa"
-
-	// If user's hub timezone is not set, display error messages in log and events log, and set timezone to GMT to avoid errors
-		if (!(location.timeZone)) {
-				correctedTimezone = TimeZone.getTimeZone("GMT")
-				log.error "${device.displayName}: Time Zone not set, so GMT was used. Please set up your location in the SmartThings mobile app."
-				sendEvent(name: "error", value: "", descriptionText: "ERROR: Time Zone not set, so GMT was used. Please set up your location in the SmartThings mobile app.")
-		}
-		else {
-				correctedTimezone = location.timeZone
-		}
-		if (dateformat == "US" || dateformat == "" || dateformat == null) {
-				if (batteryReset)
-						return new Date().format("MMM dd yyyy", correctedTimezone)
-				else
-						return new Date().format("EEE MMM dd yyyy ${timeString}", correctedTimezone)
-		}
-		else if (dateformat == "UK") {
-				if (batteryReset)
-						return new Date().format("dd MMM yyyy", correctedTimezone)
-				else
-						return new Date().format("EEE dd MMM yyyy ${timeString}", correctedTimezone)
-				}
-		else {
-				if (batteryReset)
-						return new Date().format("yyyy MMM dd", correctedTimezone)
-				else
-						return new Date().format("EEE yyyy MMM dd ${timeString}", correctedTimezone)
-		}
 }
