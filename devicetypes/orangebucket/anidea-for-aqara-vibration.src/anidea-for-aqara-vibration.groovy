@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.04.07.00
+ * Version:	 20.04.07.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Vibration Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -112,17 +112,17 @@ def ping()
 }
 
 // Create map of values to be used for vibration, tilt, or drop event
-private Map mapSensorEvent( value )
+Map mapSensorEvent( value )
 {
 	logger( 'sensorevent', 'info', value )
     
-	def seconds = (value == 1 || value == 4) ? (motionreset ? motionreset : 65) : 2
+	def seconds = ( value == 1 || value == 4 ) ? ( motionreset ? motionreset : 65 ) : 2
     
 	def statustype = [ "stationary", "vibration", "tilt", 		  "drop", 	"", 	     "" ]
 	def eventname =  [ "", 			 "motion", 	  "acceleration", "button", "motion",   "acceleration" ]
 	def eventtype =  [ "", 			 "active", 	  "active", 	  "pushed", "inactive", "inactive" ]
     
-	def eventMessage = ["Stationary", "Vibration or movement (motion)", "Tilted (acceleration)", "Dropped (button)", "Reset motion", "Reset acceleration" ]
+	def eventmessage = [ '', 'Vibration or movement (motion)', 'Tilted (acceleration)', 'Dropped (button)', 'Reset motion', 'Reset acceleration' ]
     
 	if (value == 0)
 		return
@@ -132,13 +132,18 @@ private Map mapSensorEvent( value )
 		state.motionactive = 1
 	}
 	else if (value == 2)
+    {
 		runIn( seconds, clearaccelEvent )
+    }
 	else if (value == 3)
+    {
 		runIn( seconds, cleardropEvent)
+    }
+
 	return [
-		name: eventName[value],
-		value: eventType[value],
-		descriptionText: eventMessage[value],
+		name: eventname[value],
+		value: eventtype[value],
+		descriptionText: eventmessage[value]
 	]
 }
 
@@ -163,7 +168,7 @@ def parse( String description )
 	}
 }
 
-// Check catchall for battery voltage data to pass to getBatteryResult for conversion to percentage report
+// Check catchall for battery voltage data to pass to battery() for conversion to percentage report
 private Map parseCatchAllMessage(String description)
 {
 	Map resultMap = [:]
@@ -177,7 +182,7 @@ private Map parseCatchAllMessage(String description)
 			for (int i = 4; i < (MsgLength-3); i++) {
 				if (catchall.data.get(i) == 0x21) { // check the data ID and data type
 					// next two bytes are the battery voltage
-					resultMap = getBatteryResult((catchall.data.get(i+2)<<8) + catchall.data.get(i+1))
+					resultMap = battery((catchall.data.get(i+2)<<8) + catchall.data.get(i+1))
 					break
 				}
 			}
