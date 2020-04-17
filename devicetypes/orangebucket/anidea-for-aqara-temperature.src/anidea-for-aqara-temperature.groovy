@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.03.28.00
+ * Version:	 20.04.08.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -190,10 +190,8 @@ Map readattr( String description )
         {
 			pressureval = ( pressureval + settings.pressoffset )
 		}
-
-		pressureval = pressureval.round( 2 );
-
-		map = [ name: 'atmosphericPressure', value: pressureval, unit: 'mbar' ]
+        
+		map = [ name: 'atmosphericPressure', value: (int) pressureval.round( 0 ), unit: 'mbar' ]
 	} 
     else if (cluster == "0000" && attrid == "0005")  {
 		// Not interested.
