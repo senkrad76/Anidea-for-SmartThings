@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Vibration
  * ==========================
- * Version:	 20.04.07.03
+ * Version:	 20.04.17.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Vibration Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -42,14 +42,9 @@ metadata
 		capability 'Battery'
 
 		capability 'Health Check'
-		capability 'Refresh'
 		capability 'Sensor'
 
 		attribute 'accelSensitivity', 'string'
-        
-		attribute 'angleX', 'number'
-		attribute 'angleY', 'number'
-		attribute 'angleZ', 'number'
 
 		attribute 'tiltAngle', 'string'
 		attribute 'activityLevel', 'string'
@@ -57,8 +52,8 @@ metadata
 		fingerprint endpointId: '01', profileId: '0104', deviceId: '000A', inClusters: '0000,0003,0019,0101', outClusters: '0000,0004,0003,0005,0019,0101', manufacturer: 'LUMI', model: 'lumi.vibration.aq1', deviceJoinName: 'Lumi Aqara Sensor'
 
 		command 'changeSensitivity'
-		command 'setOpenPosition'
-		command 'setClosedPosition'
+		command 'setopen'
+		command 'setclosed'
 	}
 
 	preferences
@@ -88,8 +83,6 @@ def installed()
     sendEvent( name: 'button',       value: 'down_6x',   displayed: false ) 
     sendEvent( name: 'contact',      value: 'closed',    displayed: false )
     sendEvent( name: 'threeAxis',    value: [ 0, 0, 0 ], displayed: false )
-
-    refresh()
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -220,9 +213,6 @@ private Map parseReadAttrMessage(String description) {
 			def descText = ": Calculated angles are Psi = ${Psi}°, Phi = ${Phi}°, Theta = ${Theta}° "
 			displayDebugLog(": Raw accelerometer XYZ axis values = $x, $y, $z")
 			displayDebugLog(descText)
-			sendEvent(name: "angleX", value: Psi, displayed: false)
-			sendEvent(name: "angleY", value: Phi, displayed: false)
-			sendEvent(name: "angleZ", value: Theta, displayed: false)
 			resultMap = [
 				name: 'threeAxis',
 				value: [Psi, Phi, Theta],
@@ -230,24 +220,27 @@ private Map parseReadAttrMessage(String description) {
 				isStateChange: true,
 				descriptionText: "$device.displayName$descText",
 			]
-			if (!state.closedX || !state.openX)
+			if ( !state.closedx || !state.openx )
 				displayInfoLog(": Open/Closed position is unknown because Open and/or Closed positions have not been set")
 			else {
-				def float cX = Float.parseFloat(state.closedX)
-				def float cY = Float.parseFloat(state.closedY)
-				def float cZ = Float.parseFloat(state.closedZ)
-				def float oX = Float.parseFloat(state.openX)
-				def float oY = Float.parseFloat(state.openY)
-				def float oZ = Float.parseFloat(state.openZ)
+				def float cX = state.closedx
+				def float cY = state.closedy
+				def float cZ = state.closedz
+				def float oX = state.openx
+				def float oY = state.openy
+				def float oZ = state.openz
 				def float e = 10.0 // Sets range for margin of error
 				def ocPosition = "unknown"
+                
 				if ((Psi < cX + e) && (Psi > cX - e) && (Phi < cY + e) && (Phi > cY - e) && (Theta < cZ + e) && (Theta > cZ - e))
 					ocPosition = "closed"
 				else if ((Psi < oX + e) && (Psi > oX - e) && (Phi < oY + e) && (Phi > oY - e) && (Theta < oZ + e) && (Theta > oZ - e))
 					ocPosition = "open"
 				else
 					displayDebugLog(": The current calculated angle position does not match either stored open/closed positions")
-				sendpositionEvent(ocPosition)
+                    
+                // Only send a change event when have any confidence in it.
+				if ( ocPosition != 'unknown' ) sendEvent( name: 'contact', value: ocPosition )
 			}
 		}
 		// Handles Recent Activity level value messages
@@ -331,40 +324,48 @@ def cleardrop()
 {
 }
 
-def setClosedPosition() {
-	if (device.currentValue('angleX')) {
-		state.closedX = device.currentState('angleX').value
-		state.closedY = device.currentState('angleY').value
-		state.closedZ = device.currentState('angleZ').value
-		sendpositionEvent("closed")
-		displayInfoLog(": Closed position successfully set")
-		displayDebugLog(": Closed position set to $state.closedX°, $state.closedY°, $state.closedZ°")
+def setclosed()
+{
+	logger( 'setclosed', 'info', '' )
+    
+    def threeaxis = device.currentState( 'threeAxis' )
+
+    try
+    {
+		state.closedx = threeaxis.xyzValue.x
+		state.closedy = threeaxis.xyzValue.y
+		state.closedz = threeaxis.xyzValue.z
+        
+        logger( 'setclosed', 'debug', "Closed position set to [ $state.closedx, $state.closedy, $state.closedz ]" )
+        
+		sendEvent( name: 'contact', value: 'closed', isStateChanged: true )
 	}
-	else
-		displayDebugLog(": Closed position NOT set because no 3-axis accelerometer reports have been received yet")
+    catch( e )
+    {
+    	logger( 'setclosed', 'debug', e )
+    }
 }
 
-def setOpenPosition() {
-	if (device.currentValue('angleX')) {
-		state.openX = device.currentState('angleX').value
-		state.openY = device.currentState('angleY').value
-		state.openZ = device.currentState('angleZ').value
-		sendpositionEvent("open")
-		displayInfoLog(": Open position successfully set")
-		displayDebugLog(": Open position set to $state.openX°, $state.openY°, $state.openZ°")
-	}
-	else
-		displayDebugLog(": Open position NOT set because no 3-axis accelerometer reports have been received yet")
-}
+def setopen()
+{
+	logger( 'setopen', 'info', '' )
+    
+    def threeaxis = device.currentState( 'threeAxis' )
 
-def sendpositionEvent(String ocPosition) {
-	def descText = ": Calculated position is $ocPosition"
-	displayInfoLog(descText)
-	sendEvent(
-		name: "contact",
-		value: ocPosition,
-		isStateChange: true,
-		descriptionText: "$device.displayName$descText")
+    try
+    {
+		state.openx = threeaxis.xyzValue.x
+		state.openy = threeaxis.xyzValue.y
+		state.openz = threeaxis.xyzValue.z
+        
+        logger( 'setopen', 'debug', "Open position set to [ $state.openx, $state.openy, $state.openz ]" )
+        
+		sendEvent( name: 'contact', value: 'open', isStateChanged: true )
+	}
+    catch( e )
+    {
+    	logger( 'setopen', 'debug', e )
+    }
 }
 
 def changeSensitivity() {
@@ -378,11 +379,9 @@ def changeSensitivity() {
 }
 
 def displayDebugLog(String message) {
-	if (debugLogging)
-		log.debug "$device.displayName$message"
+	logger( 'displayDebugLog', 'debug', message )
 }
 
 def displayInfoLog(String message) {
-	if (infoLogging || state.prefsSetCount < 3)
-		log.info "$device.displayName$message"
+	logger( 'displayDebugLog', 'info', message )
 }
