@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.03.07.01
+ * Version:	 20.04.20.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -195,7 +195,7 @@ def open()
 
 def close()
 {
-	logger( 'closed', 'info', '')
+	logger( 'close', 'info', '')
     
     state.manualcontact = true
         
