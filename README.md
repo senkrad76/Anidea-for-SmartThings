@@ -33,7 +33,7 @@ This supports the Aqara temperature and humidity sensors. The original extracted
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
 
 ### Anidea for Aqara Vibration
-A handler for the vibration sensor is still being worked on so although it is in the repository it is not considered to be ready. It will need a bit more thinking about to decide what stays and what goes, as there seems to be quite a bit of added stuff in the handler. For example, it has a Contact Sensor capability which in this case really means something like a door being open or closed. That is perhaps best implemented in the handler if it is to appear anywhere, but it could also be argued that it is something for apps to decide for themselves.
+A handler for the vibration sensor is still being worked on so, although it is in the repository and should work, it remains subject to change. It will need a bit more thinking about to decide what stays and what goes, as there seems to be quite a bit of added stuff in the handler. For example, it has a Contact Sensor capability which in this case really means something like a door being open or closed. That is perhaps best implemented in the handler if it is to appear anywhere, but it could also be argued that it is something for apps to decide for themselves.
 
 There is one major change from the original. The vibration is now mapped to the acceleration capability and the tilt to motion. The acceleration sensor capability is presented as a vibration sensor in the 'new' app and so it is an obvious change.
 
