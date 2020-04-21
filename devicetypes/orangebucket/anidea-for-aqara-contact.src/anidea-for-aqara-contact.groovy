@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.04.20.2
+ * Version:	 20.04.22.
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -71,9 +71,9 @@ def installed()
     
     // In the absence of any information about how to make the sensor report its settings on demand,
     // fake some default values for the attributes. For binary attributes, use whichever one seems to
-    // attract the most attention.
-    sendEvent( name: 'contact',	value: 'open',			  displayed: false )
-    sendEvent( name: 'battery', value: 50,	   unit: '%', displayed: false )   
+    // to have least consequences.
+    sendEvent( name: 'contact',	value: 'closed',            displayed: false )
+    sendEvent( name: 'battery', value: 50,	     unit: '%', displayed: false )   
     
     // Record that the contact state was set manually.
     state.manualcontact = true
