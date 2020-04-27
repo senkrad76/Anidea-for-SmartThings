@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.03.09.01
+ * Version:	 20.04.27.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -48,9 +48,6 @@ metadata
         capability 'Actuator'
 		capability 'Sensor'
         
-        // Using an obviously custom attribute to experiment with routing information.
-        // attribute 'anidearoute', 'string'
-
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
 
 		// WXKG11LM (original revision)
@@ -82,8 +79,8 @@ def installed()
     
     // The 'pushed_6x' attribute value represents the button being shaken.
 	// The 'double' attribute value is being used to represent the hold release.
-    // The 'down_6x' attribute value is being used to see the button attribute. This is something ST
-    // seem to do in their handlers, but using 'pushed' seems a bit silly with so many otherwise
+    // The 'down_6x' attribute value is being used to seed the button attribute. This is something
+    // that keeps the new app happy, but using 'pushed' seems a bit silly with so many otherwise
     // unused values available.
     switch( device.getDataValue( "model" ) )
     {
@@ -97,8 +94,6 @@ def installed()
 	sendEvent(name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false)
 	sendEvent(name: 'numberOfButtons', value: 1, displayed: false)
 	sendEvent(name: 'button', value: 'down_6x', isStateChange: true, displayed: false)
-    
-    meshinfo()
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -134,8 +129,6 @@ def push()
 // parse() is called when the hub receives a message from a device.
 def parse( String description )
 {
-	// meshinfo()
-    
     logger( 'parse', 'debug', description )
     
 	def result = [:]
@@ -276,24 +269,3 @@ Map battery( raw )
     // Try isStateChange true in case that is needed by Health Check.
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
-
-/*
-
-import groovy.json.JsonSlurper
-
-def meshinfo()
-{
-	def meshinfo = new JsonSlurper().parseText( device.getDataValue( 'meshInfo' ) )
-    def route = "ID: ${device.getDeviceNetworkId()} Route:"
-    
-    for ( hop in meshinfo[ 'route' ] )
-    {
-		route += " ${hop[ 'deviceId' ]}"
-    }
-
-	logger 'meshinfo', 'info', route 
-
-	sendEvent( name: 'anidearoute', value: route )
-}
-*/
-    
