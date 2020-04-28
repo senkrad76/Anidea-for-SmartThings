@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.04.08.00
+ * Version:	 20.04.28.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -57,9 +57,8 @@ def installed()
 	// Try with a 2 hour 10 minute check interval.
     sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
    
-    // There may, or may not, be any technical reason for setting these attributes (it is something 
-    // ST written handlers seeem to do a lot). However it is handy for seeing when readings from the
-    // sensor are being received.
+    // The SmartThings app seems a lot happier when the attributes associated with capabilities
+    // have a value, so it is a good idea to initialise them.
     sendEvent( name: 'temperature', 		value: 0, 		unit: 'C',		displayed: false )
     sendEvent( name: 'humidity', 			value: 100,		unit: '%',		displayed: false )
     sendEvent( name: 'atmosphericPressure', value: 1000, 	unit: 'mbar',	displayed: false )
