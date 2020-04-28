@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.04.27.00
+ * Version:	 20.04.28.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -91,9 +91,9 @@ def installed()
         default:						supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_6x', 'held', 'double', 'down_6x' ]
         								break
     }
-	sendEvent(name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false)
-	sendEvent(name: 'numberOfButtons', value: 1, displayed: false)
-	sendEvent(name: 'button', value: 'down_6x', isStateChange: true, displayed: false)
+	sendEvent( name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false                      )
+	sendEvent( name: 'numberOfButtons',       value: 1,                               displayed: false                      )
+    sendEvent( name: 'button',                value: 'down_6x', 					  displayed: false, isStateChange: true )
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -105,7 +105,7 @@ def updated()
 	logger( 'updated', 'info', '' )
 }
 
-def logger(method, level = "debug", message ="")
+def logger( method, level = 'debug', message = '' )
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
@@ -158,7 +158,7 @@ def parse( String description )
 	return createEvent( result )
 }
 
-Map readattr(String description)
+Map readattr( String description )
 {
 	logger( 'readattr', 'info', '' )
     
