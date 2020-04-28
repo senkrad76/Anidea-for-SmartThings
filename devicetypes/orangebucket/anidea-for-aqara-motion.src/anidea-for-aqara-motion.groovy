@@ -220,7 +220,7 @@ Map battery( raw )
 // Manually set the motion attribute to active.  Don't call a reset timer.
 def active()
 {
-	logger( 'info', 'active', '' )
+	logger( 'active', 'info', '' )
         
 	sendEvent( name: 'motion', value: 'active' )
 }
@@ -228,7 +228,7 @@ def active()
 // Manually set the motion attribute to inactive.
 def inactive()
 {
-	logger( 'info', 'inactive', '' )
+	logger( 'inactive', 'info', '' )
     
 	sendEvent( name: 'motion', value: 'inactive' )
 }
