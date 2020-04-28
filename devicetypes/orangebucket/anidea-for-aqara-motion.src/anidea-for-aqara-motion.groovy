@@ -17,11 +17,12 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.03.11.00
+ * Version:	 20.04.28.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
- * most of its preferences, and much of the logging. The Health Check has been tidied up.
+ * most of its preferences, and much of the logging. The Health Check has been tidied up. The
+ * handler supports 'active' and 'inactive' commands to override the status.
  */
 
 import groovy.json.JsonOutput
@@ -43,6 +44,12 @@ metadata
         // This has been deprecated for years but ActionTiles was once said to look for it, and certainly
         // webCoRE uses it when selecting devices.
 		capability 'Sensor'
+        
+        // If the reset timer doesn't fire, as happened a lot in April 2020, the status can get stuck
+        // on active. Therefore add commands to manually set the status, using the names from the
+        // Simulated Motion Sensor handler.
+        command 'active'
+        command 'inactive'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
         fingerprint endpointId: '01', profileId: '0104', deviceId: '0107', inClusters: '0000, FFFF, 0406, 0400, 0500, 0001, 0003', outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion.aq2', deviceJoinName: 'Aqara Motion RTCGQ11LM'
@@ -57,7 +64,6 @@ metadata
 		input 'motionreset', 'number', title: 'Motion Reset Period', description: 'Enter number of seconds (default = 65)', range: '1..7200'
 	}	
 }
-
 
 // installed() is called when the device is paired, and when the device is updated in the IDE.
 def installed()
@@ -156,15 +162,12 @@ Map readattr( String description )
     return result
 }
 
-// If currently in 'active' motion detected state, resetmotion() resets to 'inactive' state and displays 'no motion'
+// resetmotion() is called by a timer to reset motion to the 'inactive' state.
 def resetmotion()
 {
 	logger( 'resetmotion', 'info', '' )
         
-	if ( device.currentState( 'motion' )?.value == 'active' )
-    {
-		sendEvent( name: 'motion', value: 'inactive' )
-	}
+	sendEvent( name: 'motion', value: 'inactive' )
 } 
 
 // Check catchall for battery voltage data
@@ -212,4 +215,20 @@ Map battery( raw )
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) ) 
     
 	return [ name: 'battery', value: percent, isStateChange: true ]
+}
+
+// Manually set the motion attribute to active.  Don't call a reset timer.
+def active()
+{
+	logger( 'info', 'active', '' )
+        
+	sendEvent( name: 'motion', value: 'active' )
+}
+
+// Manually set the motion attribute to inactive.
+def inactive()
+{
+	logger( 'info', 'inactive', '' )
+    
+	sendEvent( name: 'motion', value: 'inactive' )
 }
