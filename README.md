@@ -1,7 +1,7 @@
 # Anidea for SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs that were created for use within the author's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
-The following device handlers deliberately do not define a UI for the SmartThings Classic app.
+The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
 - [Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact](#anidea-for-aqara-button--aqara-contact--aqara-motion--aqara-temperature--aqara-vibration--mijia-contact)
   - [Anidea for Aqara Contact](#anidea-for-aqara-contact)
@@ -12,7 +12,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Button](#anidea-for-virtual-button)
 
-This device handler is perhaps a little more bespoke than the others. It still supports a UI in the Classic app.
+This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
 - [LAN MultiThing](#lan-multithing)
 
