@@ -17,13 +17,13 @@ This device handler is perhaps a little more bespoke than the others and it stil
 - [LAN MultiThing](#lan-multithing)
 
 ## Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact
+<img src="images/aqara_button.png" width="100"><img src="images/aqara_contact.png" width="100"><img src="images/aqara_motion.png" width="100"><img src="images/aqara_temperature.png" width="100"><img src="images/aqara_vibration.png" width="100">
+
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
 The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' environment. This includes completely removing the 'Tiles' and replacing with suitable metadata (if needed). A number of trials were made with custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably would not be available to all, but, although these could be made to work for the device pages, the dashboard tiles just wouldn't play ball. At the time of writing, with the architecture being undocumented, the Developer Workspace seemingly lagging well behind reality, and the support of capabilities being inconsistent, it seems easier to concede defeat and just work with what is available generically.
 
 Although a lot of edits have been made to the device handlers, they remain underpinned by the code from the 'bspranger' handlers when it comes to the Zigbee side of things, and also when it comes to the maths used in the Vibration Sensor.
-
-![Button](images/aqara_button.png)
 
 ### Anidea for Aqara Button
 This handler supports the same buttons as the 'bspranger' handler for Aqara buttons, but only the 'original version' of the WXKG11LM button (or 'Wireless Mini Switch') has actually been tested. The others hopefully should work but there is always the possibility that cosmetic changes to the code, and the odd bit of butchery, may have broken things. The most significant change is that it uses a broader ranger of button attribute values instead of using button numbers. The values used across the various buttons are:
@@ -38,26 +38,18 @@ This handler supports the same buttons as the 'bspranger' handler for Aqara butt
 
 *The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
 
-![Contact](images/aqara_contact.png)
-
 ### Anidea for Aqara Contact
 The handlers for the Mijia and Aqara Door and Window sensors only truly differed in the fingerprints of the devices and how exactly the same on/off event was handled, so one handler now covers both options. Please be aware that the handler sets the status of the sensor to 'closed' when it is installed (or updated via the IDE) as initialising the attributes just seems to make things work better. The custom commands to 'reset' the attribute to a known state have been retained, but renamed to 'open()' and 'close()' to match those in the Simulated Contact Sensor.
-
-![Motion](images/aqara_motion.png)
 
 ### Anidea for Aqara Motion
 This supports the same Aqara motion sensors as the original, providing both Motion and Illuminance. The sensors do not send inactive reports so the device handler resets motion using a timer. A number of sensors have been used with a sixty second timer for a considerable time without any obvious issue, but as this matches the 'blind' period of the sensors, and SmartThings times aren't particularly precise, it seems better to relax the default period to 65 seconds to avoid any race condition.
 
 During April 2020, the author experienced a considerable number of issues with the motion not being reset, and all the indications were that the timer event simply wasn't being received. For this reason, 'active()' and 'inactive()' custom commands have been added, matching the names used in the Simulated Motion Sensor, to allow the attribute to be 'reset' to a known state. The 'active()' command does not set the timer.
 
-![Contact](images/aqara_temperature.png)
-
 ### Anidea for Aqara Temperature
 This supports the Aqara temperature and humidity sensors. The original extracted the atmospheric pressure but never gave it an attribute. It now uses the proposed Atmospheric Pressure Measurement capability with the `atmosphericPressure` attribute. The new app can work with this on the device pages, but not in Automations, and it is not recognised by the Developer Workspace yet. The default pressure unit seems to be 'kPa', but the device itself uses 'mbar', and in the absence of any location setting specifying the unit (as there is for temperature), it didn't seem to be the device handler's job to do any conversions.
 
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
-
-![Vibration](images/aqara_vibration.png)
 
 ### Anidea for Aqara Vibration
 A handler for the vibration sensor is still being worked on so, although it is in the repository and should work, it remains subject to change. It will need a bit more thinking about to decide what stays and what goes, as there seems to be quite a bit of added stuff in the handler. For example, it has a Contact Sensor capability which in this case really means something like a door being open or closed. That is perhaps best implemented in the handler if it is to appear anywhere, but it could also be argued that it is something for apps to decide for themselves.
