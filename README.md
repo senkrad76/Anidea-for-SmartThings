@@ -108,10 +108,10 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
 
-## HTTP Response Motion Sensor
+## Anidea for HTTP Motion
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
 
-This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. A refresh command can also be used to check the status out of band.
+This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The refresh() command can also be used to check the status out of band, and custom active() and inactive() commands can be used to set the motion attribute directly.
 
 *Polling more frequently than every fifteen minutes just seems like 'a bad thing'.*
 
