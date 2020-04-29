@@ -4,6 +4,7 @@ Assorted SmartThings bits and bobs that were created for use within the author's
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
 - [Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact](#anidea-for-aqara-button--aqara-contact--aqara-motion--aqara-temperature--aqara-vibration--mijia-contact)
+  - [Anidea for Aqara Button](#anidea-for-aqara-button)
   - [Anidea for Aqara Contact](#anidea-for-aqara-contact)
   - [Anidea for Aqara Motion](#anidea-for-aqara-motion)
   - [Anidea for Aqara Temperature](#anidea-for-aqara-temperature)
