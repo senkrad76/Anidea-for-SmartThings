@@ -10,6 +10,8 @@ Assorted SmartThings bits and bobs that were created for use within the author's
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Button](#anidea-for-virtual-button)
 
+This device handler is perhaps a little more bespoke than the others.
+
 - [LAN MultiThing](#lan-multithing)
 
 ## Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact
