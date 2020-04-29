@@ -1,6 +1,17 @@
 # Anidea for SmartThings &copy; Graham Johnson (orangebucket)
 Assorted SmartThings bits and bobs that were created for use within the author's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
+- [Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact](#anidea-for-aqara-button--aqara-contact--aqara-motion--aqara-temperature--aqara-vibration--mijia-contact)
+  - [Anidea for Aqara Contact](#anidea-for-aqara-contact)
+  - [Anidea for Aqara Motion](#anidea-for-aqara-motion)
+  - [Anidea for Aqara Temperature](#anidea-for-aqara-temperature)
+  - [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
+  - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
+- [Anidea for HTTP Motion](#anidea-for-http-motion)
+- [Anidea for Virtual Button](#anidea-for-virtual-button)
+
+- [LAN MultiThing](#lan-multithing)
+
 ## Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
@@ -41,6 +52,15 @@ There is one major change from the original. The vibration is now mapped to the 
 
 ### Anidea for Mijia Contact
 The [Anidea for Aqara Contact](#anidea-for-aqara-contact) covers both ranges.
+
+## Anidea for HTTP Motion
+A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
+
+This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The refresh() command can also be used to check the status out of band, and custom active() and inactive() commands can be used to set the motion attribute directly.
+
+*Polling more frequently than every fifteen minutes just seems like 'a bad thing'.*
+
+*A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
 
 ## Anidea for Virtual Button
 At the time of writing, there isn't a useful virtual button that works with the device details screen in the new app. This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
@@ -107,12 +127,3 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 }</pre>
 
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
-
-## Anidea for HTTP Motion
-A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
-
-This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the parse() command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The refresh() command can also be used to check the status out of band, and custom active() and inactive() commands can be used to set the motion attribute directly.
-
-*Polling more frequently than every fifteen minutes just seems like 'a bad thing'.*
-
-*A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
