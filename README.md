@@ -12,6 +12,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Button](#anidea-for-virtual-button)
+- [Anidea for Virtual Presence](#anidea-for-virtual-presence)
 
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
@@ -53,7 +54,7 @@ This supports the Aqara temperature and humidity sensors. The original extracted
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
 
 ### Anidea for Aqara Vibration
-A handler for the vibration sensor is still being worked on so, although it is in the repository and should work, it remains subject to change. It will need a bit more thinking about to decide what stays and what goes, as there seems to be quite a bit of added stuff in the handler. For example, it has a Contact Sensor capability which in this case really means something like a door being open or closed. That is perhaps best implemented in the handler if it is to appear anywhere, but it could also be argued that it is something for apps to decide for themselves.
+A handler for the vibration sensor is most of the way there, with any further changes likely to be cosmetic.
 
 There is one major change from the original. The vibration is now mapped to the acceleration capability and the tilt to motion. The acceleration sensor capability is presented as a vibration sensor in the 'new' app and so it is an obvious change.
 
@@ -71,6 +72,9 @@ This simple device handler does the job described above. Every fifteen minutes i
 
 ## Anidea for Virtual Button
 At the time of writing, there isn't a useful virtual button that works with the device details screen in the new app. This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
+
+## Anidea for Virtual Presence
+The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler will do when it is added to the repository.
 
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
