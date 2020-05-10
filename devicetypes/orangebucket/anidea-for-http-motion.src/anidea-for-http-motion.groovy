@@ -17,7 +17,7 @@
  *
  * Anidea for HTTP Motion
  * ======================
- * Version: 20.04.29.00
+ * Version: 20.04.29.01
  *
  * This device handler implements a virtual motion sensor which is active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
@@ -67,16 +67,15 @@ def installed()
 	logger( 'installed', 'info', '' )
     
 	sendEvent( name: 'motion', value: 'inactive', displayed: false )
+    
+    unschedule()
+    runEvery15Minutes(polldevice)
 }
 
 def updated()
 {
 	logger( 'updated', 'info', '' )
 
-	// Schedule a call to polldevice() every fifteen minutes and also call it in
-	// ten seconds time.
-	unschedule()
-    runEvery15Minutes(polldevice)
 	runIn(10, polldevice)
 
 	runIn(1, setdni)
@@ -110,22 +109,6 @@ def setdni()
 def logger( method, level = 'debug', message = '' )
 {
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
-}
-
-// If parse() is called that suggests the remote device is switched on and
-// so the motion sensor is set to to active.
-def parse(description)
-{
-    logger( 'parse', 'info', '' )
-        
-	def msg = parseLanMessage(description)
-
-    state.waitingforresponse = false
-    def stateevent = createEvent(name: 'motion', value: 'active')
-    
-    logger( 'parse', 'info', statevent )
-    
-    return stateevent
 }
 
 // SmartThings will automatically run a HubAction returned by a command such as 
@@ -195,4 +178,20 @@ def inactive()
 	logger( 'inactive', 'info', '' )
     
     sendEvent( name: 'motion', value: 'inactive' )
+}
+
+// If parse() is called that suggests the remote device is switched on and
+// so the motion sensor is set to to active.
+def parse(description)
+{
+    logger( 'parse', 'info', '' )
+        
+	def msg = parseLanMessage(description)
+
+    state.waitingforresponse = false
+    def stateevent = createEvent(name: 'motion', value: 'active')
+    
+    logger( 'parse', 'info', statevent )
+    
+    return stateevent
 }
