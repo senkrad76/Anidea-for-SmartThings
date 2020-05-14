@@ -12,6 +12,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Button](#anidea-for-virtual-button)
+- [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
 - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
 
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
@@ -71,7 +72,12 @@ This simple device handler does the job described above. Every fifteen minutes i
 *A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
 
 ## Anidea for Virtual Button
-At the time of writing, there isn't a useful virtual button that works with the device details screen in the new app. This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
+At the time of creation, there wasn't a useful virtual button that worked with the device details screen in the new app. This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
+
+## Anidea for Virtual Momentary
+This device handler implements a momentary action for the Contact Sensor, Motion Sensor and Switch capabilities. Although not really necessary, none of the actions are enabled by default and those required should be enabled via the device settings. Pressing the momentary tile, or calling the `push()` method causes sets the active states (`open`, `active` and `on`) as required, and then immediately resets them to the inactive states (`closed`, `inactive` and `off`).
+
+*This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button, and the device details screen was a bit too messy.*
 
 ## Anidea for Virtual Presence
 The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy.
