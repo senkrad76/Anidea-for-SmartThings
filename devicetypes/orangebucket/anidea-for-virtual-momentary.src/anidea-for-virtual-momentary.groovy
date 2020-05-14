@@ -17,7 +17,7 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.05.14.00
+ * Version:	 20.05.14.01
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place but the momentary actions are controlled by
@@ -44,9 +44,9 @@ metadata
 
 	preferences
     {
-        input name: "momentarycontact", type: "bool", title: "Act as momentary Contact Sensor?", description: "Enter boolean", required: true
-        input name: "momentarymotion",  type: "bool", title: "Act as momentary Motion Sensor?",  description: "Enter boolean", required: true
-        input name: "momentaryswitch",  type: "bool", title: "Act as momentary Switch?",         description: "Enter boolean", required: true
+        input name: 'momentarycontact', type: 'bool', title: 'Act as momentary Contact Sensor?', description: 'Enter boolean', required: true
+        input name: 'momentarymotion',  type: 'bool', title: 'Act as momentary Motion Sensor?',  description: 'Enter boolean', required: true
+        input name: 'momentaryswitch',  type: 'bool', title: 'Act as momentary Switch?',         description: 'Enter boolean', required: true
 	}
 }
 
@@ -57,7 +57,7 @@ def installed()
 
     // Health Check is undocumented but this seems to be the common way of creating an untracked
     // device that will appear online when the hub is up.
-	sendEvent( name: "DeviceWatch-Enroll", value: [protocol: "cloud", scheme:"untracked"].encodeAsJson(), displayed: false )
+	sendEvent( name: 'DeviceWatch-Enroll', value: [protocol: 'cloud', scheme:'untracked'].encodeAsJson(), displayed: false )
     
     sendEvent( name: 'contact', value: 'closed',   displayed: false )
     sendEvent( name: 'motion',  value: 'inactive', displayed: false )
