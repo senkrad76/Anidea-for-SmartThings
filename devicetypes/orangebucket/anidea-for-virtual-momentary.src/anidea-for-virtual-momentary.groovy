@@ -17,7 +17,7 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.05.14.01
+ * Version:	 20.05.15.00
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place but the momentary actions are controlled by
@@ -73,7 +73,7 @@ def updated()
 	logger( 'updated', 'info', '' )
 
     logger( 'updated', 'debug', 'Momentary Contact Sensor ' + ( momentarycontact ? 'enabled' : 'disabled' ) )
-    logger( 'updated', 'debug', 'Momentary Motion Sensor '  + ( momentaryswitch  ? 'enabled' : 'disabled' ) )
+    logger( 'updated', 'debug', 'Momentary Motion Sensor '  + ( momentarymotion  ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Momentary Switch '         + ( momentaryswitch  ? 'enabled' : 'disabled' ) )
 }
 
