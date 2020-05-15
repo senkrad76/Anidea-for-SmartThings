@@ -81,7 +81,17 @@ It also seems to be useful to be able to do things like map `switch` attributes 
 Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The Anidea for Presence Sensor does likewise.
 
 ### Anidea for Virtual Binary
-The idea of this handler is to combine a virtual contact sensor, virtual motion sensor, virtual occupancy sensor, virtual presence sensor, and a virtual switch into the same device. If it appears in the repository, that should mean it is working.
+This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which are all disabled by default and should be enabled as required using the device settings are:
+
+|CAPABILITY|ATTRIBUTE|ACTIVE STATE|COMMAND|INACTIVE STATE|COMMAND|
+|----------|---------|--------------|----------------|--------------|----------------|
+|Contact Sensor|contact|open|open()|closed|close()|
+|Motion Sensor|motion|active|active()|inactive|inactive()|
+|Occupancy Sensor|occupancy|occupied|occupied()|unoccupied|unoccupied()|
+|Presence Sensor|presence|present|arrived()|not present|departed()|
+|Switch|switch|on|on()|off|off()|
+
+The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the command used by stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chose for use in other 'Anidea for ...' device handlers.
 
 ### Anidea for Virtual Button
 This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
