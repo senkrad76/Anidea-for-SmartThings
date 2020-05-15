@@ -3,7 +3,7 @@ Assorted SmartThings bits and bobs that were created for use within the author's
 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
-- [Anidea for Anidea for Lumi Devices](#anidea-for-lumi-devices)
+- [Anidea for Lumi Devices](#anidea-for-lumi-devices)
   - [Anidea for Aqara Button](#anidea-for-aqara-button)
   - [Anidea for Aqara Contact](#anidea-for-aqara-contact)
   - [Anidea for Aqara Motion](#anidea-for-aqara-motion)
