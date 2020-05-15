@@ -13,7 +13,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
   - [Anidea for Virtual Button](#anidea-for-virtual-button)
-  - [Anidea for Virtual Binaries](#anidea-for-virtual-binaries)
+  - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
   - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
   - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
 
@@ -76,11 +76,11 @@ This simple device handler does the job described above. Every fifteen minutes i
 ## Anidea for Virtual Devices
 At the time the Anidea for Virtual Button handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button`, it was decided to create a separate handler instead, hence Anidea for Virtual Momentary.
 
-It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the Anidea for Virtual Binaries handler.
+It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the Anidea for Virtual Binary handler.
 
 Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The Anidea for Presence Sensor does likewise.
 
-### Anidea for Virtual Binaries
+### Anidea for Virtual Binary
 The idea of this handler is to combine a virtual contact sensor, virtual motion sensor, virtual occupancy sensor, virtual presence sensor, and a virtual switch into the same device. If it appears in the repository, that should mean it is working.
 
 ### Anidea for Virtual Button
