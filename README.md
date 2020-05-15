@@ -11,15 +11,16 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
-- [Anidea for Virtual Button](#anidea-for-virtual-button)
-- [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
+- [Anidea for Virtual Devices](#anidea-for-virtual-devices)
+  - [Anidea for Virtual Button](#anidea-for-virtual-button)
+  - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
 - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
 
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
 - [LAN MultiThing](#lan-multithing)
 
-## Anidea for Lumi devices
+## Anidea for Lumi Devices
 <img src="images/aqara_button.png" width="100"><img src="images/aqara_contact.png" width="100"><img src="images/aqara_motion.png" width="100"><img src="images/aqara_temperature.png" width="100"><img src="images/aqara_vibration.png" width="100">
 
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
@@ -71,10 +72,20 @@ This simple device handler does the job described above. Every fifteen minutes i
 
 *A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
 
-## Anidea for Virtual Button
-At the time of creation, there wasn't a useful virtual button that worked with the device details screen in the new app. This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
+## Anidea for Virtual Devices
+At the time the Anidea for Virtual Button handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button`, it was decided to create a separate handler instead, hence Anidea for Virtual Momentary.
 
-## Anidea for Virtual Momentary
+It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the Anidea for Virtual Binaries handler.
+
+Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The Anidea for Presence Sensor does likewise.
+
+### Anidea for Virtual Binaries
+The idea of this handler is to combine a virtual contact sensor, virtual motion sensor, virtual occupancy sensor, virtual presence sensor, and a virtual switch into the same device. If it appears in the repository, that should mean it is working.
+
+### Anidea for Virtual Button
+This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
+
+### Anidea for Virtual Momentary
 This device handler implements a momentary action for the Contact Sensor, Motion Sensor and Switch capabilities. Although not really necessary, none of the actions are enabled by default and those required should be enabled via the device settings. Pressing the momentary tile, or calling the `push()` method sets the active states (`open`, `active` and `on`) as required, and then immediately resets them to the inactive states (`closed`, `inactive` and `off`).
 
 *This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button, and the device details screen was a bit too messy.*
