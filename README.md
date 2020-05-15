@@ -13,8 +13,9 @@ The following device handlers deliberately do not define a UI for the SmartThing
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
   - [Anidea for Virtual Button](#anidea-for-virtual-button)
+  - [Anidea for Virtual Binaries](#anidea-for-virtual-binaries)
   - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
-- [Anidea for Virtual Presence](#anidea-for-virtual-presence)
+  - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
 
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
@@ -90,7 +91,7 @@ This device handler implements a momentary action for the Contact Sensor, Motion
 
 *This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button, and the device details screen was a bit too messy.*
 
-## Anidea for Virtual Presence
+### Anidea for Virtual Presence
 The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy.
 
 ## LAN MultiThing
