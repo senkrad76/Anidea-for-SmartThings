@@ -3,7 +3,7 @@ Assorted SmartThings bits and bobs that were created for use within the author's
 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
-- [Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact](#anidea-for-aqara-button--aqara-contact--aqara-motion--aqara-temperature--aqara-vibration--mijia-contact)
+- [Anidea for Anidea for Lumi Devices](#anidea-for-lumi-devices)
   - [Anidea for Aqara Button](#anidea-for-aqara-button)
   - [Anidea for Aqara Contact](#anidea-for-aqara-contact)
   - [Anidea for Aqara Motion](#anidea-for-aqara-motion)
@@ -19,7 +19,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 - [LAN MultiThing](#lan-multithing)
 
-## Anidea for Aqara Button / Aqara Contact / Aqara Motion / Aqara Temperature / Aqara Vibration / Mijia Contact
+## Anidea for Lumi devices
 <img src="images/aqara_button.png" width="100"><img src="images/aqara_contact.png" width="100"><img src="images/aqara_motion.png" width="100"><img src="images/aqara_temperature.png" width="100"><img src="images/aqara_vibration.png" width="100">
 
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
