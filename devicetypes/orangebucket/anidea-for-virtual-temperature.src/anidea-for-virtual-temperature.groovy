@@ -17,7 +17,7 @@
  *
  * Anidea for Virtual Temperature
  * ==============================
- * Version:	 20.05.20.00
+ * Version:	 20.05.20.01
  *
  * This handler basically implements the same functionality as the Simulated Temperature
  * Sensor but works with the new app.
@@ -25,7 +25,8 @@
  
  metadata
  {
-    definition( name: 'Anidea for Virtual Temperature', namespace: 'orangebucket', author: 'Graham Johnson' )
+    definition( name: 'Anidea for Virtual Temperature', namespace: 'orangebucket', author: 'Graham Johnson',
+    			ocfDeviceType: 'oic.d.thermostat' )
     {
         capability 'Temperature Measurement'
         // The Switch Level capability has been (ab)used to provide a temperature control in the mobile app.
