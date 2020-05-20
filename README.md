@@ -16,6 +16,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
   - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
   - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
+  - [Anidea for Virtual Temperature](#anidea-for-virtual-temperature)
 
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
@@ -103,6 +104,13 @@ This device handler implements a momentary action for the Contact Sensor, Motion
 
 ### Anidea for Virtual Presence
 The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy.
+
+### Anidea for Virtual Temperature
+The Simulated Temperature Sensor uses Switch Level to give local control in the Classic app. However this confuses things in the 'new' app because the attribute `level` is never set. There are also issues because the units are never set in the events, and also there is an omission in that the level isn't updated when the temperature is changed remotely. This device handler has been written to work properly in the new app, and not at all in the Classic app. The `up()`, `down()` and `setTemperature()` custom commands allow the temperature to be incremented, decremented and set to a particular value, using the command names from the simulated sensor as a de facto standard.
+
+The implementation of Switch Level in the UI for the new app doesn't seem to support anything but 0 to 100. To work with this, the handler defaults of a range of -40 C to 150 C, or -40 F to 302 F, depending on the temperature scale setting in the Location (there doesn't seem to be a way to change this in the new app, but it can be changed via the IDE).
+
+*Please be aware that webCoRE recognised the `up()` and `down()` commands from another capability, and so presents them as 'Pan Camera Up' and 'Pan Camera Down'.*
 
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
