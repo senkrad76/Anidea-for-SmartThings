@@ -17,13 +17,13 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.04.28.00
+ * Version:	 20.05.20.0
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
  * custom attributes, most of its preferences, and much of the logging. The Health Check has been
- * copied from the IKEA motion sensor handler and modified. The proposed Atmospheric Pressure
- * Measurement has been added (previously, not even a custom attribute was defined).
+ * modifield and the proposed Atmospheric Pressure Measurement has been added (previously, not
+ * even a custom attribute was defined).
  */
  
 metadata
@@ -43,6 +43,7 @@ metadata
 
 	preferences
     {
+        input 'pressunit',   'enum',    title: 'Unit of Pressure',              description: 'Unit to use for pressure',                options: [ 'kPa', 'hPa', 'mbar', 'mmHg' ]
 		input 'pressoffset', 'number',  title: 'Atmospheric Pressure Offset',   description: 'Adjust pressure by this many units',      range: '*..*'
 		input 'humidoffset', 'number',  title: 'Humidity Offset',    			description: 'Adjust humidity by this many percent',    range: '*..*'
         input 'tempoffset',  'decimal', title: 'Temperature Offset', 			description: 'Adjust temperature by this many degrees', range: '*..*'
@@ -58,11 +59,12 @@ def installed()
     sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
    
     // The SmartThings app seems a lot happier when the attributes associated with capabilities
-    // have a value, so it is a good idea to initialise them.
-    sendEvent( name: 'temperature', 		value: 0, 		unit: 'C',		displayed: false )
-    sendEvent( name: 'humidity', 			value: 100,		unit: '%',		displayed: false )
-    sendEvent( name: 'atmosphericPressure', value: 1000, 	unit: 'mbar',	displayed: false )
-    sendEvent( name: 'battery', 			value: 50, 		unit: '%',		displayed: false )
+    // have a value, so it is a good idea to initialise them. The pressure value has been set to
+    // a decimal to help detect if the app ever starts displaying decimals.
+    sendEvent( name: 'temperature', 		value: 0, 	unit: 'C',   displayed: false )
+    sendEvent( name: 'humidity', 			value: 100, unit: '%',   displayed: false )
+    sendEvent( name: 'atmosphericPressure', value: 0.5, unit: 'kPa', displayed: false )
+    sendEvent( name: 'battery', 			value: 50,  unit: '%',   displayed: false )
 }
 
 // updated() seems to be called after installed() when the handler is first installed, and when it is updated
@@ -181,16 +183,51 @@ Map readattr( String description )
 		def result = value[ 0..3 ]
 		float pressureval = Integer.parseInt( result, 16 )
 
-		// mbar
-		pressureval = ( pressureval / 10 ) as Float
-		pressureval = pressureval.round( 1 );
-
-        if ( settings.pressoffset )
-        {
-			pressureval = ( pressureval + settings.pressoffset )
-		}
+		// The user manual suggests the device has a range of 30 to 110 kPa to within 0.12 kPa.
+		// The supplied value seems to be in units of 0.01 kPa.
         
-		map = [ name: 'atmosphericPressure', value: (int) pressureval.round( 0 ), unit: 'mbar' ]
+        def pressureunit = pressunit ? pressunit : 'kPa'
+               
+        if ( pressureunit == 'hPa' || pressureunit == 'mbar' )
+        {
+        	// 1 device unit == 0.01 kPa == 0.1 hPa == 0.1 mbar
+            // 1 mbar == 1 hPa == 0.01 device units
+            
+            // Divide by ten and round to the nearest whole value to
+            // reflect the precision of the device.
+ 			pressureval = ( pressureval / 10 ) as Float
+			pressureval = pressureval + ( pressoffset ? pressoffset : 0.0 )
+
+		    pressureval = pressureval.round( 0 )
+        }
+        else if ( pressureunit == 'mmHg' )
+        {
+        	// 1 device unit == 0.01 kPa = 0.07501 mmHg
+            // 1 mmHg = 0.07501 device units
+            
+            // Multiply by 0.07501 and round to the nearest whole number to
+            // reflect the precision of the device.
+ 			pressureval = ( pressureval * 0.07501 ) as Float
+			pressureval = pressureval + ( pressoffset ? pressoffset : 0.0 )
+
+		    pressureval = pressureval.round( 0 );
+        }
+        else
+        {
+        	// 1 device unit == 0.01 kPa
+            // 1 kPa = 100 device units
+            
+        	// Divide by one hundred and round to a single decimal place
+            // to reflect the precision of the device.
+ 			pressureval = ( pressureval / 100 ) as Float
+			pressureval = pressureval + ( pressoffset ? pressoffset : 0.0 )
+
+		    pressureval = pressureval.round( 1 );
+        }
+        
+        // The SmartThings app will only display integer values, which is pretty useless if 'kPa' is being used.
+        // It is recommended that 'hPa', 'mbar', or 'mmHg' be used instead as they can reasonably be rounded.
+		map = [ name: 'atmosphericPressure', value: (int) pressureval.round(0), unit: pressureunit ]
 	} 
     else if (cluster == "0000" && attrid == "0005")  {
 		// Not interested.
