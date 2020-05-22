@@ -55,10 +55,11 @@ During April 2020, the author experienced a considerable number of issues with t
 ### Anidea for Aqara Temperature
 This supports the Aqara temperature and humidity sensors. The original extracted the atmospheric pressure but never gave it an attribute. It now uses the proposed Atmospheric Pressure Measurement capability with the `atmosphericPressure` attribute. The new app can work with this on the device pages, but not in Automations, and it is not recognised by the Developer Workspace yet.
 
-The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself is specified from 30 kPa to 110 kPa, with a precision of 0.12 kPa, and seems to return units of 0.01 kPa. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler is ignoring the detail of the capability and specifying the unit as 'mbar', rounding to the nearest whole number to both keep the app happy and respect the precision of the device. It is planned to offer hPa as an alternative to market and also to support kPa to one decimal place.
+The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself is specified from 30 kPa to 110 kPa, with a precision of 0.12 kPa, and seems to return units of 0.01 kPa. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler ignore the letter of the capability and offers a choice of 'kPa', 'hPa', 'mbar' or 'mmHg'. However it is rather obliged to respect the display problem and only use integer values, making 'kPa' pretty useless.
 
+*The units are displayed incorrectly in the Settings area of the app because the first letter is being folded to upper case, turning correct abbreviations such as 'hPa' into the nonsensical 'HPa'.*
 
-At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
+At the time of writing, the most suitable metadata for UI purposes hasn't been determined and the tile is displaying humidity rather than temperature.
 
 ### Anidea for Aqara Vibration
 A handler for the vibration sensor is most of the way there, with any further changes likely to be cosmetic.
