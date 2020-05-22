@@ -13,7 +13,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
 - [Anidea for HTTP Motion](#anidea-for-http-motion)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
   - [Anidea for Virtual Button](#anidea-for-virtual-button)
-  - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
+  - [Anidea for Virtual Binary](#ani8dea-for-virtual-binary)
   - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
   - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
   - [Anidea for Virtual Temperature](#anidea-for-virtual-temperature)
@@ -55,7 +55,8 @@ During April 2020, the author experienced a considerable number of issues with t
 ### Anidea for Aqara Temperature
 This supports the Aqara temperature and humidity sensors. The original extracted the atmospheric pressure but never gave it an attribute. It now uses the proposed Atmospheric Pressure Measurement capability with the `atmosphericPressure` attribute. The new app can work with this on the device pages, but not in Automations, and it is not recognised by the Developer Workspace yet.
 
-The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself seems to return units of a tenth of a millibar. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler is ignoring the detail of the capability and specifying the unit as 'mbar', rounding to the nearest whole number to keep the app happy.
+The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself is specified from 30 kPa to 110 kPa, with a precision of 0.12 kPa, and seems to return units of 0.01 kPa. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler is ignoring the detail of the capability and specifying the unit as 'mbar', rounding to the nearest whole number to both keep the app happy and respect the precision of the device. It is planned to offer hPa as an alternative to market and also to support kPa to one decimal place.
+
 
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
 
