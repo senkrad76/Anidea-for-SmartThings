@@ -55,7 +55,7 @@ During April 2020, the author experienced a considerable number of issues with t
 ### Anidea for Aqara Temperature
 This supports the Aqara temperature and humidity sensors. The original extracted the atmospheric pressure but never gave it an attribute. It now uses the proposed Atmospheric Pressure Measurement capability with the `atmosphericPressure` attribute. The new app can work with this on the device pages, but not in Automations, and it is not recognised by the Developer Workspace yet.
 
-The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself returns seems to return units of a tenth of a millibar. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler is ignoring the detail of the capability and specifying the unit as 'mbar', rounding to the nearest whole number to keep the app happy.
+The capability definition only includes the single unit 'kPa', with a range of 0 to 110, and the app only seems to be able to display integer values. This is pretty useless as 1 kPa is the equivalent of 7.5 mmHg or 10 mbar. The device itself seems to return units of a tenth of a millibar. The combination of the capability and its implementation in the app does not really seem to be fit for purpose. Currently the handler is ignoring the detail of the capability and specifying the unit as 'mbar', rounding to the nearest whole number to keep the app happy.
 
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined.
 
