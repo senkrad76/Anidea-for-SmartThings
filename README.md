@@ -1,5 +1,7 @@
 # Anidea for SmartThings &copy; Graham Johnson (orangebucket)
-Assorted SmartThings bits and bobs that were created for use within the author's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others. **Please bear in mind that this is still very much a personal repository.**
+Assorted SmartThings bits and bobs that were created for use within the author's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others. 
+
+**Please bear in mind that this is still very much a personal repository. It can be updated for the most trivial of reasons, such as a spelling mistake in a comment.. **
 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
@@ -21,7 +23,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
 - [LAN MultiThing](#lan-multithing)
-
+---
 ## Anidea for Lumi Devices
 <img src="images/aqara_button.png" width="100"><img src="images/aqara_contact.png" width="100"><img src="images/aqara_motion.png" width="100"><img src="images/aqara_temperature.png" width="100"><img src="images/aqara_vibration.png" width="100">
 
@@ -69,6 +71,7 @@ There is one major change from the original. The vibration is now mapped to the 
 ### Anidea for Mijia Contact
 The [Anidea for Aqara Contact](#anidea-for-aqara-contact) covers both ranges.
 
+---
 ## Anidea for HTTP Motion
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
 
@@ -78,6 +81,7 @@ This simple device handler does the job described above. Every fifteen minutes i
 
 *A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
 
+---
 ## Anidea for Virtual Devices
 At the time the [Anidea for Virtual Button](#anidea-for-virtual-button) handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button`, it was decided to create a separate handler instead, hence [Anidea for Virtual Momentary](#anidea-for-virtual-momentary).
 
@@ -120,6 +124,7 @@ The implementation of Switch Level in the UI for the new app doesn't seem to sup
 
 *Please be aware that webCoRE recognised the `up()` and `down()` commands from another capability, and so presents them as 'Pan Camera Up' and 'Pan Camera Down'.*
 
+---
 ## LAN MultiThing
 This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
 
