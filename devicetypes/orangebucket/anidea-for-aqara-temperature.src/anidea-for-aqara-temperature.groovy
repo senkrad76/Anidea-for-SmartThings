@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.05.20.0
+ * Version:	 20.05.26.0
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -43,7 +43,7 @@ metadata
 
 	preferences
     {
-        input 'pressunit',   'enum',    title: 'Unit of Pressure',              description: 'Unit to use for pressure',                options: [ 'kPa', 'hPa', 'mbar', 'mmHg' ]
+        input 'pressunit',   'enum',    title: 'Unit of Pressure',              description: 'Unit to use for pressure',                options: [ 'kPa', 'hPa', 'mbar', 'mmHg', 'inHg' ]
 		input 'pressoffset', 'number',  title: 'Atmospheric Pressure Offset',   description: 'Adjust pressure by this many units',      range: '*..*'
 		input 'humidoffset', 'number',  title: 'Humidity Offset',    			description: 'Adjust humidity by this many percent',    range: '*..*'
         input 'tempoffset',  'decimal', title: 'Temperature Offset', 			description: 'Adjust temperature by this many degrees', range: '*..*'
@@ -212,6 +212,18 @@ Map readattr( String description )
 
 		    pressureval = pressureval.round( 0 );
         }
+        else if ( pressureunit == 'inHg' )
+        {
+        	// 1 device unit == 0.01 kPa = 0.00295 inHg
+            // 1 inHg = 0.00295 device units
+            
+            // Multiply by 0.00295 and round to two places to
+            // reflect the precision of the device.
+ 			pressureval = ( pressureval * 0.00295 ) as Float
+			pressureval = pressureval + ( pressoffset ? pressoffset : 0.0 )
+
+		    pressureval = pressureval.round( 2 );
+        }
         else
         {
         	// 1 device unit == 0.01 kPa
@@ -225,7 +237,7 @@ Map readattr( String description )
 		    pressureval = pressureval.round( 1 );
         }
         
-        // The SmartThings app will only display integer values, which is pretty useless if 'kPa' is being used.
+        // The SmartThings app will only display integer values, which is pretty useless for 'kPa' or 'inHg'.
         // It is recommended that 'hPa', 'mbar', or 'mmHg' be used instead as they can reasonably be rounded.
 		map = [ name: 'atmosphericPressure', value: (int) pressureval.round(0), unit: pressureunit ]
 	} 
