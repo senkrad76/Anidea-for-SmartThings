@@ -17,7 +17,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.05.26.0
+ * Version:	 20.05.26.1
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -38,6 +38,7 @@ metadata
             capability 'Health Check'
             capability 'Sensor'
 
+			// WSDCGQ11LM
 			fingerprint profileId: '0104', deviceId: '5F01', inClusters: '0000, 0003, FFFF, 0402, 0403, 0405', outClusters: '0000, 0004, FFFF', manufacturer: 'LUMI', model: 'lumi.weather', deviceJoinName: 'Aqara Temperature Sensor'
 	}
 
