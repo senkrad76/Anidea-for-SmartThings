@@ -2,22 +2,12 @@
  * ---------------------------------------------------------------------------------
  * (C) Graham Johnson (orangebucket)
  *
- * Permission to use, copy, modify, and/or distribute this software for any purpose
- * with or without fee is hereby granted, provided that the copyright notice below
- * and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH 
- * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND 
- * FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
- * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
- * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER 
- * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
- * THIS SOFTWARE.
+ * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------------------
  *
  * LAN MultiThing
  * ==============
- * Version:	 20.03.05.00
+ * Version:	 20.05.27.00
  *
  * The LAN MultiThing is a device handler for a remote device on the local network
  * that implements a number of actuator and sensor capabilities, and can also
