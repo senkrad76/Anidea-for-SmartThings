@@ -1,5 +1,7 @@
 # Anidea for SmartThings &copy; Graham Johnson (orangebucket)
-A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others. The owner is now using a separate branch for his personal use to reduce the frequency of changes to the 'master' branch.
+A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
+
+**Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
