@@ -101,8 +101,10 @@ This handler implements a multiple attribute binary state device. The overall st
 |Occupancy Sensor|occupancy|occupied|occupied()|unoccupied|unoccupied()|
 |Presence Sensor|presence|present|arrived()|not present|departed()|
 |Switch|switch|on|on()|off|off()|
+|Water Sensor|water|wet|wet()|dry|dry()|
 
-The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the command used by stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chose for use in other 'Anidea for ...' device handlers.
+The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the commands used by a stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chose for use in other 'Anidea for ...' device handlers.
+*The one exception is that `wet()` and `dry()` were created for the handler.*
 
 ### Anidea for Virtual Button
 This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
