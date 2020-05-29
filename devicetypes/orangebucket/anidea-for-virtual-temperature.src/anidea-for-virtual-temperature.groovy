@@ -3,10 +3,11 @@
  * (C) Graham Johnson (orangebucket)
  *
  * SPDX-License-Identifier: MIT
- * --------------------------------------------------------------------------------- *
+ * ---------------------------------------------------------------------------------
+ *
  * Anidea for Virtual Temperature
  * ==============================
- * Version:	 20.05.20.01
+ * Version:	 20.05.29.00
  *
  * This handler basically implements the same functionality as the Simulated Temperature
  * Sensor but works with the new app.
