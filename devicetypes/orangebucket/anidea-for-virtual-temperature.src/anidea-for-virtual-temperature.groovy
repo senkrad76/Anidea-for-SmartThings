@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Temperature
  * ==============================
- * Version:	 20.05.29.00
+ * Version:	 20.05.29.01
  *
  * This handler basically implements the same functionality as the Simulated Temperature
  * Sensor but works with the new app.
@@ -107,8 +107,9 @@ def setTemperature( newtemp )
     
     newtemp = ( (double) newtemp).round( 2 )
     
+    // Get the zero and hundred per cent temperatures, remembering that both null and 0 return false.
     def zero    = mintemp ? mintemp : ( mintemp == 0 ? mintemp : -40 ) 
-    def hundred = maxtemp ? maxtemp : ( maxtemp == 0 ? mintemp : ( temperatureScale == 'F' ? 302 : 150 ) )
+    def hundred = maxtemp ? maxtemp : ( maxtemp == 0 ? maxtemp : ( temperatureScale == 'F' ? 302 : 150 ) )
     
     def level = Math.round( ( ( newtemp - zero ) / ( hundred - zero ) ) * 100.0 )
     
