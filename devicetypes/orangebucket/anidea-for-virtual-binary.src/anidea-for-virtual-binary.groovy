@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Binary
  * =========================
- * Version:	 20.05.27.00
+ * Version:	 20.05.29.00
  *
  * This device handler implements a virtual binary state device.
  */
@@ -21,6 +21,7 @@ metadata
         capability 'Occupancy Sensor'
         capability 'Presence Sensor'
         capability 'Switch'
+        capability 'Water Sensor'
         //
 		capability 'Health Check'
         //
@@ -35,6 +36,8 @@ metadata
         command 'unoccupied'
         command 'arrived'
         command 'departed'
+        command 'wet'
+        command 'dry'
 	}
 
 	preferences
@@ -44,6 +47,7 @@ metadata
         input name: 'virtualoccupancy', type: 'bool', title: 'Act as virtual Occupancy Sensor?', description: 'Enter boolean', required: true
         input name: 'virtualpresence',  type: 'bool', title: 'Act as virtual Presence Sensor?',  description: 'Enter boolean', required: true
         input name: 'virtualswitch',    type: 'bool', title: 'Act as virtual Switch?',           description: 'Enter boolean', required: true
+        input name: 'virtualwater',     type: 'bool', title: 'Act as virtual Water Sensor?',     description: 'Enter boolean', required: true
 	}
 }
 
@@ -61,6 +65,7 @@ def installed()
     sendEvent( name: 'occupancy', value: 'unoccupied',  displayed: false )
     sendEvent( name: 'presence',  value: 'not present', displayed: false )
     sendEvent( name: 'switch',    value: 'off',         displayed: false )
+    sendEvent( name: 'water',	  value: 'dry',			displayed: false )
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -76,6 +81,7 @@ def updated()
     logger( 'updated', 'debug', 'Virtual Occupancy Sensor ' + ( virtualoccupancy ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Presence Sensor '  + ( virtualpresence  ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Switch '           + ( virtualswitch    ? 'enabled' : 'disabled' ) )
+    logger( 'updated', 'debug', 'Virtual Water Sensor '     + ( virtualwater     ? 'enabled' : 'disabled' ) )
 }
 
 def logger( method, level = 'debug', message = '' )
@@ -115,6 +121,7 @@ def binaryactive()
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'occupied' )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'present'  )
     if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'on'       )
+    if ( virtualwater     ) sendEvent( name: 'water',     value: 'wet'      )
 }
 
 def binaryinactive()
@@ -126,6 +133,7 @@ def binaryinactive()
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'unoccupied'  )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'not present' )
     if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'off'         )
+    if ( virtualwater     ) sendEvent( name: 'water',     value: 'dry'         )
 }
 
 def open()
@@ -180,6 +188,20 @@ def arrived()
 def departed()
 {
 	logger( 'departed', 'info', '' )
+    
+    binaryinactive()
+}
+
+def wet()
+{
+	logger( 'wet', 'info', '' )
+    
+    binaryactive()
+}
+
+def dry()
+{
+	logger( 'dry', 'info', '' )
     
     binaryinactive()
 }
