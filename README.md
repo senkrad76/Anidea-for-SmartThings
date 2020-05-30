@@ -90,7 +90,7 @@ Mobile presence has been using both the Presence Sensor and Occupancy Sensor cap
 A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](#anidea-for-virtual-temperature) being created.
 
 ### Anidea for Virtual Binary
-This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which are all disabled by default and should be enabled as required using the device settings are:
+This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which are all disabled by default and should be enabled as required using the device settings, are:
 
 |CAPABILITY|ATTRIBUTE|ACTIVE STATE|COMMAND|INACTIVE STATE|COMMAND|
 |----------|---------|--------------|----------------|--------------|----------------|
