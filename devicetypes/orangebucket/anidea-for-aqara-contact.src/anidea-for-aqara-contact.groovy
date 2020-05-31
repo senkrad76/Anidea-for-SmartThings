@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.05.27.00
+ * Version:	 20.05.31.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -68,10 +68,9 @@ def installed()
     // Record that the contact state was set manually.
     state.manualcontact = true
     
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+    // Set an initial checkInterval for Health Check of twenty-fours hours. Change it to
+    // two hours and ten minutes after the first 50-60 min battery report arrives.
+    sendEvent( name: 'checkInterval', value: 86400, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -142,8 +141,17 @@ Map battery( raw )
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) ) 
 
+	// If checkInterval is still 24 hours, set a shorter one.
+    if ( device.currentValue( 'checkInterval' ) == 86400 )
+    {
+        // Set checkInterval to two hours and ten minutes now a battery value has arrived.
+    	sendEvent( name: 'checkInterval', value: 7800, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+                       
+        logger( 'battery', 'debug', 'checkInterval 7800 seconds' )
+	}
+ 
 	// Battery events are sent with the 'isStateChange: true' flag to make sure there are regular
-    // propagated events available Health Check to monitor (if that is what it needs).
+    // propagated events available for Health Check to monitor (if that is what it needs).
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
 

@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.05.27.00
+ * Version:	 20.05.31.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -46,8 +46,9 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
          
-	// Try with a 2 hour 10 minute check interval.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+	// Start with a twenty-four hour checkInterval for Health Check and reduce it
+    // when the first 50-60 min battery report arrives.
+    sendEvent( name: 'checkInterval', value: 86400, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
    
     // The SmartThings app seems a lot happier when the attributes associated with capabilities
     // have a value, so it is a good idea to initialise them. The pressure value has been set to
@@ -252,6 +253,15 @@ Map battery( raw )
 	def minvolts = 2.7
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
-    
+
+	// If checkInterval is still 24 hours, set a shorter one.
+    if ( device.currentValue( 'checkInterval' ) == 86400 )
+    {
+        // Set checkInterval to two hours and ten minutes now a battery value has arrived.
+    	sendEvent( name: 'checkInterval', value: 7800, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+                       
+        logger( 'battery', 'debug', 'checkInterval 7800 seconds' )
+	}
+ 
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }

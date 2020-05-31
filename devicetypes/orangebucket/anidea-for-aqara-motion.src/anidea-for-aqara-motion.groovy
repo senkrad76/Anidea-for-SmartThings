@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.05.27.00
+ * Version:	 20.05.31.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -60,10 +60,9 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
     
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+    // Set an initial twenty-four hour checkInterval for Health Check. Reduce it to two hours
+    // and ten minutes when the first 50-60 min battery report arrives.
+    sendEvent( name: 'checkInterval', value: 86400, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
  
     // The SmartThings handlers seem keen on initialising the attributes, so ...
     sendEvent( name: 'motion', value: 'inactive', displayed: false )
@@ -203,7 +202,16 @@ Map battery( raw )
 	def minvolts = 2.7
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) ) 
-    
+ 
+ 	// If checkInterval is still 24 hours, set a shorter one.
+    if ( device.currentValue( 'checkInterval' ) == 86400 )
+    {
+        // Set checkInterval to two hours and ten minutes now a battery value has arrived.
+    	sendEvent( name: 'checkInterval', value: 7800, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+                       
+        logger( 'battery', 'debug', 'checkInterval 7800 seconds' )
+	}
+ 
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
 

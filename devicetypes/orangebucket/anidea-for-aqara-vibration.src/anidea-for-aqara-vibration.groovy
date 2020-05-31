@@ -6,7 +6,7 @@
  * --------------------------------------------------------------------------------- *
  * Anidea for Aqara Vibration
  * ==========================
- * Version:	 20.05.27.00
+ * Version:	 20.05.31.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Vibration Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -56,10 +56,9 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
     
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+    // Set an initial checkInterval of 24 hours for Health Check, and reduce it when the first
+    // of the 50-60 min battery reports arrives.
+    sendEvent( name: 'checkInterval', value: 86400, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
  
  	// Use pushed_6x for vibration, and down_6x as a dummy value for initialisation purposes.
     sendEvent( name: 'numberOfButtons',       value: 1,                                         displayed: false )
