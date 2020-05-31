@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.05.27.00
+ * Version:	 20.05.31.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -41,12 +41,12 @@ metadata
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
 
 		// WXKG11LM (original revision)
-		fingerprint deviceId: "5F01", inClusters: "0000,FFFF,0006",      outClusters: "0000,0004,FFFF", manufacturer: "LUMI", model: "lumi.sensor_switch.aq2", deviceJoinName: "Aqara Button WXKG11LM"
+		fingerprint deviceId: '5F01', inClusters: '0000,FFFF,0006',      outClusters: '0000,0004,FFFF', manufacturer: 'LUMI', model: 'lumi.sensor_switch.aq2', deviceJoinName: 'Aqara Button WXKG11LM'
 		// WXKG11LM (new revision)
-		fingerprint deviceId: "5F01", inClusters: "0000,0012,0003",      outClusters: "0000",           manufacturer: "LUMI", model: "lumi.remote.b1acn01",    deviceJoinName: "Aqara Button WXKG11LM r2"
+		fingerprint deviceId: '5F01', inClusters: '0000,0012,0003',      outClusters: '0000',           manufacturer: 'LUMI', model: 'lumi.remote.b1acn01',    deviceJoinName: 'Aqara Button WXKG11LM r2'
 		// WXKG12LM
-		fingerprint deviceId: "5F01", inClusters: "0000,0001,0006,0012", outClusters: "0000",           manufacturer: "LUMI", model: "lumi.sensor_switch.aq3", deviceJoinName: "Aqara Button WXKG12LM"
-		fingerprint deviceId: "5F01", inClusters: "0000,0001,0006,0012", outClusters: "0000",           manufacturer: "LUMI", model: "lumi.sensor_swit",       deviceJoinName: "Aqara Button WXKG12LM"
+		fingerprint deviceId: '5F01', inClusters: '0000,0001,0006,0012', outClusters: '0000',           manufacturer: 'LUMI', model: 'lumi.sensor_switch.aq3', deviceJoinName: 'Aqara Button WXKG12LM'
+		fingerprint deviceId: '5F01', inClusters: '0000,0001,0006,0012', outClusters: '0000',           manufacturer: 'LUMI', model: 'lumi.sensor_swit',       deviceJoinName: 'Aqara Button WXKG12LM'
 	}
 
 	preferences
@@ -60,10 +60,9 @@ def installed()
 {	
 	logger( 'installed', 'info', '' )
 
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+    // Set an initial checkInterval of twenty-four hours for the Health Check. Change to
+    // two hours and ten minutes when the regular 50-60 minutes battery reports start.
+    sendEvent( name: 'checkInterval', value: 86400, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
 
 	def supportedbuttons = []
     
@@ -153,9 +152,9 @@ Map readattr( String description )
 	logger( 'readattr', 'info', '' )
     
     // This method of extracting the data is inherited.
-	def cluster  = description.split(",").find { it.split(":")[0].trim() == "cluster"}?.split(":")[1].trim()
-	def attrid   = description.split(",").find { it.split(":")[0].trim() == "attrId" }?.split(":")[1].trim()
-	def valuehex = description.split(",").find { it.split(":")[0].trim() == "value"  }?.split(":")[1].trim()
+	def cluster  = description.split( ',' ).find { it.split( ':' )[ 0 ].trim() == 'cluster' }?.split( ':' )[ 1 ].trim()
+	def attrid   = description.split( ',' ).find { it.split( ':' )[ 0 ].trim() == 'attrId'  }?.split( ':' )[ 1 ].trim()
+	def valuehex = description.split( ',' ).find { it.split( ':' )[ 0 ].trim() == 'value'   }?.split( ':' )[ 1 ].trim()
     
 	Map result = [:]
 
@@ -191,7 +190,7 @@ Map readattr( String description )
 }
 
 // Parse WXKG11LM (original revision) button message: press, double-click, triple-click, & quad-click
-private buttons11( attrid, value )
+Map buttons11( attrid, value )
 {
 	logger( 'buttons11', 'info', "$attrid, $value" )
     
@@ -215,7 +214,7 @@ Map buttons( value )
     
     // Treat the button being shaken as a sextuple press, and (ab)use double for the hold release as
     // there (understandably) isn't a released event.
-	def click = [ 0: "held", 1: "pushed", 2: "pushed_2x", 16: "held", 17: "double", 18: "pushed_6x", 255: "double" ]
+	def click = [ 0: 'held', 1: 'pushed', 2: 'pushed_2x', 16: 'held', 17: 'double', 18: 'pushed_6x', 255: 'double' ]
     
     return [ name: 'button', value: click[ value ], isStateChange: true ]
  }
@@ -256,6 +255,15 @@ Map battery( raw )
 	def maxvolts = 3.2
 	def percent = Math.min( 100, Math.round( 100.0 * ( rawvolts - minvolts ) / ( maxvolts - minvolts ) ) )
     
+	// If checkInterval is still 24 hours, set a shorter one.
+    if ( device.currentValue( 'checkInterval' ) == 86400 )
+    {
+        // Set checkInterval to two hours and ten minutes now a battery value has arrived.
+    	sendEvent( name: 'checkInterval', value: 7800, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
+                       
+        logger( 'battery', 'debug', 'checkInterval 7800 seconds' )
+	}
+ 
     // Try isStateChange true in case that is needed by Health Check.
 	return [ name: 'battery', value: percent, isStateChange: true ]
 }
