@@ -29,9 +29,18 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
-The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' environment. This includes completely removing the 'Tiles' and replacing with suitable metadata (if needed). A number of trials were made with custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably would not be available to all, but, although these could be made to work for the device pages, the dashboard tiles just wouldn't play ball. At the time of writing, with the architecture being undocumented, the Developer Workspace seemingly lagging well behind reality, and the support of capabilities being inconsistent, it seems easier to concede defeat and just work with what is available generically.
+The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' app and environment, with the Classic app no longer supported. A number of trials were made with custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably would not be available to all, but, although these could be made to work for the device pages, the dashboard tiles just wouldn't play ball. At the time of writing, with the architecture being undocumented, the Developer Workspace seemingly lagging well behind reality, and the support of capabilities being inconsistent, it seems easier to concede defeat and just work with what is available generically.
 
 Although a lot of edits have been made to the device handlers, they remain underpinned by the code from the 'bspranger' handlers when it comes to the Zigbee side of things, and also when it comes to the maths used in the Vibration Sensor.
+
+The common changes made to all the handlers include:
+
+* Completely remove the `tiles()` section as the Classic app is not being supported.
+* All attributes initialised in the `installed()` method.
+* Initial `checkInterval` of twenty-four hours.
+* A `checkInterval` of two hours ten minutes once the first of the regular battery reports has arrived.
+* More simplified logging, using `info` for each method entered, and `debug` for finer details.
+* Change to 'house style': lower case variable and method names except for compatibility; Allman style indentation; single quotes where possible; spaces around contents of brackets and parentheses.
 
 ### Anidea for Aqara Button
 This handler supports the same buttons as the 'bspranger' handler for Aqara buttons, but only the 'original version' of the WXKG11LM button (or 'Wireless Mini Switch') has actually been tested. The others hopefully should work but there is always the possibility that cosmetic changes to the code, and the odd bit of butchery, may have broken things. The most significant change is that it uses a broader ranger of button attribute values instead of using button numbers. The values used across the various buttons are:
