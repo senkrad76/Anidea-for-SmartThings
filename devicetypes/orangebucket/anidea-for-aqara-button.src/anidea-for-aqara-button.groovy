@@ -71,7 +71,7 @@ def installed()
     // The 'down_6x' attribute value is being used to seed the button attribute. This is something
     // that keeps the new app happy, but using 'pushed' seems a bit silly with so many otherwise
     // unused values available.
-    switch( device.getDataValue( "model" ) )
+    switch( device.getDataValue( 'model' ) )
     {
     	case 'lumi.sensor_switch.aq2':	supportedbuttons = [ 'pushed', 'pushed_2x', 'pushed_3x', 'pushed_4x', 'down_6x' ]
         								break
