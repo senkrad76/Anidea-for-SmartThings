@@ -36,11 +36,13 @@ Although a lot of edits have been made to the device handlers, they remain under
 The common changes made to all the handlers include:
 
 * Completely remove the `tiles()` section as the Classic app is not being supported.
-* All attributes initialised in the `installed()` method.
-* Initial `checkInterval` of twenty-four hours.
-* A `checkInterval` of two hours ten minutes once the first of the regular battery reports has arrived.
-* More simplified logging, using `info` for each method entered, and `debug` for finer details.
-* Change to 'house style': lower case variable and method names except for compatibility; Allman style indentation; single quotes where possible; spaces around contents of brackets and parentheses.
+* Remove custom attributes and commands, except for custom 'setters' (used to force attributes to particular values).
+* Rename custom setters where they differ from the equivalent commands in ST stock handlers.
+* Initialise all attributes in the `installed()` method (the 'new' app isn't keen on attributes without values).
+* Initialise `checkInterval` to twenty-four hours as battery reports take a few hours to appear.
+* Set a `checkInterval` of two hours ten minutes once the first of the regular battery reports has arrived.
+* Change logging to 'house style', using `info` for each method entered, and `debug` for finer details.
+* Change code to 'house style': lower case variable and method names except where required for compatibility; Allman style indentation; single quotes where possible; spaces around contents of brackets and parentheses.
 
 ### Anidea for Aqara Button
 This handler supports the same buttons as the 'bspranger' handler for Aqara buttons, but only the 'original version' of the WXKG11LM button (or 'Wireless Mini Switch') has actually been tested. The others hopefully should work but there is always the possibility that cosmetic changes to the code, and the odd bit of butchery, may have broken things. The most significant change is that it uses a broader ranger of button attribute values instead of using button numbers. The values used across the various buttons are:
