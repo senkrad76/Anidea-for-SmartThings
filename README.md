@@ -133,7 +133,7 @@ The implementation of Switch Level in the UI for the new app doesn't seem to sup
 
 *The Switch Level capability in the device details doesn't seem to support entering 0%, and the Settings screen can be a little odd with 0 values too.*
 
-*Please be aware that webCoRE recognised the `up()` and `down()` commands from another capability, and so presents them as 'Pan Camera Up' and 'Pan Camera Down'.*
+*Please be aware that webCoRE recognises the `up()` and `down()` commands from another capability, and so presents them as 'Pan Camera Up' and 'Pan Camera Down'.*
 
 ---
 ## LAN MultiThing
