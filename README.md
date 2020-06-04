@@ -41,6 +41,7 @@ The common changes made to all the handlers include:
 * Initialise all attributes in the `installed()` method (the 'new' app isn't keen on attributes without values).
 * Initialise `checkInterval` to twenty-four hours as battery reports take a few hours to appear.
 * Set a `checkInterval` of two hours ten minutes once the first of the regular battery reports has arrived.
+* Fix 0% and 100% battery levels to 2.7 V and 3.2 V rather than having settings.
 * Change logging to 'house style', using `info` for each method entered, and `debug` for finer details.
 * Change code to 'house style': lower case variable and method names except where required for compatibility; Allman style indentation; single quotes where possible; spaces around contents of brackets and parentheses.
 
