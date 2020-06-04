@@ -12,7 +12,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Aqara Temperature](#anidea-for-aqara-temperature)
   - [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
-- [Anidea for HTTP Motion](#anidea-for-http-motion)
+- [Anidea for HTTP Ping](#anidea-for-http-ping)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
   - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
   - [Anidea for Virtual Button](#anidea-for-virtual-button)
@@ -82,12 +82,12 @@ The reworking of the handler for the vibration sensor, model DJT11LM, is pretty 
 The [Anidea for Aqara Contact](#anidea-for-aqara-contact) handler also covers an earlier model.
 
 ---
-## Anidea for HTTP Motion
-A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
+## Anidea for HTTP Ping
+A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect if the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
 
-This simple device handler does the job described above. Every fifteen minutes it attempts to connect an HTTP server on the IP address and port defined in the preferences. If the `parse()` command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The `refresh()` command can also be used to check the status out of band, and custom `active()` and `inactive()` commands can be used to set the motion attribute directly.
+This simple device handler was built for the job described above, but as well as being able to act as a virtual Motion Sensor, it can also be set to be a Contact Sensor, Occupancy Sensor, Presence Sensor and Switch and it behaves like the Anidea for Virtual Binary handler in having a single overall active or inactive state. Every fifteen minutes it attempts to connect an HTTP server on the IP address, port and path defined in the preferences. If the `parse()` command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The `refresh()` command can also be used to check the status out of band, and custom `active()` and `inactive()` commands can be used to set the motion attribute directly.
 
-*Polling more frequently than every fifteen minutes just seems like 'a bad thing'.*
+*Polling more frequently than every fifteen minutes just seems like 'a bad thing', but it will probably be made configurable at some stage.
 
 *A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
 
