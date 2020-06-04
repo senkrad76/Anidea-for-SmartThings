@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------------------
  *
- * Anidea for HTTP Motion
- * ======================
- * Version: 20.05.27.00
+ * Anidea for HTTP Ping
+ * ====================
+ * Version: 20.06.04.00
  *
  * This device handler implements a virtual motion sensor which is active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
@@ -34,7 +34,7 @@
 
 metadata
 {
-	definition ( name: 'Anidea for HTTP Motion', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition ( name: 'Anidea for HTTP Ping', namespace: 'orangebucket', author: 'Graham Johnson' )
     {
 		capability 'Actuator'
         capability 'Motion Sensor'
