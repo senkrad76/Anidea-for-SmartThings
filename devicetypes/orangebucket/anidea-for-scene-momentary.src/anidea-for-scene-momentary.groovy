@@ -6,7 +6,7 @@
  * --------------------------------------------------------------------------------- *
  * Anidea for Scene Momentary
  * ==========================
- * Version:	 20.06.05.00
+ * Version:	 20.06.05.01
  *
  * This device handler implements a Momentary button that activates a scene via the
  * API, saving the need to assemble HTTPS POST requests in third party apps.
@@ -88,5 +88,17 @@ def parse( String description )
 
 def response( response, data )
 {
-    logger( 'response', 'info', response.data )
+    logger( 'response', 'info', response.status )
+    
+    switch ( response.status ) {
+    	case 200:
+        	logger( 'response', 'debug', 'A status of 200 suggests the Scene should have been executed' )
+            break
+        case 400:
+            logger( 'response', 'debug', 'A status of 400 suggests an invalid Scene ID' )
+            break
+        case 401:
+            logger( 'response', 'debug', 'A status of 401 suggests an invalid Personal Access Token' )
+            break
+    }
 }
