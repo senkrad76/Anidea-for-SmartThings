@@ -7,7 +7,7 @@
  *
  * Anidea for HTTP Ping
  * ====================
- * Version: 20.06.04.01
+ * Version: 20.06.04.02
  *
  * This device handler implements a number of binary sensors which are active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
@@ -119,6 +119,18 @@ def logger( method, level = 'debug', message = '' )
 	log."${level}" "$device.displayName [$device.name] [${method}] ${message}"
 }
 
+
+def refresh()
+{    
+    logger( 'refresh', 'info', '' )
+    
+    runIn(60, responsecheck)
+    
+    state.waitingforresponse = true
+    
+    return buildhubaction()
+}
+
 def on()
 {
 	logger( 'on', 'info', '' )
@@ -131,17 +143,6 @@ def off()
 	logger( 'off', 'info', '' )
     
     binaryinactive()
-}
-
-def refresh()
-{    
-    logger( 'refresh', 'info', '' )
-    
-    runIn(60, responsecheck)
-    
-    state.waitingforresponse = true
-    
-    return buildhubaction()
 }
 
 // If parse() is called that suggests the remote device is switched on and
@@ -216,6 +217,7 @@ def binaryactive()
 def binaryinactive()
 {
 	logger( 'binaryinactive', 'info', '' )
+    
 	// Return attributes to inactive state.
 	if ( virtualcontact   ) sendEvent( name: 'contact',   value: 'closed'      )
     if ( virtualmotion    ) sendEvent( name: 'motion',    value: 'inactive'    )
@@ -276,20 +278,6 @@ def arrived()
 def departed()
 {
 	logger( 'departed', 'info', '' )
-    
-    binaryinactive()
-}
-
-def wet()
-{
-	logger( 'wet', 'info', '' )
-    
-    binaryactive()
-}
-
-def dry()
-{
-	logger( 'dry', 'info', '' )
     
     binaryinactive()
 }
