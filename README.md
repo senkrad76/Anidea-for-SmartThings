@@ -13,6 +13,7 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
 - [Anidea for HTTP Ping](#anidea-for-http-ping)
+- [Anidea for Scene Momentary](#anidea-for-scene-momentary)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
   - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
   - [Anidea for Virtual Button](#anidea-for-virtual-button)
@@ -90,6 +91,12 @@ This simple device handler was built for the job described above, but as well as
 *Polling more frequently than every fifteen minutes just seems like 'a bad thing', but it will probably be made configurable at some stage.
 
 *A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
+
+---
+##Anidea for Scene Momentary
+This is a simple device handler that uses the Momentary capability (and thus a virtual button in the mobile app, and a `push()` command for other apps such as ActionTiles and webCoRE) and executes a Scene using the SmartThings REST API. It is an alternative to having to mess about creating HTTPS POST requests to execute scenes, or having a virtual switch and a trivial automation.
+
+The device needs to be configured with a Personal Access Token (https://account.smartthings.com/tokens) with suitable scope to execute a Scenes. and the device ID of the Scene which is arguably easiest to find in the IDE by using 'List Scenes' on your Location details page.
 
 ---
 ## Anidea for Virtual Devices
