@@ -24,6 +24,10 @@ The following device handlers deliberately do not define a UI for the SmartThing
 This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
 
 - [LAN MultiThing](#lan-multithing)
+
+There is also a REST API script for viewing capabilities.
+
+- [capabilities.php](#capabilities-php)
 ---
 ## Anidea for Lumi Devices
 <img src="images/aqara_button.png" width="100"><img src="images/aqara_contact.png" width="100"><img src="images/aqara_motion.png" width="100"><img src="images/aqara_temperature.png" width="100"><img src="images/aqara_vibration.png" width="100">
