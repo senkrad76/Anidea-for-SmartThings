@@ -1,4 +1,4 @@
-# Anidea for SmartThings &copy; Graham Johnson (orangebucket)
+# Anidea for SmartThings (Anidea-ST) &copy; Graham Johnson (orangebucket)
 A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
 **Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
