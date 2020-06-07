@@ -206,3 +206,10 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 }</pre>
 
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
+
+---
+## capabilities.php
+
+This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
+
+It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
