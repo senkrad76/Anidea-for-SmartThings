@@ -30,7 +30,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 There is also a REST API client script for viewing capabilities, and a WebHook Endpoint automation that doesn't do anything particularly useful but does show how relatively simple they are to write.
 
-- [Bucket](#bucketphp)
+- [Bucket](#bucket-bucketphp)
 - [SmartThings Capabilities](#smartthings-capabilities-capabilitiesphp)
 ---
 ## Anidea for Lumi Devices
