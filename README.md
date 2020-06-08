@@ -28,8 +28,9 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 - [LAN MultiThing](#lan-multithing)
 
-There is also a REST API script for viewing capabilities.
+There is also a REST API client script for viewing capabilities, and a WebHook Endpoint automation that doesn't do anything particularly useful but does show how relatively simple they are to write.
 
+- [Bucket](#bucketphp)
 - [SmartThings Capabilities](#smartthings-capabilities-capabilitiesphp)
 ---
 ## Anidea for Lumi Devices
@@ -215,8 +216,10 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
 
 ---
-## SmartThings Capabilities (capabilities.php)
+## Bucket (bucket.php)
+This is a 'WebHook Endpoint' automation which has no particular function other than to act as an example of how that sort of app can be written in PHP. It may evolve into a library/SDK of sorts, or it may not.
 
+## SmartThings Capabilities (capabilities.php)
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
