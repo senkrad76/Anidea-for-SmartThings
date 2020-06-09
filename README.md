@@ -85,7 +85,7 @@ The capability definition only includes the single unit 'kPa', with a range of 0
 At the time of writing, the most suitable metadata for UI purposes hasn't been determined and the tile is displaying humidity rather than temperature.
 
 ### Anidea for Aqara Vibration
-The reworking of the handler for the vibration sensor, model DJT11LM, is pretty much complete, with any further changes likely to be tidying up of the code. There has been one significant change from the original. 'Vibration' is now mapped to the Acceleration Sensor capability and 'tile' to the Motion Sensor, reversing the mapping in the 'bspranger' handler. The Acceleration Sensor capability is presented as a Vibration Sensor in the 'new' app and so it is an obvious change.
+The reworking of the handler for the vibration sensor, model DJT11LM, is pretty much complete, with any further changes likely to be tidying up of the code. There has been one significant change from the original. 'Vibration' is now mapped to the Acceleration Sensor capability and 'tilt' to the Motion Sensor, reversing the mapping in the 'bspranger' handler. The Acceleration Sensor capability is presented as a Vibration Sensor in the 'new' app and so it is an obvious change.
 
 ### Anidea for Mijia Contact
 The [Anidea for Aqara Contact](#anidea-for-aqara-contact) handler also covers an earlier model.
