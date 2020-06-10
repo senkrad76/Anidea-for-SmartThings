@@ -217,9 +217,9 @@ The `"device":"Device Display Name",` entry is only used to address the messages
 
 ---
 ## Bucket
-This is a 'WebHook Endpoint' automation which has no particular function other than to act as an example of how that sort of app can be written in PHP. It may evolve into a basic library/SDK of sorts, or it may not.
+Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is really the development project for the **Anidea-ST Webhook Library**, a simple library written in good old-fashioned procedural style.
 
-*SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP may fit a niche.*
+*SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
 
 ## SmartThings Capabilities
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
