@@ -1,10 +1,8 @@
 <?php
-require_once 'st-webhook-library.php';
-
 //
 // Anidea-ST Webhook Library (anidea-st-webhook-library.php) - (C) Graham Johnson 2020
 // ===================================================================================
-// Version: 20.06.10.00
+// Version: 20.06.10.01
 //
 
 function log_asjson( $data, $logname, $logpath = './logs' )
@@ -20,7 +18,7 @@ function lifecycle( $request, $appconfig, $logpath = './logs' )
     // Check for lifecycle events from SmartThings.
     switch ( $request[ 'lifecycle' ] )
     {
-        case 'CONFIRMATION':    $response = lifecycle_confirmation( $request, $logpath );
+        case 'CONFIRMATION':    $response = lifecycle_confirmation( $request, $scripturl, $logpath );
                                 break;
         case 'CONFIGURATION':   $response = lifecycle_configuration( $request, $logpath );
                                 break;
@@ -38,12 +36,12 @@ function lifecycle( $request, $appconfig, $logpath = './logs' )
     return $response;
 }
 
-function lifecycle_confirmation( $request, $logpath = './logs' )
+function lifecycle_confirmation( $request, $scripturl, $logpath = './logs' )
 {
     // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
     
     // Create the required response.
-    $response = array( 'target_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+    $response = array( 'target_url' => $scripturl );
     
     // Send a GET request to the supplied confirmation URL.
     file_get_contents( $request[ 'confirmationData' ][ 'confirmationUrl' ] );
