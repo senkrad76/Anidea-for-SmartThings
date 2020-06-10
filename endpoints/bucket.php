@@ -2,152 +2,33 @@
 //
 // Bucket (bucket.php) - (C) Graham Johnson 2020
 // =============================================
-// Version: 20.06.08.01
+// Version: 20.06.10.00
 //
 // This is a test application that is being used to learn how to write
 // what SmartThings seem to be calling a 'WebHook Endpoint' automation.
-// It is called 'Bucket' because the SmartThings Developer Workspace
-// doesn't let you rename projects for some reason and it seems daft to
-// have an app name that doesn't match the project name. What it actually
-// does is likely to vary with time.
+// It is called 'Bucket' because that was the temporary project name in
+// the SmartThings Developer Workspace and for some reason the project name
+// can not changed. What it actually does is likely to vary with time but
+// there is a tentative intention of working towards a basic library using
+// procedural programming for those who can't be doing with OOP stuff.
+//
+// CURRENT FUNCTIONALITY:
+// Requests read and execute authorisation for a switch, and read
+// authorisation for multiple buttons. Subscribes to any activity from the
+// switch, and changes in the button attribute for the two components of
+// the first button. Records received events in a log.
 //
 
+// START OF MAIN PROGRAM.
+
 // Read data from the request body, assuming it is JSON.
-if ( $body = json_decode( file_get_contents( 'php://input' ), true ) )
+if ( $request = json_decode( file_get_contents( 'php://input' ), true ) )
 {
-    // Save the request body to a file for diagnostic purposes.
-    file_put_contents( 'body.txt', print_r( $body, true ) );
-}
-// Otherwise give the 'lifecycle' key a value to make the code neater.
-else $body = array( 'lifecycle' => 'PLACEHOLDER');
-
-// Check for lifecycle events from SmartThings.
-if ( $body[ 'lifecycle' ]  == 'CONFIRMATION' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
-    
-    // Send the required response.
-    $json = array( 'target_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-    header( 'Content-Type: application/json' );
-    echo json_encode( $json );
-    
-    // Send a GET request to the supplied confirmation URL.
-    file_get_contents( $body[ 'confirmationData' ][ 'confirmationUrl' ] );
-}
-elseif ( $body[ 'lifecycle' ]  == 'CONFIGURATION' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIGURATION
-    
-    if ( $body[ 'configurationData' ][ 'phase' ] == 'INITIALIZE' )
+    if ( $response = lifecycle( $request ) )
     {
-        $json = array( 'configurationData' => 
-                            array( 'initialize' => 
-                                        array(  'name' => 'Bucket',
-                                                'description' => 'A Bucket Of Oranges',
-                                                'id' => 'bucket',
-                                                'permissions' => [],
-                                                'firstPageId' => '1'
-                                        )
-                            )
-                );
-                
         header( 'Content-Type: application/json' );
-        echo json_encode( $json );
-        file_put_contents( 'response.txt', json_encode( $json, JSON_PRETTY_PRINT ) );
+        echo json_encode( $response );
     }
-    elseif ( $body[ 'configurationData' ][ 'phase' ] == 'PAGE' )
-    {
-        // Only handling a single page of configuration.
-        
-        $json = array( 'configurationData' => 
-                            array( 'page' => 
-                                        array( 'pageId' => '1',
-                                               'name' => 'Configuring the bucket of oranges',
-                                               'nextPageId' => null,
-                                               'previousPageId' => null,
-                                               'complete' => true,
-                                               'sections' => [ array( 'name' => 'Light to monitor',
-                                                                      'settings' =>  [ array( 'id' => 'thelight',
-                                                                                              'name' => 'Which light?',
-                                                                                              'description' => 'Bla, bla',
-                                                                                              'type' => 'DEVICE',
-                                                                                              'required' => true,
-                                                                                              'multiple' => false,
-                                                                                              'capabilities' => [ 'switch' ],
-                                                                                              'permissions' => [ 'r' ]
-                                                                                       )
-                                                                                     ]
-                                                               )
-                                                             ]
-                                        )
-                            ) 
-                );
-                
-        header( 'Content-Type: application/json' );
-        echo json_encode( $json );
-        
-        file_put_contents( 'response.txt', json_encode( $json, JSON_PRETTY_PRINT ) );
-    }
-}
-elseif ( $body[ 'lifecycle' ]  == 'INSTALL' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#INSTALL
-    
-    $json = array( 'installData' => array( 'placeholder' => '' ) );
-    header( 'Content-Type: application/json' );
-    echo json_encode( $json );
-}
-elseif ( $body[ 'lifecycle' ]  == 'UPDATE' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#UPDATE
-    
-    $json = array( 'updateData' => array( 'placeholder' => '' ) );
-    header( 'Content-Type: application/json' );
-    echo json_encode( $json );
-    
-    // https://smartthings.developer.samsung.com/docs/smartapps/subscriptions.html
-    
-    $appid = $body[ 'updateData' ][ 'installedApp' ][ 'installedAppId' ];
-    $authtoken = $body[ 'updateData' ][ 'authToken' ];
-    $url = "https://api.smartthings.com/installedapps/$appid/subscriptions";
-
-    $ch = curl_init($url);
-    
-    $device = $body[ 'updateData' ][ 'installedApp' ][ 'config' ][ 'thelight' ][ 0 ][ 'deviceConfig' ];
-
-    $payload = json_encode( array( 'sourceType'  => 'DEVICE',
-                                   'device'      => array( 'deviceId' => $device[ 'deviceId' ],
-                                                           'componentId' => $device[ 'componentId' ],
-                                                           'capability'  => '*',
-                                                           'attribute'   => '*',
-                                                           'value'       => '*'
-                                                    )
-                            )
-                );
-
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec( $ch );
-    curl_close($ch);
-}
-elseif ( $body[ 'lifecycle' ]  == 'EVENT' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#EVENTS
-    
-    $json = array( 'eventData' => array( 'placeholder' => '' ) );
-    header( 'Content-Type: application/json' );
-    echo json_encode( $json );
-    file_put_contents( 'event.txt', json_encode( $body[ 'eventData' ][ 'events' ], JSON_PRETTY_PRINT ) );
-}
-elseif ( $body[ 'lifecycle' ]  == 'UNINSTALL' )
-{
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#INSTALL
-    
-    $json = array( 'uninstallData' => array( 'placeholder' => '' ) );
-    header( 'Content-Type: application/json' );
-    echo json_encode( $json );
 }
 else
 {
@@ -164,5 +45,242 @@ else
     </body>
 </html>
 <?php
+}
+
+// END OF MAIN PROGRAM.
+
+function log_asjson( $data, $logname, $logpath = './logs' )
+{
+    error_log( json_encode( $data, JSON_PRETTY_PRINT ) . "\n", 3, "$logpath/$logname.json");
+}
+
+function lifecycle( $request, $logpath = './logs' )
+{
+    // Log the current request.
+    log_asjson( $request, $request[ 'lifecycle' ] );
+    
+    // Check for lifecycle events from SmartThings.
+    switch ( $request[ 'lifecycle' ] )
+    {
+        case 'CONFIRMATION':    $response = lifecycle_confirmation( $request, $logpath );
+                                break;
+        case 'CONFIGURATION':   $response = lifecycle_configuration( $request, $logpath );
+                                break;
+        case 'INSTALL':         $response = lifecycle_install( $request, $logpath );
+                                break;
+        case 'UPDATE':          $response = lifecycle_update( $request, $logpath );
+                                break;
+        case 'EVENT':           $response = lifecycle_event( $request, $logpath );
+                                break;
+        case 'UNINSTALL':       $response = lifecycle_event( $request, $logpath );
+                                break;
+        default:                $response = false;
+    }
+    
+    return $response;
+}
+
+function lifecycle_confirmation( $request, $logpath = './logs' )
+{
+    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
+    
+    // Create the required response.
+    $response = array( 'target_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+    
+    // Send a GET request to the supplied confirmation URL.
+    file_get_contents( $request[ 'confirmationData' ][ 'confirmationUrl' ] );
+    
+    return $response;
+}
+
+function lifecycle_configuration( $request, $logpath = './logs' )
+{
+    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIGURATION
+    
+    switch ( $request[ 'configurationData' ][ 'phase' ] )
+    {
+        case 'INITIALIZE':  $response = lifecycle_configuration_initialize();
+                            break;
+        case 'PAGE':        $response = lifecycle_configuration_page();
+                            break;
+    }
+    
+    return $response;
+}
+
+function lifecycle_configuration_initialize( $logpath = './logs')
+{
+    $response = array( 'configurationData' => array( 'initialize' => array( 'name' => 'Bucket',
+                                                                            'description' => 'A Bucket Of Oranges',
+                                                                            'id' => 'bucket',
+                                                                            'permissions' => [],
+                                                                            'firstPageId' => '1'
+                                                                         )
+                                                  )
+                    );
+                
+    log_asjson( $response, 'CONFIGURATION_INITIALIZE_RESPONSE' );
+    
+    return( $response );
+}
+
+function lifecycle_configuration_page( $logpath = './logs' )
+{
+    // Only handling a single page of configuration for the moment.
+        
+    $response = array( 'configurationData' => array( 'page' => array( 'pageId' => '1',
+                                                                      'name' => 'Configuring the bucket of oranges',
+                                                                      'nextPageId' => null,
+                                                                      'previousPageId' => null,
+                                                                      'complete' => true,
+                                                                      'sections' => [ array( 'name' => 'A light and a button',
+                                                                                             'settings' =>  [ array( 'id'           => 'thelight',
+                                                                                                                     'name'         => 'Which light?',
+                                                                                                                     'description'  => 'Bla, bla',
+                                                                                                                     'type'         => 'DEVICE',
+                                                                                                                     'required'     => true,
+                                                                                                                     'multiple'     => false,
+                                                                                                                     'capabilities' => [ 'switch' ],
+                                                                                                                     'permissions'  => [ 'r', 'x' ]
+                                                                                                              ),
+                                                                                                              array( 'id'           => 'thebutton',
+                                                                                                                     'name'         => 'Which buttons?',
+                                                                                                                     'description'  => 'Bla, bla',
+                                                                                                                     'type'         => 'DEVICE',
+                                                                                                                     'required'     => true,
+                                                                                                                     'multiple'     => true,
+                                                                                                                     'capabilities' => [ 'button' ],
+                                                                                                                     'permissions'  => [ 'r' ]
+                                                                                                                   )
+                                                                                                             ]
+                                                                                           )
+                                                                                    ]
+                                                               )
+                                              ) 
+                );
+
+    log_asjson( $response, 'CONFIGURATION__PAGE_RESPONSE' );
+
+    return $response;
+}
+
+function lifecycle_install( $request, $logpath = './logs' )
+{
+    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#INSTALL
+    
+    $response = array( 'installData' => array( 'placeholder' => '' ) );
+
+    return $response;
+}
+
+function lifecycle_update( $request, $logpath = './logs' )
+{
+    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#UPDATE
+    
+    $response = array( 'updateData' => array( 'placeholder' => '' ) );
+    
+    // https://smartthings.developer.samsung.com/docs/smartapps/subscriptions.html
+    
+    $appid     = $request[ 'updateData' ][ 'installedApp' ][ 'installedAppId' ];
+    $authtoken = $request[ 'updateData' ][ 'authToken' ];
+    $url       = "https://api.smartthings.com/installedapps/$appid/subscriptions";
+    
+    // Delete the existing subscriptions to avoid setting up duplicates.
+    
+    $ch = curl_init( $url );
+    
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $ch );
+    curl_close($ch);
+
+    $ch = curl_init( $url );
+    
+    $device = $request[ 'updateData' ][ 'installedApp' ][ 'config' ][ 'thelight' ][ 0 ][ 'deviceConfig' ];
+
+    $payload = array( 'sourceType'  => 'DEVICE',
+                                   'device'      => array( 'deviceId'    => $device[ 'deviceId' ],
+                                                           'componentId' => $device[ 'componentId' ],
+                                                           'capability'  => '*',
+                                                           'attribute'   => '*',
+                                                           'value'       => '*'
+                                                    )
+                );
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $payload) );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $ch );
+    curl_close($ch);
+    
+    log_asjson( $payload, 'SUBSCRIPTION_REQUEST' );
+    
+    $ch = curl_init( $url );
+    
+    $device = $request[ 'updateData' ][ 'installedApp' ][ 'config' ][ 'thebutton' ][ 0 ][ 'deviceConfig' ];
+
+    $payload = array( 'sourceType'  => 'DEVICE',
+                                   'device'      => array( 'deviceId'    => $device[ 'deviceId' ],
+                                                           'componentId' => 'button1',
+                                                           'capability'  => 'button',
+                                                           'attribute'   => 'button',
+                                                           'value'       => '*'
+                                                    )
+                );
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $payload) );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $ch );
+    curl_close($ch);
+    
+    log_asjson( $payload, 'SUBSCRIPTION_REQUEST' );
+    
+    $ch = curl_init( $url );
+    
+    $device = $request[ 'updateData' ][ 'installedApp' ][ 'config' ][ 'thebutton' ][ 0 ][ 'deviceConfig' ];
+
+    $payload = array( 'sourceType'  => 'DEVICE',
+                                   'device'      => array( 'deviceId'    => $device[ 'deviceId' ],
+                                                           'componentId' => 'button2',
+                                                           'capability'  => 'button',
+                                                           'attribute'   => 'button',
+                                                           'value'       => '*'
+                                                    )
+                );
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $payload) );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $ch );
+    curl_close($ch);
+    
+    log_asjson( $payload, 'SUBSCRIPTION_REQUEST' );
+        
+    $ch = curl_init( $url );
+    
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $subs = curl_exec( $ch );
+    curl_close($ch);
+    
+    log_asjson( json_decode( $subs ), 'SUBSCRIPTION_LIST' );
+    
+    return $response;
+}
+
+function lifecycle_event( $request, $logpath = './logs' )
+{
+    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#EVENTS
+    
+    $response = array( 'eventData' => array( 'placeholder' => '' ) );
+    
+    return $response;
 }
 ?>
