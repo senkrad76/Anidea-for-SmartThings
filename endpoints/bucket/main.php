@@ -23,6 +23,7 @@ require_once 'anidea-st-webhook-library.php';
 
 // START OF CONFIG.
 
+$scripturl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $logpath = './logs';
 
 function config_app()
@@ -122,7 +123,7 @@ function config_subscriptions( $appid, $authtoken, $config )
 // Read data from the request body, assuming it is JSON.
 if ( $request = json_decode( file_get_contents( 'php://input' ), true ) )
 {
-    if ( $response = lifecycle( $request, $appconfig, $logpath ) )
+    if ( $response = lifecycle( $request, $scripturl, $appconfig, $logpath ) )
     {
         header( 'Content-Type: application/json' );
         echo json_encode( $response );
