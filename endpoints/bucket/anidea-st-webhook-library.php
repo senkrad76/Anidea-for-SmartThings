@@ -2,7 +2,7 @@
 //
 // Anidea-ST Webhook Library (anidea-st-webhook-library.php) - (C) Graham Johnson 2020
 // ===================================================================================
-// Version: 20.06.11.00
+// Version: 20.06.11.01
 //
 
 function afswl_log_asjson( $data, $logname )
@@ -12,6 +12,16 @@ function afswl_log_asjson( $data, $logname )
     if ( $logpath = afswl_config_log() )
     {
         error_log( json_encode( $data, JSON_PRETTY_PRINT ) . "\n", 3, "$logpath/$logname.json");
+    }
+}
+
+function afswl_log_astext( $data, $logname )
+{
+    // Requires the user defined function afswl_config_log().
+    
+    if ( $logpath = afswl_config_log() )
+    {
+        error_log( date( DATE_ISO8601 ) . ': ' . $data . "\n", 3, "$logpath/$logname.json");
     }
 }
 
@@ -128,12 +138,79 @@ function afswl_lifecycle_update( $request )
     afswl_subscriptions_deleteall( $appid, $authtoken );
 
     // Create new subscriptions.
-    afswl_subscriptions_subscribe( $appid, $authtoken, $config );
+    afswl_subscriptions_subscribeconfig( $appid, $authtoken, $config );
     
     // List the current subscriptions.
     afswl_subscriptions_list( $appid, $authtoken );
     
     return $response;
+}
+
+function afswl_subscriptions_subscribeconfig( $appid, $authtoken, $config )
+{
+    // Requires the user defined function afswl_config_subscription().
+    
+    $subs = afswl_config_subscription( $config );
+    
+    foreach ( $subs as $sub )
+    {
+        afswl_subscriptions_create( $appid, $authtoken, $sub );
+    }
+}
+
+function afswl_lifecycle_event( $request )
+{
+    // Requires the user defined function afswl_config_event().
+    
+    $response = array( 'eventData' => array( 'placeholder' => '' ) );
+    
+    afswl_config_event( $request );
+    
+    return $response;
+}
+
+function afswl_devices_getdescription( $deviceid, $authtoken )
+{
+    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid" );
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $desc = json_decode( curl_exec( $ch ), true );
+    curl_close($ch);
+    
+    afswl_log_asjson( $desc, 'DEVICES_GETDESCRIPTION' );
+    
+    return $desc;
+}
+
+function afswl_devices_getfullstatus( $deviceid, $authtoken )
+{
+    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid/status" );
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $status = json_decode( curl_exec( $ch ), true );
+    curl_close($ch);
+    
+    afswl_log_asjson( $status, 'DEVICES_GETFULLSTATUS' );
+    
+    return $status;
+}
+
+function afswl_subscriptions_create( $appid, $authtoken, $sub )
+{
+    $ch = curl_init( "https://api.smartthings.com/v1/installedapps/$appid/subscriptions" );
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $sub ) );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $ch );
+    curl_close($ch);
+    
+    afswl_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
 }
 
 function afswl_subscriptions_deleteall( $appid, $authtoken )
@@ -148,27 +225,6 @@ function afswl_subscriptions_deleteall( $appid, $authtoken )
     curl_close($ch);
 }
 
-function afswl_subscriptions_subscribe( $appid, $authtoken, $config )
-{
-    // Requires the user defined function afswl_config_subscription().
-    
-    $subs = afswl_config_subscription( $appid, $authtoken, $config );
-    
-    foreach ( $subs as $sub )
-    {
-        $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $sub ) );
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec( $ch );
-        curl_close($ch);
-    
-        afswl_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
-    }
-}
-
 function afswl_subscriptions_list( $appid, $authtoken )
 {       
     $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
@@ -179,17 +235,6 @@ function afswl_subscriptions_list( $appid, $authtoken )
     $subs = curl_exec( $ch );
     curl_close($ch);
     
-    afswl_log_asjson( json_decode( $subs ), 'SUBSCRIPTION_LIST' );
-}
-
-function afswl_lifecycle_event( $request )
-{
-    // Requires the user defined function afswl_config_event().
-    
-    $response = array( 'eventData' => array( 'placeholder' => '' ) );
-    
-    afswl_config_event( $request );
-    
-    return $response;
+    afswl_log_asjson( json_decode( $subs, true), 'SUBSCRIPTION_LIST' );
 }
 ?>
