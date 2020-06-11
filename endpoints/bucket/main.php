@@ -5,7 +5,7 @@ require_once 'anidea-st-webhook-library.php';
 //
 // Anidea-ST Webhook Library (main.php) - (C) Graham Johnson 2020
 // ==============================================================
-// Version: 20.06.11.00
+// Version: 20.06.11.01
 //
 // This is an example app to demonstrate use of the Anidea-ST Webhook Library.
 //
@@ -84,7 +84,7 @@ function afswl_config_page()
     return $page;
 }
 
-function afswl_config_subscription( $appid, $authtoken, $config )
+function afswl_config_subscription( $config )
 {
     // The library configures subscriptions in the UPDATE lifecycle. This function MUST
     // return an array, each element of which corresponds to a subscription being created.
@@ -127,16 +127,24 @@ function afswl_config_subscription( $appid, $authtoken, $config )
     return $subs;
 }
 
-function afswl_config_event( $event )
+function afswl_config_event( $eventpost )
 {
     // This function is called when an event is received.
 
     // The token might be needed.
-    $authtoken = $event[ 'eventData' ][ 'authToken' ];
+    $authtoken = $eventpost[ 'eventData' ][ 'authToken' ];
+
+    // Get the event type and the type specific data.
+    switch( $eventtype = $eventpost[ 'eventData' ][ 'events'][ 0 ][ 'eventType'] )
+    {
+        case 'DEVICE_EVENT':    $event       = $eventpost[ 'eventData' ][ 'events'][ 0 ][ 'deviceEvent' ];
+                                $description = afswl_devices_getdescription( $event[ 'deviceId'],  $authtoken );
+                                $devicename  = $description[ 'label'] ?: $description[ 'name' ];
+                                afswl_log_astext( "$devicename {$event[ 'attribute' ]} {$event[ 'value' ]}", 'EVENTLIST' );
+                                break;
+    }
     
-    // The actual event seems to be in an array. It is not clear in more than one
-    // event can be received at once.
-    $theevent = $event[ 'eventData' ][ 'events'][ 0 ];
+    // Do the app specific stuff here.
 }
 
 function afswl_config_main()
