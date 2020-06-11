@@ -1,38 +1,42 @@
 <?php
+// The file should begin with the PHP opening tag on the first line.
 require_once 'anidea-st-webhook-library.php';
 
 //
-// Bucket (main.php) - (C) Graham Johnson 2020
-// =============================================
+// Anidea-ST Webhook Library (main.php) - (C) Graham Johnson 2020
+// ==============================================================
 // Version: 20.06.10.01
 //
-// This is a test application that is being used to learn how to write
-// what SmartThings seem to be calling a 'WebHook Endpoint' automation.
-// It is called 'Bucket' because that was the temporary project name in
-// the SmartThings Developer Workspace and for some reason the project name
-// can not changed. What it actually does is likely to vary with time but
-// there is a tentative intention of working towards a basic library using
-// procedural programming for those who can't be doing with OOP stuff.
+// This is an example app to demonstrate use of the Anidea-ST Webhook Library.
 //
 // CURRENT FUNCTIONALITY:
 // Requests read and execute authorisation for a switch, and read
 // authorisation for multiple buttons. Subscribes to any activity from the
 // switch, and changes in the button attribute for the two components of
-// the first button. Records received events in a log.
+// the first button.
 //
 
 // START OF CONFIG.
 
-$scripturl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-$logpath = './logs';
-
-function config_app()
+function afswl_config_log()
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
+    // This function MUST return a value which should either provide a path
+    // to the log folder, or a value that evaluates to false if no logs are
+    // required.
+    
+    return './logs';
+}
 
-    $appconfig = array( 'name' => 'Bucket',
-                        'description' => 'A Bucket Of Oranges',
-                        'id' => 'bucket',
+function afswl_config_initialize()
+{
+    // This function MUST return an array which corresponds to the value of the 'initialize' key
+    // in the CONFIGURATION INITIALIZE phase response.
+    //
+    // https://smartthings.developer.samsung.com/docs/smartapps/configuration.html#INITIALIZE-phase
+
+    $appconfig = array( 'name' => 'Anidea-ST Webhook Library Example App',
+                        'description' => 'An example app provided as part of the Anidea-ST Webhook Libary.',
+                        'id' => 'afswlexample',
                         'permissions' => [],
                         'firstPageId' => '1'
                  );
@@ -40,44 +44,51 @@ function config_app()
     return $appconfig;
 }
 
-function config_pages()
+function afswl_config_page()
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
+    // This function MUST return an array, and the keys MUST match the IDs of the pages.
+    // Each element of the array should be a configuration page definition, which corresponds
+    // to value of the 'page' key in the CONFIGURATION PAGE phase response. 
+    //
+    // https://smartthings.developer.samsung.com/docs/smartapps/configuration.html#PAGE-phase
     
-    $pages[1] = array( 'pageId' => '1',
-                       'name' => 'Configuring the bucket of oranges',
-                       'nextPageId' => null,
-                       'previousPageId' => null,
-                       'complete' => true,
-                       'sections' => [ array( 'name'     => 'A light and a button',
-                                              'settings' => [ array( 'id'           => 'thelight',
-                                                                     'name'         => 'Which light?',
-                                                                     'description'  => 'Bla, bla',
-                                                                     'type'         => 'DEVICE',
-                                                                     'required'     => true,
-                                                                     'multiple'     => false,
-                                                                     'capabilities' => [ 'switch' ],
-                                                                     'permissions'  => [ 'r', 'x' ]
-                                                                   ),
-                                                              array( 'id'           => 'thebutton',
-                                                                     'name'         => 'Which buttons?',
-                                                                     'description'  => 'Bla, bla',
-                                                                     'type'         => 'DEVICE',
-                                                                     'required'     => true,
-                                                                     'multiple'     => true,
-                                                                     'capabilities' => [ 'button' ],
-                                                                     'permissions'  => [ 'r' ]
-                                                                   )
-                                                            ]
-                                            )
-                                     ]
-                     );
+    $page[ '1' ] = array( 'pageId' => '1',
+                          'name' => 'Configuring the bucket of oranges',
+                          'nextPageId' => null,
+                          'previousPageId' => null,
+                          'complete' => true,
+                          'sections' => [ array( 'name'     => 'A light and a button',
+                                                 'settings' => [ array( 'id'           => 'thelight',
+                                                                        'name'         => 'Which light?',
+                                                                        'description'  => 'Bla, bla',
+                                                                        'type'         => 'DEVICE',
+                                                                        'required'     => true,
+                                                                        'multiple'     => false,
+                                                                        'capabilities' => [ 'switch' ],
+                                                                        'permissions'  => [ 'r', 'x' ]
+                                                                      ),
+                                                                 array( 'id'           => 'thebutton',
+                                                                        'name'         => 'Which buttons?',
+                                                                        'description'  => 'Bla, bla',
+                                                                        'type'         => 'DEVICE',
+                                                                        'required'     => true,
+                                                                        'multiple'     => true,
+                                                                        'capabilities' => [ 'button' ],
+                                                                        'permissions'  => [ 'r' ]
+                                                                      )
+                                                               ]
+                                               )
+                                        ]
+                        );
 
-    return $pages;
+    return $page;
 }
 
-function config_subscriptions( $appid, $authtoken, $config )
+function afswl_config_subscription( $appid, $authtoken, $config )
 {
+    // The library configures subscriptions in the UPDATE lifecycle. This function MUST
+    // return an array, each element of which corresponds to a subscription being created.
+    //
     // https://smartthings.developer.samsung.com/docs/smartapps/subscriptions.html
         
     $deviceconfig = $config[ 'thelight' ][ 0 ][ 'deviceConfig' ];
@@ -113,38 +124,43 @@ function config_subscriptions( $appid, $authtoken, $config )
                                             )
                     );
 
-    return subs;
+    return $subs;
 }
 
-// END OF CONFIG.
-
-// START OF MAIN.
-
-// Read data from the request body, assuming it is JSON.
-if ( $request = json_decode( file_get_contents( 'php://input' ), true ) )
+function afswl_config_event( $event )
 {
-    if ( $response = lifecycle( $request, $scripturl, $appconfig, $logpath ) )
-    {
-        header( 'Content-Type: application/json' );
-        echo json_encode( $response );
-    }
+    // This function is called when an event is received.
+
+    // The token might be needed.
+    $authtoken = $event[ 'eventData' ][ 'authToken' ];
+    
+    // The actual event seems to be in an array. It is not clear in more than one
+    // event can be received at once.
+    $theevent = $event[ 'eventData' ][ 'events'][ 0 ];
 }
-else
+
+function afswl_config_main()
 {
-    // This is just a bog standard HTTP GET call.
-?>
+    // This function is called when the script is called with a GET request
+    // rather than as a webhook. It should return a string which will be output
+    // as the response, but if required it can output directly.
+    
+    return <<<ENDHTML
 <!DOCTYPE html>
 <html lang="en-gb">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Bucket</title>
+        <title>Anidea-ST Webhook Libary Example App</title>
     </head>
     <body>
-        <h1>Bucket</h1>
+        <h1>Anidea-ST Webhook Libary Example App</h1>
     </body>
 </html>
-<?php
+ENDHTML;
 }
 
-// END OF MAIN.
+// END OF CONFIG.
+
+// CALL THE MAIN ROUTINE IN THE LIBRARY.
+afswl_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 ?>
