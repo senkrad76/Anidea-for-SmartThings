@@ -2,33 +2,57 @@
 //
 // Anidea-ST Webhook Library (anidea-st-webhook-library.php) - (C) Graham Johnson 2020
 // ===================================================================================
-// Version: 20.06.10.01
+// Version: 20.06.11.00
 //
 
-function log_asjson( $data, $logname, $logpath = './logs' )
+function afswl_log_asjson( $data, $logname )
 {
-    error_log( json_encode( $data, JSON_PRETTY_PRINT ) . "\n", 3, "$logpath/$logname.json");
+    // Requires the user defined function afswl_config_log().
+    
+    if ( $logpath = afswl_config_log() )
+    {
+        error_log( json_encode( $data, JSON_PRETTY_PRINT ) . "\n", 3, "$logpath/$logname.json");
+    }
 }
 
-function lifecycle( $request, $appconfig, $logpath = './logs' )
+function afswl_main( $scripturl )
+{
+    // Read data from the request body, assuming it is JSON.
+    if ( $request = json_decode( file_get_contents( 'php://input' ), true ) )
+    {
+        if ( $response = afswl_lifecycle( $request, $scripturl ) )
+        {
+            header( 'Content-Type: application/json' );
+            echo json_encode( $response );
+        }
+    }
+    else
+    {
+        // This is just a bog standard HTTP GET call so put out a web page.
+        
+        echo afswl_config_main();
+    }
+}
+
+function afswl_lifecycle( $request, $scripturl )
 {
     // Log the current request.
-    log_asjson( $request, $request[ 'lifecycle' ] );
+    afswl_log_asjson( $request, $request[ 'lifecycle' ] );
     
-    // Check for lifecycle events from SmartThings.
+    // Check for afswl_lifecycle events from SmartThings.
     switch ( $request[ 'lifecycle' ] )
     {
-        case 'CONFIRMATION':    $response = lifecycle_confirmation( $request, $scripturl, $logpath );
+        case 'CONFIRMATION':    $response = afswl_lifecycle_confirmation( $request, $scripturl );
                                 break;
-        case 'CONFIGURATION':   $response = lifecycle_configuration( $request, $logpath );
+        case 'CONFIGURATION':   $response = afswl_lifecycle_configuration( $request );
                                 break;
-        case 'INSTALL':         $response = lifecycle_install( $request, $logpath );
+        case 'INSTALL':         $response = afswl_lifecycle_install( $request );
                                 break;
-        case 'UPDATE':          $response = lifecycle_update( $request, $logpath );
+        case 'UPDATE':          $response = afswl_lifecycle_update( $request );
                                 break;
-        case 'EVENT':           $response = lifecycle_event( $request, $logpath );
+        case 'EVENT':           $response = afswl_lifecycle_event( $request );
                                 break;
-        case 'UNINSTALL':       $response = lifecycle_event( $request, $logpath );
+        case 'UNINSTALL':       $response = afswl_lifecycle_event( $request );
                                 break;
         default:                $response = false;
     }
@@ -36,10 +60,8 @@ function lifecycle( $request, $appconfig, $logpath = './logs' )
     return $response;
 }
 
-function lifecycle_confirmation( $request, $scripturl, $logpath = './logs' )
+function afswl_lifecycle_confirmation( $request, $scripturl )
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIRMATION
-    
     // Create the required response.
     $response = array( 'target_url' => $scripturl );
     
@@ -49,44 +71,43 @@ function lifecycle_confirmation( $request, $scripturl, $logpath = './logs' )
     return $response;
 }
 
-function lifecycle_configuration( $request, $logpath = './logs' )
+function afswl_lifecycle_configuration( $request )
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#CONFIGURATION
-    
     switch ( $request[ 'configurationData' ][ 'phase' ] )
     {
-        case 'INITIALIZE':  $response = lifecycle_configuration_initialize( $logpath );
+        case 'INITIALIZE':  $response = afswl_lifecycle_configuration_initialize( $logpath );
                             break;
-        case 'PAGE':        $response = lifecycle_configuration_page( $request[ 'configurationData' ][ 'pageId' ], $logpath );
+        case 'PAGE':        $response = afswl_lifecycle_configuration_page( $request[ 'configurationData' ][ 'pageId' ] );
                             break;
     }
     
     return $response;
 }
 
-function lifecycle_configuration_initialize( $logpath = './logs')
+function afswl_lifecycle_configuration_initialize( $logpath = './logs')
 {
-    // Requires the user defined function config_app().
+    // Requires the user defined function afswl_config_initialize().
     
-    $response = array( 'configurationData' => array( 'initialize' => config_app() ) );
+    $response = array( 'configurationData' => array( 'initialize' => afswl_config_initialize() ) );
                 
-    log_asjson( $response, 'CONFIGURATION_INITIALIZE_RESPONSE' );
+    afswl_log_asjson( $response, 'CONFIGURATION_INITIALIZE_RESPONSE' );
     
     return( $response );
 }
 
-function lifecycle_configuration_page( $pageid, $logpath = './logs' )
+function afswl_lifecycle_configuration_page( $pageid )
 {
-    $pages = config_pages();
+    // Requires the user defined function afswl_config_page().
+    $pages = afswl_config_page();
     
     $page = array( 'configurationData' => array( 'page' => $pages[ $pageid ] ) );
     
-    log_asjson( $page, 'CONFIGURATION_PAGE_RESPONSE' );
+    afswl_log_asjson( $page, 'CONFIGURATION_PAGE_RESPONSE' );
     
     return $page;
 }
 
-function lifecycle_install( $request, $logpath = './logs' )
+function afswl_lifecycle_install( $request )
 {
     // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#INSTALL
     
@@ -95,31 +116,27 @@ function lifecycle_install( $request, $logpath = './logs' )
     return $response;
 }
 
-function lifecycle_update( $request, $logpath = './logs' )
+function afswl_lifecycle_update( $request )
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#UPDATE
-    
     $response = array( 'updateData' => array( 'placeholder' => '' ) );
-    
-    // https://smartthings.developer.samsung.com/docs/smartapps/subscriptions.html
     
     $appid     = $request[ 'updateData' ][ 'installedApp' ][ 'installedAppId' ];
     $authtoken = $request[ 'updateData' ][ 'authToken' ];
     $config    = $request[ 'updateData' ][ 'installedApp' ][ 'config' ];
     
     // Delete the existing subscriptions to avoid setting up duplicates.
-    subscriptions_deleteall( $appid, $authtoken );
+    afswl_subscriptions_deleteall( $appid, $authtoken );
 
     // Create new subscriptions.
-    subscriptions_subscribe( $appid, $authtoken, $config, $logpath );
+    afswl_subscriptions_subscribe( $appid, $authtoken, $config );
     
     // List the current subscriptions.
-    subscriptions_list( $appid, $authtoken, $logpath );
+    afswl_subscriptions_list( $appid, $authtoken );
     
     return $response;
 }
 
-function subscriptions_deleteall( $appid, $authtoken )
+function afswl_subscriptions_deleteall( $appid, $authtoken )
 {
     $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
     
@@ -131,11 +148,11 @@ function subscriptions_deleteall( $appid, $authtoken )
     curl_close($ch);
 }
 
-function subscriptions_subscribe( $appid, $authtoken, $config, $logpath = './logs' )
+function afswl_subscriptions_subscribe( $appid, $authtoken, $config )
 {
-    // Requires the user defined function config_subscriptions().
+    // Requires the user defined function afswl_config_subscription().
     
-    $subs = config_subscriptions( $appid, $authtoken, $config, $logpath );
+    $subs = afswl_config_subscription( $appid, $authtoken, $config );
     
     foreach ( $subs as $sub )
     {
@@ -148,11 +165,11 @@ function subscriptions_subscribe( $appid, $authtoken, $config, $logpath = './log
         $result = curl_exec( $ch );
         curl_close($ch);
     
-        log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
+        afswl_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
     }
 }
 
-function subscriptions_list( $appid, $authtoken, $logpath = './logs' )
+function afswl_subscriptions_list( $appid, $authtoken )
 {       
     $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
     
@@ -162,14 +179,16 @@ function subscriptions_list( $appid, $authtoken, $logpath = './logs' )
     $subs = curl_exec( $ch );
     curl_close($ch);
     
-    log_asjson( json_decode( $subs ), 'SUBSCRIPTION_LIST' );
+    afswl_log_asjson( json_decode( $subs ), 'SUBSCRIPTION_LIST' );
 }
 
-function lifecycle_event( $request, $logpath = './logs' )
+function afswl_lifecycle_event( $request )
 {
-    // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#EVENTS
+    // Requires the user defined function afswl_config_event().
     
     $response = array( 'eventData' => array( 'placeholder' => '' ) );
+    
+    afswl_config_event( $request );
     
     return $response;
 }
