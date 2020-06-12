@@ -1,8 +1,11 @@
 <?php
+require_once 'devices.php';
+require_once 'subscriptions.php';
+
 //
 // Anidea-ST Webhook Library (anidea-st-webhook-library.php) - (C) Graham Johnson 2020
 // ===================================================================================
-// Version: 20.06.11.01
+// Version: 20.06.12.00
 //
 
 function afswl_log_asjson( $data, $logname )
@@ -138,7 +141,7 @@ function afswl_lifecycle_update( $request )
     afswl_subscriptions_deleteall( $appid, $authtoken );
 
     // Create new subscriptions.
-    afswl_subscriptions_subscribeconfig( $appid, $authtoken, $config );
+    afswl_lifecycle_update_subscriptions( $appid, $authtoken, $config );
     
     // List the current subscriptions.
     afswl_subscriptions_list( $appid, $authtoken );
@@ -146,7 +149,7 @@ function afswl_lifecycle_update( $request )
     return $response;
 }
 
-function afswl_subscriptions_subscribeconfig( $appid, $authtoken, $config )
+function afswl_lifecycle_update_subscriptions( $appid, $authtoken, $config )
 {
     // Requires the user defined function afswl_config_subscription().
     
@@ -167,74 +170,5 @@ function afswl_lifecycle_event( $request )
     afswl_config_event( $request );
     
     return $response;
-}
-
-function afswl_devices_getdescription( $deviceid, $authtoken )
-{
-    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid" );
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $desc = json_decode( curl_exec( $ch ), true );
-    curl_close($ch);
-    
-    afswl_log_asjson( $desc, 'DEVICES_GETDESCRIPTION' );
-    
-    return $desc;
-}
-
-function afswl_devices_getfullstatus( $deviceid, $authtoken )
-{
-    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid/status" );
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $status = json_decode( curl_exec( $ch ), true );
-    curl_close($ch);
-    
-    afswl_log_asjson( $status, 'DEVICES_GETFULLSTATUS' );
-    
-    return $status;
-}
-
-function afswl_subscriptions_create( $appid, $authtoken, $sub )
-{
-    $ch = curl_init( "https://api.smartthings.com/v1/installedapps/$appid/subscriptions" );
-
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode( $sub ) );
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec( $ch );
-    curl_close($ch);
-    
-    afswl_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
-}
-
-function afswl_subscriptions_deleteall( $appid, $authtoken )
-{
-    $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
-    
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec( $ch );
-    curl_close($ch);
-}
-
-function afswl_subscriptions_list( $appid, $authtoken )
-{       
-    $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
-    
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $subs = curl_exec( $ch );
-    curl_close($ch);
-    
-    afswl_log_asjson( json_decode( $subs, true), 'SUBSCRIPTION_LIST' );
 }
 ?>
