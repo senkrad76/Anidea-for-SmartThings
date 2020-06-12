@@ -30,7 +30,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 There is also a REST API client script for viewing capabilities, and a WebHook Endpoint automation that doesn't do anything particularly useful but does show how relatively simple they are to write.
 
-- [Anidea-ST Webhook Library](#anideast-webhook-library)
+- [Anidea-ST Webhook Library](#anidea-st-webhook-library)
 - [Bucket](#bucket)
 - [SmartThings Capabilities](#smartthings-capabilities)
 ---
@@ -218,13 +218,12 @@ The `"device":"Device Display Name",` entry is only used to address the messages
 
 ---
 ## Anidea-ST Webhook Library
-This is a simple library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is stil in the early stages of development. 
+This is a simple library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is also useful for REST API clients. It is stil in the early stages of development. See [Bucket](#bucket) for a companion example app that demonstrates how to use it).
 
 *SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
 
 ## Bucket
-Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anideast-webhook-library) a simple library written in good old-fashioned procedural style.
-
+Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anidea-st-webhook-library) a simple library written in good old-fashioned procedural style.
 
 ## SmartThings Capabilities
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
