@@ -30,6 +30,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 There is also a REST API client script for viewing capabilities, and a WebHook Endpoint automation that doesn't do anything particularly useful but does show how relatively simple they are to write.
 
+- [Anidea-ST Webhook Library](#anideast-webhook-library)
 - [Bucket](#bucket)
 - [SmartThings Capabilities](#smartthings-capabilities)
 ---
@@ -216,10 +217,14 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
 
 ---
-## Bucket
-Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is really the development project for the **Anidea-ST Webhook Library**, a simple library written in good old-fashioned procedural style.
+## Anidea-ST Webhook Library
+This is a simple library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is stil in the early stages of development. 
 
 *SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
+
+## Bucket
+Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anideast-webhook-library) a simple library written in good old-fashioned procedural style.
+
 
 ## SmartThings Capabilities
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
