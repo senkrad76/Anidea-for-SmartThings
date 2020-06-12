@@ -28,7 +28,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 - [LAN MultiThing](#lan-multithing)
 
-There is also a REST API client script for viewing capabilities, and a WebHook Endpoint automation that doesn't do anything particularly useful but does show how relatively simple they are to write.
+There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app.
 
 - [Anidea-ST Webhook Library](#anidea-st-webhook-library)
 - [Bucket](#bucket)
@@ -229,3 +229,5 @@ Bucket was a dummy name I used for a Developer Workspace project, forgetting tha
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
+
+The script will eventually be rewritten to use the [Anidea-ST Webhook Library](#anidea-st-webhook-library) because it would be nonsense not to.
