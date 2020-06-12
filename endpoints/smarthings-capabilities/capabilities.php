@@ -1,13 +1,20 @@
-<!DOCTYPE html>
 <?php
+// Change the following line to reflect the correct location.
+require_once 'afswl/anidea-st-webhook-library.php';
+
+// Personal Access Token.
 $accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
 
 //
 // Anidea-ST capabilities.php (C) Graham Johnson 2020
 // ==================================================
-// Version: 20.06.12.00
+// Version: 20.06.12.01
 //
+
+function afswl_config_main()
+{
 ?>
+<!DOCTYPE html>
 <html lang="en-gb">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -67,25 +74,9 @@ $cached = fopen( $cachetemp, 'w' );
 
 ob_start();
 
-$capabilities = "https://api.smartthings.com/v1/capabilities";
+$capabilities = afswl_capabilities_list( $accesstoken );
 
-$ch = curl_init( $capabilities );
-curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-curl_setopt( $ch, CURLOPT_POST,           0 );
-curl_setopt( $ch, CURLOPT_FAILONERROR,    1 );
-curl_setopt( $ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $accesstoken" ) );
-
-if ( ( $resp =  curl_exec( $ch ) ) === false )
-{
-?>
-            <div class="error"><?php echo curl_error( $ch ); ?></div>
-<?php
-}
-
-curl_close( $ch );
-
-$listjson = json_decode( $resp, true );
-// if ( $debug ) echo '<pre>' . print_r($listjson, true) . '</pre>';
+$listjson = json_decode( $capabilities, true );
 
 function sortbyname( $a, $b )
 {
@@ -134,3 +125,8 @@ ob_end_flush();
         </div>
     </body>
 </html>
+<?php
+}
+
+afswl_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+?>
