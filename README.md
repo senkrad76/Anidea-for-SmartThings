@@ -226,8 +226,6 @@ This is a simple library, written in good old-fashioned procedural style, to ass
 Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anidea-st-webhook-library) a simple library written in good old-fashioned procedural style.
 
 ## SmartThings Capabilities
-This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours.
+This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours. The script uses the [Anidea-ST Webhook Library](#anidea-st-webhook-library) just because it can. It is actually only used for one HTTPS GET.
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
-
-The script will eventually be rewritten to use the [Anidea-ST Webhook Library](#anidea-st-webhook-library) because it would be nonsense not to.
