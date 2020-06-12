@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <?php
-$accesstoken = 'UUID';
+$accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
 
 //
 // Anidea-ST capabilities.php (C) Graham Johnson 2020
 // ==================================================
-// Version: 20.06.06.00
+// Version: 20.06.12.00
 //
 ?>
 <html lang="en-gb">
@@ -38,13 +38,14 @@ $accesstoken = 'UUID';
                 <p>Clicking on the capability name toggles display of the JSON for the capability.</p>
             </div>
 <?php
-$url = $_SERVER[ "SCRIPT_NAME" ];
+$url = $_SERVER[ 'SCRIPT_NAME' ];
+$ts  = $_SERVER[ 'REQUEST_TIME' ];
 
 $break = explode('/', $url);
 $file = $break[ count($break) - 1 ];
 
 $cachefile = substr_replace($file ,"",-4).'-cache.html';
-
+$cachetemp = $cachefile . $ts;
 $cachetime = 86400;
 
 // Serve from the cache if it is younger than $cachetime
@@ -62,7 +63,7 @@ if ( file_exists($cachefile) && time() - $cachetime < filemtime($cachefile) )
     exit;
 }
 
-$cached = fopen( $cachefile, 'w' );
+$cached = fopen( $cachetemp, 'w' );
 
 ob_start();
 
@@ -125,6 +126,8 @@ foreach ( $listjson[ 'items' ] as $cap )
 <?php
 fwrite( $cached, ob_get_contents() );
 fclose( $cached );
+
+rename( $cachetemp, $cachefile );
 
 ob_end_flush();
 ?>
