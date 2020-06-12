@@ -1,11 +1,11 @@
 <?php
 // The file should begin with the PHP opening tag on the first line.
-require_once 'anidea-st-webhook-library.php';
+require_once '../afswl/anidea-st-webhook-library.php';
 
 //
 // Anidea-ST Webhook Library (main.php) - (C) Graham Johnson 2020
 // ==============================================================
-// Version: 20.06.11.01
+// Version: 20.06.12.00
 //
 // This is an example app to demonstrate use of the Anidea-ST Webhook Library.
 //
