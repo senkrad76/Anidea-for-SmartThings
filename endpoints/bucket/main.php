@@ -5,7 +5,7 @@ require_once '../afswl/anidea-st-webhook-library.php';
 //
 // Anidea-ST Webhook Library (main.php) - (C) Graham Johnson 2020
 // ==============================================================
-// Version: 20.06.12.00
+// Version: 20.06.12.01
 //
 // This is an example app to demonstrate use of the Anidea-ST Webhook Library.
 //
@@ -158,10 +158,10 @@ function afswl_config_main()
 <html lang="en-gb">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Anidea-ST Webhook Libary Example App</title>
+        <title>Anidea-ST Webhook Library Example App</title>
     </head>
     <body>
-        <h1>Anidea-ST Webhook Libary Example App</h1>
+        <h1>Anidea-ST Webhook Library Example App</h1>
     </body>
 </html>
 ENDHTML;
