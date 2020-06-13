@@ -1,8 +1,8 @@
 <?php
 //
-// Anidea-ST Webhook Library (capabilities.php) - (C) Graham Johnson 2020
-// ======================================================================
-// Version: 20.06.12.00
+// Anidea-ST Webhook Library (afswl_capabilities.php) - (C) Graham Johnson 2020
+// ============================================================================
+// Version: 20.06.13.00
 //
 
 function afswl_capabilities_list( $authtoken )
@@ -15,7 +15,10 @@ function afswl_capabilities_list( $authtoken )
     curl_setopt( $ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
 
     $capabilities = curl_exec( $ch );
-
+if( $capabilities === false)
+{
+    error_log( curl_error($ch) );
+}
     curl_close( $ch );
 
     return $capabilities;
