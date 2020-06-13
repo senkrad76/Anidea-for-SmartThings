@@ -1,8 +1,8 @@
 <?php
 //
-// Anidea-ST Webhook Library (devices.php) - (C) Graham Johnson 2020
-// =================================================================
-// Version: 20.06.12.00
+// Anidea-ST Webhook Library (afswl_devices.php) - (C) Graham Johnson 2020
+// =======================================================================
+// Version: 20.06.13.00
 //
 
 function afswl_devices_getdescription( $deviceid, $authtoken )
