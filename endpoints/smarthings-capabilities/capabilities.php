@@ -6,13 +6,14 @@ require_once 'afswl/anidea-st-webhook-library.php';
 $accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
 
 //
-// Anidea-ST capabilities.php (C) Graham Johnson 2020
+// Anidea-ST afswl_capabilities.php (C) Graham Johnson 2020
 // ==================================================
-// Version: 20.06.12.01
+// Version: 20.06.13.00
 //
 
 function afswl_config_main()
 {
+    global $accesstoken;
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
@@ -83,7 +84,7 @@ function sortbyname( $a, $b )
     return $a[ 'id' ] < $b[ 'id' ] ? -1 : 1;
 }
 
-usort( $listjson[ 'items' ], 'sortbyname');
+usort( $listjson[ 'items' ], 'sortbyname' );
 
 foreach ( $listjson[ 'items' ] as $cap )
 {
@@ -128,5 +129,5 @@ ob_end_flush();
 <?php
 }
 
-afswl_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+afswl_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
 ?>
