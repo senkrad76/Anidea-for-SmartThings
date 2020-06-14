@@ -32,7 +32,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 
 There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app.
 
-- [Anidea-ST Webhook Library](#anidea-st-webhook-library)
+- [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper)
 - [Bucket](#bucket)
 - [SmartThings Capabilities](#smartthings-capabilities)
 ---
@@ -219,15 +219,15 @@ Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the cont
 The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
 
 ---
-## Anidea-ST Webhook Library
+## Anidea for WebHook Wrapper
 This is a simple wrapper library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is also useful for REST API clients. It is stil in the early stages of development. See [Bucket](#bucket) for a companion example app that demonstrates how to use it).
 
 *SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
 
 ## Bucket
-Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anidea-st-webhook-library). What it actually does may vary over time.
+Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper). What it actually does may vary over time.
 
 ## SmartThings Capabilities
-This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours. The script uses the [Anidea-ST Webhook Library](#anidea-st-webhook-library) just because it can (it is actually only used for one HTTPS GET).
+This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours. The script uses the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper) just because it can (it is actually only used for one HTTPS GET).
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
