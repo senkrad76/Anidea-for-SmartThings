@@ -1,17 +1,17 @@
 <?php
 // Change the following line to reflect the correct location.
-require_once 'afswl/anidea-st-webhook-library.php';
+require_once 'anidea-for-webhook-wrapper/afww_main.php';
 
 // Personal Access Token.
-$accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
+$accesstoken = 'UUID';
 
 //
-// Anidea-ST afswl_capabilities.php (C) Graham Johnson 2020
-// ==================================================
-// Version: 20.06.13.00
+// SmartThings Capabilities (capabilities.php) (C) Graham Johnson 2020
+// ===================================================================
+// Version: 20.06.14.00
 //
 
-function afswl_config_main()
+function afww_config_main()
 {
     global $accesstoken;
 ?>
@@ -75,7 +75,7 @@ $cached = fopen( $cachetemp, 'w' );
 
 ob_start();
 
-$capabilities = afswl_capabilities_list( $accesstoken );
+$capabilities = afww_capabilities_list( $accesstoken );
 
 $listjson = json_decode( $capabilities, true );
 
@@ -129,5 +129,5 @@ ob_end_flush();
 <?php
 }
 
-afswl_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
+afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
 ?>
