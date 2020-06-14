@@ -1,11 +1,11 @@
 <?php
 //
-// Anidea-ST Webhook Library (afswl_devices.php) - (C) Graham Johnson 2020
-// =======================================================================
+// Anidea-ST Webhook Wrapper (afww_devices.php) - (C) Graham Johnson 2020
+// ======================================================================
 // Version: 20.06.13.00
 //
 
-function afswl_devices_getdescription( $deviceid, $authtoken )
+function afww_devices_getdescription( $deviceid, $authtoken )
 {
     $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid" );
 
@@ -15,12 +15,12 @@ function afswl_devices_getdescription( $deviceid, $authtoken )
     $desc = json_decode( curl_exec( $ch ), true );
     curl_close($ch);
     
-    afswl_log_asjson( $desc, 'DEVICES_GETDESCRIPTION' );
+    afww_log_asjson( $desc, 'DEVICES_GETDESCRIPTION' );
     
     return $desc;
 }
 
-function afswl_devices_getfullstatus( $deviceid, $authtoken )
+function afww_devices_getfullstatus( $deviceid, $authtoken )
 {
     $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid/status" );
 
@@ -30,7 +30,7 @@ function afswl_devices_getfullstatus( $deviceid, $authtoken )
     $status = json_decode( curl_exec( $ch ), true );
     curl_close($ch);
     
-    afswl_log_asjson( $status, 'DEVICES_GETFULLSTATUS' );
+    afww_log_asjson( $status, 'DEVICES_GETFULLSTATUS' );
     
     return $status;
 }
