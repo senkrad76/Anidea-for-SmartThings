@@ -1,11 +1,11 @@
 <?php
 //
-// Anidea-ST Webhook Library (subscriptions.php) - (C) Graham Johnson 2020
-// =======================================================================
-// Version: 20.06.12.00
+// Anidea for WebHook Wrapper (afww_subscriptions.php) - (C) Graham Johnson 2020
+// =============================================================================
+// Version: 20.06.14.00
 //
 
-function afswl_subscriptions_create( $appid, $authtoken, $sub )
+function afww_subscriptions_create( $appid, $authtoken, $sub )
 {
     $ch = curl_init( "https://api.smartthings.com/v1/installedapps/$appid/subscriptions" );
 
@@ -16,10 +16,10 @@ function afswl_subscriptions_create( $appid, $authtoken, $sub )
     $result = curl_exec( $ch );
     curl_close($ch);
     
-    afswl_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
+    afww_log_asjson( $sub, 'SUBSCRIPTION_REQUEST' );
 }
 
-function afswl_subscriptions_deleteall( $appid, $authtoken )
+function afww_subscriptions_deleteall( $appid, $authtoken )
 {
     $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
     
@@ -31,7 +31,7 @@ function afswl_subscriptions_deleteall( $appid, $authtoken )
     curl_close($ch);
 }
 
-function afswl_subscriptions_list( $appid, $authtoken )
+function afww_subscriptions_list( $appid, $authtoken )
 {       
     $ch = curl_init( "https://api.smartthings.com/installedapps/$appid/subscriptions" );
     
@@ -41,6 +41,6 @@ function afswl_subscriptions_list( $appid, $authtoken )
     $subs = curl_exec( $ch );
     curl_close($ch);
     
-    afswl_log_asjson( json_decode( $subs, true), 'SUBSCRIPTION_LIST' );
+    afww_log_asjson( json_decode( $subs, true), 'SUBSCRIPTION_LIST' );
 }
 ?>
