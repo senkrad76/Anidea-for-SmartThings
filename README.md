@@ -2,7 +2,9 @@
 
 A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
-The repository layout is compatible with the IDE for [Groovy Device Handlers](devicetypes/orangebucket) and Groovy SmartApps. Apps using the SmartThings REST API are in the [endpoints](endpoints) folder, whether they are full on 'WebHook Endpoint' apps or purely REST clients.
+The repository layout is compatible with the IDE for the 'classic' [Device Handlers](devicetypes/orangebucket) and SmartApps that are written in Groovy. 
+
+The terminology for the 'new' environment is all over the place. The term SmartaApp appears in the documentation as 'SmartApp Connector' (for cloud-connected devices not using the 'Schema Connector'), as 'SmartApp' (for Automations), and 'WebHook SmartApp' (for automations not using the AWS Lambdas). However in the Developer Workspace you get it in the context of  'Automation SmartApp' (also written 'Automation | SmartApp') or 'Automation Connector | SmartApp'. So in the absence of any convention, the top level folder [automations](automations) is being used, with the namespace underneath.
 
 **Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
 
@@ -218,14 +220,14 @@ The `"device":"Device Display Name",` entry is only used to address the messages
 
 ---
 ## Anidea-ST Webhook Library
-This is a simple library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is also useful for REST API clients. It is stil in the early stages of development. See [Bucket](#bucket) for a companion example app that demonstrates how to use it).
+This is a simple wrapper library, written in good old-fashioned procedural style, to assist development of automations using the Webhook Endpoint approach. It is also useful for REST API clients. It is stil in the early stages of development. See [Bucket](#bucket) for a companion example app that demonstrates how to use it).
 
 *SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
 
 ## Bucket
-Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anidea-st-webhook-library) a simple library written in good old-fashioned procedural style.
+Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea-ST Webhook Library](#anidea-st-webhook-library). What it actually does may vary over time.
 
 ## SmartThings Capabilities
-This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours. The script uses the [Anidea-ST Webhook Library](#anidea-st-webhook-library) just because it can. It is actually only used for one HTTPS GET.
+This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for twenty-four hours. The script uses the [Anidea-ST Webhook Library](#anidea-st-webhook-library) just because it can (it is actually only used for one HTTPS GET).
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
