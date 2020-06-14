@@ -1,39 +1,40 @@
 <?php
-require_once 'devices.php';
-require_once 'subscriptions.php';
+require_once 'afww_capabilities.php';
+require_once 'afww_devices.php';
+require_once 'afww_subscriptions.php';
 
 //
-// Anidea-ST Webhook Library (anidea-st-webhook-library.php) - (C) Graham Johnson 2020
-// ===================================================================================
-// Version: 20.06.12.00
+// Anidea for WebHook Wrapper (afww_main.php) - (C) Graham Johnson 2020
+// ====================================================================
+// Version: 20.06.14.00
 //
 
-function afswl_log_asjson( $data, $logname )
+function afww_log_asjson( $data, $logname )
 {
-    // Requires the user defined function afswl_config_log().
+    // Requires the user defined function afww_config_log().
     
-    if ( $logpath = afswl_config_log() )
+    if ( $logpath = afww_config_log() )
     {
         error_log( json_encode( $data, JSON_PRETTY_PRINT ) . "\n", 3, "$logpath/$logname.json");
     }
 }
 
-function afswl_log_astext( $data, $logname )
+function afww_log_astext( $data, $logname )
 {
-    // Requires the user defined function afswl_config_log().
+    // Requires the user defined function afww_config_log().
     
-    if ( $logpath = afswl_config_log() )
+    if ( $logpath = afww_config_log() )
     {
         error_log( date( DATE_ISO8601 ) . ': ' . $data . "\n", 3, "$logpath/$logname.json");
     }
 }
 
-function afswl_main( $scripturl )
+function afww_main( $scripturl )
 {
     // Read data from the request body, assuming it is JSON.
     if ( $request = json_decode( file_get_contents( 'php://input' ), true ) )
     {
-        if ( $response = afswl_lifecycle( $request, $scripturl ) )
+        if ( $response = afww_lifecycle( $request, $scripturl ) )
         {
             header( 'Content-Type: application/json' );
             echo json_encode( $response );
@@ -43,29 +44,29 @@ function afswl_main( $scripturl )
     {
         // This is just a bog standard HTTP GET call so put out a web page.
         
-        echo afswl_config_main();
+        echo afww_config_main();
     }
 }
 
-function afswl_lifecycle( $request, $scripturl )
+function afww_lifecycle( $request, $scripturl )
 {
     // Log the current request.
-    afswl_log_asjson( $request, $request[ 'lifecycle' ] );
+    afww_log_asjson( $request, $request[ 'lifecycle' ] );
     
-    // Check for afswl_lifecycle events from SmartThings.
+    // Check for afww_lifecycle events from SmartThings.
     switch ( $request[ 'lifecycle' ] )
     {
-        case 'CONFIRMATION':    $response = afswl_lifecycle_confirmation( $request, $scripturl );
+        case 'CONFIRMATION':    $response = afww_lifecycle_confirmation( $request, $scripturl );
                                 break;
-        case 'CONFIGURATION':   $response = afswl_lifecycle_configuration( $request );
+        case 'CONFIGURATION':   $response = afww_lifecycle_configuration( $request );
                                 break;
-        case 'INSTALL':         $response = afswl_lifecycle_install( $request );
+        case 'INSTALL':         $response = afww_lifecycle_install( $request );
                                 break;
-        case 'UPDATE':          $response = afswl_lifecycle_update( $request );
+        case 'UPDATE':          $response = afww_lifecycle_update( $request );
                                 break;
-        case 'EVENT':           $response = afswl_lifecycle_event( $request );
+        case 'EVENT':           $response = afww_lifecycle_event( $request );
                                 break;
-        case 'UNINSTALL':       $response = afswl_lifecycle_event( $request );
+        case 'UNINSTALL':       $response = afww_lifecycle_event( $request );
                                 break;
         default:                $response = false;
     }
@@ -73,7 +74,7 @@ function afswl_lifecycle( $request, $scripturl )
     return $response;
 }
 
-function afswl_lifecycle_confirmation( $request, $scripturl )
+function afww_lifecycle_confirmation( $request, $scripturl )
 {
     // Create the required response.
     $response = array( 'target_url' => $scripturl );
@@ -84,43 +85,43 @@ function afswl_lifecycle_confirmation( $request, $scripturl )
     return $response;
 }
 
-function afswl_lifecycle_configuration( $request )
+function afww_lifecycle_configuration( $request )
 {
     switch ( $request[ 'configurationData' ][ 'phase' ] )
     {
-        case 'INITIALIZE':  $response = afswl_lifecycle_configuration_initialize( $logpath );
+        case 'INITIALIZE':  $response = afww_lifecycle_configuration_initialize( $logpath );
                             break;
-        case 'PAGE':        $response = afswl_lifecycle_configuration_page( $request[ 'configurationData' ][ 'pageId' ] );
+        case 'PAGE':        $response = afww_lifecycle_configuration_page( $request[ 'configurationData' ][ 'pageId' ] );
                             break;
     }
     
     return $response;
 }
 
-function afswl_lifecycle_configuration_initialize( $logpath = './logs')
+function afww_lifecycle_configuration_initialize( $logpath = './logs')
 {
-    // Requires the user defined function afswl_config_initialize().
+    // Requires the user defined function afww_config_initialize().
     
-    $response = array( 'configurationData' => array( 'initialize' => afswl_config_initialize() ) );
+    $response = array( 'configurationData' => array( 'initialize' => afww_config_initialize() ) );
                 
-    afswl_log_asjson( $response, 'CONFIGURATION_INITIALIZE_RESPONSE' );
+    afww_log_asjson( $response, 'CONFIGURATION_INITIALIZE_RESPONSE' );
     
     return( $response );
 }
 
-function afswl_lifecycle_configuration_page( $pageid )
+function afww_lifecycle_configuration_page( $pageid )
 {
-    // Requires the user defined function afswl_config_page().
-    $pages = afswl_config_page();
+    // Requires the user defined function afww_config_page().
+    $pages = afww_config_page();
     
     $page = array( 'configurationData' => array( 'page' => $pages[ $pageid ] ) );
     
-    afswl_log_asjson( $page, 'CONFIGURATION_PAGE_RESPONSE' );
+    afww_log_asjson( $page, 'CONFIGURATION_PAGE_RESPONSE' );
     
     return $page;
 }
 
-function afswl_lifecycle_install( $request )
+function afww_lifecycle_install( $request )
 {
     // https://smartthings.developer.samsung.com/docs/smartapps/lifecycles.html#INSTALL
     
@@ -129,7 +130,7 @@ function afswl_lifecycle_install( $request )
     return $response;
 }
 
-function afswl_lifecycle_update( $request )
+function afww_lifecycle_update( $request )
 {
     $response = array( 'updateData' => array( 'placeholder' => '' ) );
     
@@ -138,36 +139,36 @@ function afswl_lifecycle_update( $request )
     $config    = $request[ 'updateData' ][ 'installedApp' ][ 'config' ];
     
     // Delete the existing subscriptions to avoid setting up duplicates.
-    afswl_subscriptions_deleteall( $appid, $authtoken );
+    afww_subscriptions_deleteall( $appid, $authtoken );
 
     // Create new subscriptions.
-    afswl_lifecycle_update_subscriptions( $appid, $authtoken, $config );
+    afww_lifecycle_update_subscriptions( $appid, $authtoken, $config );
     
     // List the current subscriptions.
-    afswl_subscriptions_list( $appid, $authtoken );
+    afww_subscriptions_list( $appid, $authtoken );
     
     return $response;
 }
 
-function afswl_lifecycle_update_subscriptions( $appid, $authtoken, $config )
+function afww_lifecycle_update_subscriptions( $appid, $authtoken, $config )
 {
-    // Requires the user defined function afswl_config_subscription().
+    // Requires the user defined function afww_config_subscription().
     
-    $subs = afswl_config_subscription( $config );
+    $subs = afww_config_subscription( $config );
     
     foreach ( $subs as $sub )
     {
-        afswl_subscriptions_create( $appid, $authtoken, $sub );
+        afww_subscriptions_create( $appid, $authtoken, $sub );
     }
 }
 
-function afswl_lifecycle_event( $request )
+function afww_lifecycle_event( $request )
 {
-    // Requires the user defined function afswl_config_event().
+    // Requires the user defined function afww_config_event().
     
     $response = array( 'eventData' => array( 'placeholder' => '' ) );
     
-    afswl_config_event( $request );
+    afww_config_event( $request );
     
     return $response;
 }
