@@ -1,7 +1,7 @@
 <?php
 //
-// Anidea-ST Webhook Wrapper (afww_capabilities.php) - (C) Graham Johnson 2020
-// ===========================================================================
+// Anidea for WebHook Wrapper (afww_capabilities.php) - (C) Graham Johnson 2020
+// ============================================================================
 // Version: 20.06.14.00
 //
 
