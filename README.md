@@ -228,6 +228,6 @@ This is a simple wrapper library, written in good old-fashioned procedural style
 Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper). What it actually does may vary over time.
 
 ## SmartThings Capabilities
-This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for two days. The script uses the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper) just because it can (it is actually only used for one HTTPS GET).
+This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for two days. The script uses the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper) just because it can.
 
 It requires a Personal Access Token from <https://account.smartthings.com/tokens>. One with scope to access custom capabilities will work (so might others but they haven't been checked).
