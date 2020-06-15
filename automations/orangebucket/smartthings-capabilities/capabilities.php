@@ -1,19 +1,22 @@
 <?php
+/* ---------------------------------------------------------------------------------
+ * (C) Graham Johnson (orangebucket)
+ *
+ * SPDX-License-Identifier: MIT
+ * ---------------------------------------------------------------------------------
+ *
+ * SmartThings Capabilities (capabilities.php)
+ * ===========================================
+ * Version: 20.06.15.00
+ */
+
 // Change the following line to reflect the correct location.
 require_once 'anidea-for-webhook-wrapper/afww_main.php';
 
-// Personal Access Token.
-$accesstoken = 'UUID';
-
-//
-// SmartThings Capabilities (capabilities.php) (C) Graham Johnson 2020
-// ===================================================================
-// Version: 20.06.14.00
-//
-
 function afww_config_main()
 {
-    global $accesstoken;
+    // Personal Access Token (https://account.smartthings.com/tokens).
+    $accesstoken = 'UUID';
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
@@ -39,7 +42,7 @@ function afww_config_main()
             <h1>SmartThings Capabilities</h1>
             <div id="intro">
                 <p>The capabilities are read from the SmartThings REST API. As this takes a while and
-                the capabilities do not change very often, they are cached for twenty-four hours.</p>
+                the capabilities do not change very often, they are cached for two days.</p>
                 <p>The capabilities are listed alphabetically and colour coded as <span class="live">live</span>, 
                 <span class="proposed">proposed</span>, <span class="deprecated">deprecated</span> and 
                 <span class="dead">dead</span>.</p>
@@ -54,7 +57,7 @@ $file = $break[ count($break) - 1 ];
 
 $cachefile = substr_replace($file ,"",-4).'-cache.html';
 $cachetemp = $cachefile . $ts;
-$cachetime = 86400;
+$cachetime = 172800;
 
 // Serve from the cache if it is younger than $cachetime
 if ( file_exists($cachefile) && time() - $cachetime < filemtime($cachefile) )
@@ -75,9 +78,7 @@ $cached = fopen( $cachetemp, 'w' );
 
 ob_start();
 
-$capabilities = afww_capabilities_list( $accesstoken );
-
-$listjson = json_decode( $capabilities, true );
+$listjson = json_decode( afww_capabilities_list( $accesstoken ), true );
 
 function sortbyname( $a, $b )
 {
@@ -88,24 +89,7 @@ usort( $listjson[ 'items' ], 'sortbyname' );
 
 foreach ( $listjson[ 'items' ] as $cap )
 {
-    $capability = "https://api.smartthings.com/v1/capabilities/${cap[ 'id' ]}/${cap[ 'version' ]}";
-
-    $ch = curl_init( $capability );
-    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-    curl_setopt( $ch, CURLOPT_POST,           0 );
-    curl_setopt( $ch, CURLOPT_FAILONERROR,    1 );
-    curl_setopt( $ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $accesstoken" ) );
-
-    if ( ( $resp =  curl_exec( $ch ) ) === false )
-    {
-?>
-            <div class="error"><?php echo curl_error( $ch ); ?></div>
-<?php
-    }
-
-    curl_close( $ch );
-
-    $capjson = json_decode( $resp, true );
+    $capjson = json_decode( afww_capabilities_get( $cap[ 'id'], $cap[ 'version' ], $accesstoken ), true );
 ?>
             <h3 class="<?php echo $capjson[ 'status' ]; ?>" onclick="pre = document.getElementById( '<?php echo $capjson[ 'id' ]; ?>' ); pre.style.display = ( pre.style.display == 'none' ) ? 'block' : 'none';"><?php echo $capjson[ 'name' ]; ?></h3>
             <pre id="<?php echo $capjson[ 'id' ]; ?>"><?php echo json_encode( $capjson, JSON_PRETTY_PRINT ) ?></pre>
