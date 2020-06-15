@@ -1,38 +1,44 @@
 <?php
-//
-// Anidea for WebHook Wrapper (afww_devices.php) - (C) Graham Johnson 2020
-// =======================================================================
-// Version: 20.06.14.00
-//
+/* ---------------------------------------------------------------------------------
+ * (C) Graham Johnson (orangebucket)
+ *
+ * SPDX-License-Identifier: MIT
+ * ---------------------------------------------------------------------------------
+ *
+ * Anidea for WebHook Wrapper (afww_capabilities.php)
+ * ==================================================
+ * Version: 20.06.15.00
+ */
 
-function afww_devices_getdescription( $deviceid, $authtoken )
+function afww_capabilities_list( $authtoken )
 {
-    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid" );
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $desc = json_decode( curl_exec( $ch ), true );
-    curl_close($ch);
+    $ch = curl_init( 'https://api.smartthings.com/v1/capabilities' );
     
-    afww_log_asjson( $desc, 'DEVICES_GETDESCRIPTION' );
-    
-    return $desc;
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    curl_setopt( $ch, CURLOPT_POST,           0 );
+    curl_setopt( $ch, CURLOPT_FAILONERROR,    1 );
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+
+    $capabilities = curl_exec( $ch );
+
+    curl_close( $ch );
+
+    return $capabilities;
 }
 
-function afww_devices_getfullstatus( $deviceid, $authtoken )
+function afww_capabilities_get( $capid, $capversion, $authtoken )
 {
-    $ch = curl_init( "https://api.smartthings.com/v1/devices/$deviceid/status" );
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $status = json_decode( curl_exec( $ch ), true );
-    curl_close($ch);
+    $ch = curl_init( "https://api.smartthings.com/v1/capabilities/$capid/$capversion" );
     
-    afww_log_asjson( $status, 'DEVICES_GETFULLSTATUS' );
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    curl_setopt( $ch, CURLOPT_POST,           0 );
+    curl_setopt( $ch, CURLOPT_FAILONERROR,    1 );
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array( "Authorization: Bearer $authtoken" ) );
+
+    $capability =  curl_exec( $ch );
+
+    curl_close( $ch );
     
-    return $status;
+    return $capability;
 }
-
 ?>
