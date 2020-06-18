@@ -113,5 +113,5 @@ ob_end_flush();
 <?php
 }
 
-afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'], $access_token );
+afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
 ?>
