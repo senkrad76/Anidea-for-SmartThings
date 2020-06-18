@@ -7,16 +7,16 @@
  *
  * SmartThings Capabilities (capabilities.php)
  * ===========================================
- * Version: 20.06.15.00
+ * Version: 20.06.18.00
  */
 
 // Change the following line to reflect the correct location.
-require_once 'anidea-for-webhook-wrapper/afww_main.php';
+require_once '../anidea-for-webhook-wrapper/afww_main.php';
 
 function afww_config_main()
 {
     // Personal Access Token (https://account.smartthings.com/tokens).
-    $accesstoken = 'UUID';
+    $accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
@@ -78,18 +78,18 @@ $cached = fopen( $cachetemp, 'w' );
 
 ob_start();
 
-$listjson = json_decode( afww_capabilities_list( $accesstoken ), true );
+$caplist = afww_capabilities_list( $accesstoken );
 
 function sortbyname( $a, $b )
 {
     return $a[ 'id' ] < $b[ 'id' ] ? -1 : 1;
 }
 
-usort( $listjson[ 'items' ], 'sortbyname' );
+usort( $caplist[ 'items' ], 'sortbyname' );
 
-foreach ( $listjson[ 'items' ] as $cap )
+foreach ( $caplist[ 'items' ] as $cap )
 {
-    $capjson = json_decode( afww_capabilities_get( $cap[ 'id'], $cap[ 'version' ], $accesstoken ), true );
+    $capjson = afww_capabilities_get( $cap[ 'id'], $cap[ 'version' ], $accesstoken );
 ?>
             <h3 class="<?php echo $capjson[ 'status' ]; ?>" onclick="pre = document.getElementById( '<?php echo $capjson[ 'id' ]; ?>' ); pre.style.display = ( pre.style.display == 'none' ) ? 'block' : 'none';"><?php echo $capjson[ 'name' ]; ?></h3>
             <pre id="<?php echo $capjson[ 'id' ]; ?>"><?php echo json_encode( $capjson, JSON_PRETTY_PRINT ) ?></pre>
@@ -113,5 +113,5 @@ ob_end_flush();
 <?php
 }
 
-afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
+afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'], $access_token );
 ?>
