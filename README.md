@@ -2,11 +2,11 @@
 
 A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
+**Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
+
 The repository layout is compatible with the IDE for the 'classic' [Device Handlers](devicetypes/orangebucket) and SmartApps that are written in Groovy. 
 
 The terminology for the 'new' environment is all over the place. The term SmartApp appears in the documentation as 'SmartApp Connector' (for cloud-connected devices not using the 'Schema Connector'), as 'SmartApp' (for Automations), and 'WebHook SmartApp' (for automations not using the AWS Lambdas). However in the Developer Workspace you get it in the context of  'Automation SmartApp' (also written 'Automation | SmartApp') or 'Automation Connector | SmartApp'. So in the absence of any convention, the top level folder [automations](automations) is being used, with the namespace underneath.
-
-**Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app:
 
