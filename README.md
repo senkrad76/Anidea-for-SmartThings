@@ -41,7 +41,7 @@ There is also a REST API client script for viewing capabilities, and a WebHook E
 
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
-The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' app and environment, with the Classic app no longer supported. A number of trials were made with custom manufacturer names and vendor IDs (a.k.a. Visualization Identifiers) which haven't been published and so presumably would not be available to all, but, although these could be made to work for the device pages, the dashboard tiles just wouldn't play ball. At the time of writing, with the architecture being undocumented, the Developer Workspace seemingly lagging well behind reality, and the support of capabilities being inconsistent, it seems easier to concede defeat and just work with what is available generically.
+The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' app and environment, with the Classic app no longer supported. Suitable custom capabilities and device presentations will be created where required, but the tools required only entered alpha test in mid-June 2020.
 
 **Although a lot of edits have been made to the device handlers, they remain underpinned by the code from the 'bspranger' handlers when it comes to the Zigbee side of things, and also when it comes to the maths used in the Vibration Sensor.**
 
@@ -85,7 +85,7 @@ The capability definition only includes the single unit 'kPa', with a range of 0
 
 *The units are displayed incorrectly in the Settings area of the app because the first letter is being folded to upper case, turning correct abbreviations such as 'hPa' into the nonsensical 'HPa'.*
 
-At the time of writing, the most suitable metadata for UI purposes hasn't been determined and the tile is displaying humidity rather than temperature.
+At the time of writing, the alpha release of the CLI tool has been used to create a custom device presentation so the temperature displays on the dashboard tile. Without it the humidity seems to display. It is assumed this works for other users.
 
 ### Anidea for Aqara Vibration
 The reworking of the handler for the vibration sensor, model DJT11LM, is pretty much complete, with any further changes likely to be tidying up of the code. There has been one significant change from the original. 'Vibration' is now mapped to the Acceleration Sensor capability and 'tilt' to the Motion Sensor, reversing the mapping in the 'bspranger' handler. The Acceleration Sensor capability is presented as a Vibration Sensor in the 'new' app and so it is an obvious change.
