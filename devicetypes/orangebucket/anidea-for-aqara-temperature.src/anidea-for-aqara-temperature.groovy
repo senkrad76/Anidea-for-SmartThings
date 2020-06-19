@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.05.31.00
+ * Version:	 20.06.19.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -18,8 +18,9 @@
  
 metadata
 {
+	// Please be aware that the 'vid' may be subject to change.
 	definition ( name: 'Anidea for Aqara Temperature', namespace: 'orangebucket', author: 'Graham Johnson',
-    			 ocfDeviceType: 'oic.d.thermostat' )
+    			 ocfDeviceType: 'oic.d.thermostat', mnmn: 'SmartThingsCommunity', vid: 'be5ff498-cfb1-37ee-b675-5464440f45b9' )
 	{
             capability 'Temperature Measurement'
             capability 'Relative Humidity Measurement'
