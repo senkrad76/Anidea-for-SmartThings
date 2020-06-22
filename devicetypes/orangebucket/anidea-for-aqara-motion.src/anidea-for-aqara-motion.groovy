@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Motion
  * =======================
- * Version:	 20.05.31.00
+ * Version:	 20.06.22.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Motion' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
@@ -38,8 +38,7 @@ metadata
         // If the reset timer doesn't fire, as happened a lot in April 2020, the status can get stuck
         // on active. Therefore add commands to manually set the status, using the names from the
         // Simulated Motion Sensor handler.
-        command 'active'
-        command 'inactive'
+        capability 'circlemusic21301.motionCommands'
 
 		// These Zigbee fingerprints have been inherited, but have been reformatted to aid comparison.
         fingerprint endpointId: '01', profileId: '0104', deviceId: '0107', inClusters: '0000, FFFF, 0406, 0400, 0500, 0001, 0003', outClusters: '0000, 0019', manufacturer: 'LUMI', model: 'lumi.sensor_motion.aq2', deviceJoinName: 'Aqara Motion RTCGQ11LM'
