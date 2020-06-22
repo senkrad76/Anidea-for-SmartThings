@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Presence
  * ===========================
- * Version:	 20.05.27.00
+ * Version:	 20.06.22.00
  *
  * A virtual presence and occupancy sensor that handles the two capabilities separately. 
  * Custom commands use standard names where available.
@@ -27,12 +27,10 @@ metadata
 
 		// Custom commands for setting the presence, named for compatibility with
         // the stock Simulated Presence Sensor DTH as a de facto standard.
-        command 'arrived'
-        command 'departed'
+        capability 'circlemusic21301.presenceCommands'
 
 		// Custom commands for setting occupancy.  No known standards to follow.
-		command 'occupied'
-        command 'unoccupied'
+		capability 'circlemusic21301.occupancyCommands'
     }
 }
 
