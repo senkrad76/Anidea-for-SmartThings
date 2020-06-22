@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.06.20.00
+ * Version:	 20.06.22.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
