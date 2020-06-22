@@ -7,14 +7,15 @@
  *
  * Anidea for Virtual Binary
  * =========================
- * Version:	 20.05.29.00
+ * Version:	 20.06.22.00
  *
  * This device handler implements a virtual binary state device.
  */
 
 metadata
 {
-	definition( name: 'Anidea for Virtual Binary', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition( name: 'Anidea for Virtual Binary', namespace: 'orangebucket', author: 'Graham Johnson',
+    			mnmn: 'SmartThingsCommunity', vid: 'a0ee1553-d009-3d3d-a0f8-3b2c40391415' )
     {
         capability 'Contact Sensor'
         capability 'Motion Sensor'
@@ -28,16 +29,11 @@ metadata
         capability 'Actuator'
 		capability 'Sensor'
      
-     	command 'open'
-        command 'close'
-        command 'active'
-        command 'inactive'
-        command 'occupied'
-        command 'unoccupied'
-        command 'arrived'
-        command 'departed'
-        command 'wet'
-        command 'dry'
+     	capability 'circlemusic21301.contactCommands'
+        capability 'circlemusic21301.motionCommands'
+        capability 'circlemusic21301.occupancyCommands'
+        capability 'circlemusic21301.presenceCommands'
+        capability 'circlemusic21301.waterCommands'
 	}
 
 	preferences
@@ -46,7 +42,7 @@ metadata
         input name: 'virtualmotion',    type: 'bool', title: 'Act as virtual Motion Sensor?',    description: 'Enter boolean', required: true
         input name: 'virtualoccupancy', type: 'bool', title: 'Act as virtual Occupancy Sensor?', description: 'Enter boolean', required: true
         input name: 'virtualpresence',  type: 'bool', title: 'Act as virtual Presence Sensor?',  description: 'Enter boolean', required: true
-        input name: 'virtualswitch',    type: 'bool', title: 'Act as virtual Switch?',           description: 'Enter boolean', required: true
+     // input name: 'virtualswitch',    type: 'bool', title: 'Act as virtual Switch?',           description: 'Enter boolean', required: true
         input name: 'virtualwater',     type: 'bool', title: 'Act as virtual Water Sensor?',     description: 'Enter boolean', required: true
 	}
 }
@@ -80,7 +76,7 @@ def updated()
     logger( 'updated', 'debug', 'Virtual Motion Sensor '    + ( virtualmotion    ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Occupancy Sensor ' + ( virtualoccupancy ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Presence Sensor '  + ( virtualpresence  ? 'enabled' : 'disabled' ) )
-    logger( 'updated', 'debug', 'Virtual Switch '           + ( virtualswitch    ? 'enabled' : 'disabled' ) )
+ // logger( 'updated', 'debug', 'Virtual Switch '           + ( virtualswitch    ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Water Sensor '     + ( virtualwater     ? 'enabled' : 'disabled' ) )
 }
 
@@ -120,7 +116,8 @@ def binaryactive()
     if ( virtualmotion    ) sendEvent( name: 'motion',    value: 'active'   )
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'occupied' )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'present'  )
-    if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'on'       )
+ // if ( virtualswitch    ) 
+    						sendEvent( name: 'switch',    value: 'on'       )
     if ( virtualwater     ) sendEvent( name: 'water',     value: 'wet'      )
 }
 
@@ -132,7 +129,8 @@ def binaryinactive()
     if ( virtualmotion    ) sendEvent( name: 'motion',    value: 'inactive'    )
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'unoccupied'  )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'not present' )
-    if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'off'         )
+ // if ( virtualswitch    ) 
+ 							sendEvent( name: 'switch',    value: 'off'         )
     if ( virtualwater     ) sendEvent( name: 'water',     value: 'dry'         )
 }
 
