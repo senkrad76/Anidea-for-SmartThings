@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.06.19.00
+ * Version:	 20.06.20.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -24,8 +24,9 @@ metadata
 {
 	definition( name: 'Anidea for Aqara Contact', namespace: 'orangebucket', author: 'Graham Johnson' )
 	{
-   		capability 'Contact Sensor'
+        capability 'Contact Sensor'
         capability 'Battery'
+                
 		capability 'Health Check'
 		capability 'Sensor'
 
@@ -37,9 +38,7 @@ metadata
         // handler. The handler sets a flag when the contact status has been set 'manually' so that
         // the next open or closed event from the device can be forced to propagate regardless of
         // whether the state has changed.
-   		command "open"
-   		command "close"
-        // capability 'schoolnature13873.contactSetter'
+        capability 'circlemusic21301.contactCommands'
    
 		fingerprint endpointId: '01', profileId: '0104', deviceId: '0104', inClusters: '0000, 0003, FFFF, 0019', outClusters: '0000, 0004, 0003, 0006, 0008, 0005 0019', manufacturer: 'LUMI', model: 'lumi.sensor_magnet',     deviceJoinName: 'Lumi Mijia MCCGQ01LM'
    		fingerprint endpointId: "01", profileId: "0104", deviceId: "5F01", inClusters: "0000, 0003, FFFF, 0006", outClusters: "0000, 0004, FFFF", 						 manufacturer: "LUMI", model: "lumi.sensor_magnet.aq2", deviceJoinName: "Lumi Aqara MCCGQ11LM"
