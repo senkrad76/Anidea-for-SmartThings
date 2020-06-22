@@ -120,7 +120,7 @@ Mobile presence has been using both the Presence Sensor and Occupancy Sensor cap
 A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](#anidea-for-virtual-temperature) being created.
 
 ### Anidea for Virtual Binary
-This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which are all disabled by default and should be enabled as required using the device settings, are:
+This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which with the exception of Switch are all disabled by defaultand should be enabled as required using the device settings, are:
 
 |CAPABILITY|ATTRIBUTE|ACTIVE STATE|COMMAND|INACTIVE STATE|COMMAND|
 |----------|---------|--------------|----------------|--------------|----------------|
@@ -133,6 +133,8 @@ This handler implements a multiple attribute binary state device. The overall st
 
 The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the commands used by a stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chose for use in other 'Anidea for ...' device handlers.
 *The one exception is that `wet()` and `dry()` were created for the handler.*
+
+The Switch capability is permanently enabled as its presentation includes an on/off button and the SmartThings app returns an error if pushing that button doesn't result in an attribute change. It is therefore a sensible candidate for use on the dashboard tile for both state and action.
 
 ### Anidea for Virtual Button
 This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
