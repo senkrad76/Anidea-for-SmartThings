@@ -12,7 +12,7 @@
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
  * custom attributes, most of its preferences, and much of the logging. The Health Check has been
- * modifield and the proposed Atmospheric Pressure Measurement has been added (previously, not
+ * modified and the proposed Atmospheric Pressure Measurement has been added (previously, not
  * even a custom attribute was defined).
  */
  
