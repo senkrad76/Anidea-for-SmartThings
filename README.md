@@ -120,7 +120,7 @@ Mobile presence has been using both the Presence Sensor and Occupancy Sensor cap
 A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](#anidea-for-virtual-temperature) being created.
 
 ### Anidea for Virtual Binary
-This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which with the exception of Switch are all disabled by defaultand should be enabled as required using the device settings, are:
+This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which with the exception of Switch are all disabled by default and should be enabled as required using the device settings, are:
 
 |CAPABILITY|ATTRIBUTE|ACTIVE STATE|COMMAND|INACTIVE STATE|COMMAND|
 |----------|---------|--------------|----------------|--------------|----------------|
@@ -136,6 +136,8 @@ The commands are consistent with those used by other 'Anidea for ...' device han
 
 The Switch capability is permanently enabled as its presentation includes an on/off button and the SmartThings app returns an error if pushing that button doesn't result in an attribute change. It is therefore a sensible candidate for use on the dashboard tile for both state and action.
 
+A custom capability named 'Binary Sensor' is being developed to represent the inherent active or inactive state of the device, independently of the standard capabilities. However custom capabilities aren't mature enough to release this yet.
+
 ### Anidea for Virtual Button
 This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
 
@@ -145,7 +147,7 @@ This device handler implements a momentary action for the Contact Sensor, Motion
 *This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button, and the device details screen was a bit too messy.*
 
 ### Anidea for Virtual Presence
-The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy.
+The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy. The [Anidea for Virtual Binary](#anidea-for-virtual-binary) handler is an alternative if you just want presence, or want to link presence and occupancy together.
 
 ### Anidea for Virtual Temperature
 The Simulated Temperature Sensor uses Switch Level to give local control in the Classic app. However this confuses things in the 'new' app because the attribute `level` is never set. There are also issues because the units are never set in the events, and also there is an omission in that the level isn't updated when the temperature is changed remotely. This device handler has been written to work properly in the new app, and not at all in the Classic app. The `up()`, `down()` and `setTemperature()` custom commands allow the temperature to be incremented, decremented and set to a particular value, using the command names from the simulated sensor as a de facto standard.
