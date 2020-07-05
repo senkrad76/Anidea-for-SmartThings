@@ -8,7 +8,7 @@ Air Conditioner|oic.d.airconditioner
 Air Purifier|oic.d.airpurifier
 Air Quality Detector|x.com.st.d.airqualitysensor
 Blind|oic.d.blind
-Blu-Ray Player|x.com.st.d.blurayplayer
+Blu-ray Player|x.com.st.d.blurayplayer
 Camera|oic.d.camera
 Contact Sensor|x.com.st.d.sensor.contact
 Cooktop|x.com.st.d.cooktop
