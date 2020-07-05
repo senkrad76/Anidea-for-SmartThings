@@ -1,4 +1,6 @@
-This is a list of the device types available when creating a Device Profile in the Developer Workspace, as of 5th July 2010, and the corresponding ocfDeviceType.
+List last updated: 5th July 2020.
+
+The Developer Workspace offers a choice of device types when creating Device Profiles. Those writing Groovy DTHs might be interested in the ocfDeviceType associated with each.
 
 Device Type|ocfDeviceType
 :---|:---
