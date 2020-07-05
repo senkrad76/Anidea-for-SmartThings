@@ -7,15 +7,15 @@
  *
  * Anidea for Virtual Binary
  * =========================
- * Version:	 20.06.22.00
+ * Version:	 20.07.05.00
  *
  * This device handler implements a virtual binary state device.
  */
 
 metadata
 {
-	definition( name: 'Anidea for Virtual Binary', namespace: 'orangebucket', author: 'Graham Johnson',
-    			mnmn: 'SmartThingsCommunity', vid: 'a0ee1553-d009-3d3d-a0f8-3b2c40391415' )
+	definition( name: 'Anidea for Virtual Binary', namespace: 'orangebucket', author: 'Graham Johnson', 
+                ocfDeviceType: 'oic.wk.d', mnmn: 'SmartThingsCommunity', vid: 'a0ee1553-d009-3d3d-a0f8-3b2c40391415' )
     {
         capability 'Contact Sensor'
         capability 'Motion Sensor'
