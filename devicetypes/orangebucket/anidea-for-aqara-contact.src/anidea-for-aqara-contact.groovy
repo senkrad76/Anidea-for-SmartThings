@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.06.22.00
+ * Version:	 20.07.07.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -53,12 +53,7 @@ metadata
 def installed()
 {	
 	logger( 'installed', 'info', '' )
-    
-    // Health Check is undocumented but lots of ST DTHs create a 'checkInterval' event in this way.
-    // Aqara sensors seem to send a battery report every 50-60 minutes, so allow for missing one and then 
-    // add a bit of slack on top.
-    sendEvent( name: 'checkInterval', value: 2 * 60 * 60 + 10 * 60, displayed: false, data: [ protocol: 'zigbee', hubHardwareId: device.hub.hardwareID ] )
-    
+        
     // In the absence of any information about how to make the sensor report its settings on demand,
     // fake some default values for the attributes. For binary attributes, use whichever one seems to
     // to have least consequences.
