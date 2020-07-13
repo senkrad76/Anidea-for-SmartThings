@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Temperature
  * ============================
- * Version:	 20.06.19.00
+ * Version:	 20.07.13.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Temperature Humidity Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -89,6 +89,10 @@ def parse( String description )
 	// Send message data to appropriate parsing function based on the type of report
 	if ( map.name == 'temperature' )
     {
+    	// Note (July 2020): zigbee.getEvent() now returns a temperature with two
+        // decimal places, not an integer.  Therefore the temperature() method could
+        // be rewritten.  However it isn't hurting anyone.
+        
     	// Get a (possibly converted) value with more precision.
         map.value = temperature( description )
         

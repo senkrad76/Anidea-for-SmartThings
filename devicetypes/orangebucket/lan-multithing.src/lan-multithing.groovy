@@ -7,7 +7,7 @@
  *
  * LAN MultiThing
  * ==============
- * Version:	 20.05.27.00
+ * Version:	 20.07.12.00
  *
  * The LAN MultiThing is a device handler for a remote device on the local network
  * that implements a number of actuator and sensor capabilities, and can also
@@ -31,7 +31,8 @@
 
 metadata
 {
-	definition (name: "LAN MultiThing", namespace: "orangebucket", author: "Graham Johnson")
+	definition ( name: "LAN MultiThing", namespace: "orangebucket", author: "Graham Johnson",
+                 ocfDeviceType: 'oic.wk.d' )
     {
 		capability "Actuator"
         capability "Air Quality Sensor"
