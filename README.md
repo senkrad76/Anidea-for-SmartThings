@@ -48,8 +48,9 @@ The 'Anidea for ...' handlers strip things down and make them suitable for the '
 The common changes made to all the handlers include:
 
 * Completely remove the `tiles()` section as the Classic app is not being supported.
-* Remove custom attributes and commands, except for custom 'setters' (used to force attributes to particular values).
-* Rename custom setters where they differ from the equivalent commands in ST stock handlers.
+* Remove custom attributes and commands, except for custom 'setter' commands (used to force attributes to particular values).
+* Rename custom setter commands where they differ from the equivalent commands in ST stock handlers.
+* Define the custom setter commands using custom capabilities rather than using `command`.
 * Initialise all attributes in the `installed()` method (the 'new' app isn't keen on attributes without values).
 * Initialise `checkInterval` to twenty-four hours as battery reports take a few hours to appear.
 * Set a `checkInterval` of two hours ten minutes once the first of the regular battery reports has arrived.
