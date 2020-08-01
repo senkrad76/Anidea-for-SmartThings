@@ -132,7 +132,7 @@ This handler implements a multiple attribute binary state device. The overall st
 |Switch|switch|on|on()|off|off()|
 |Water Sensor|water|wet|wet()|dry|dry()|
 
-The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the commands used by a stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chose for use in other 'Anidea for ...' device handlers.
+The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the commands used by a stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chosen for use in other 'Anidea for ...' device handlers.
 *The one exception is that `wet()` and `dry()` were created for the handler.*
 
 The Switch capability is permanently enabled as its presentation includes an on/off button and the SmartThings app returns an error if pushing that button doesn't result in an attribute change. It is therefore a sensible candidate for use on the dashboard tile for both state and action.
