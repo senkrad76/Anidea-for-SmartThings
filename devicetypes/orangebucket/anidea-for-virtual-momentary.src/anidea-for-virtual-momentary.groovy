@@ -7,11 +7,12 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.05.27.00
+ * Version:	 20.08.04.00
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
- * The capabilities are permanently in place but the momentary actions are controlled by
- * booleans in the settings and are not enabled by default.
+ * The capabilities are permanently in place, and the momentary switch action is permanently
+ * enable, but the other two momentary actions are controlled by booleans in the settings
+ * and are not enabled by default.
  */
 
 metadata
@@ -36,7 +37,6 @@ metadata
     {
         input name: 'momentarycontact', type: 'bool', title: 'Act as momentary Contact Sensor?', description: 'Enter boolean', required: true
         input name: 'momentarymotion',  type: 'bool', title: 'Act as momentary Motion Sensor?',  description: 'Enter boolean', required: true
-        input name: 'momentaryswitch',  type: 'bool', title: 'Act as momentary Switch?',         description: 'Enter boolean', required: true
 	}
 }
 
@@ -64,7 +64,6 @@ def updated()
 
     logger( 'updated', 'debug', 'Momentary Contact Sensor ' + ( momentarycontact ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Momentary Motion Sensor '  + ( momentarymotion  ? 'enabled' : 'disabled' ) )
-    logger( 'updated', 'debug', 'Momentary Switch '         + ( momentaryswitch  ? 'enabled' : 'disabled' ) )
 }
 
 def logger( method, level = 'debug', message = '' )
@@ -80,12 +79,12 @@ def push()
     // Change attributes to the active state.
     if ( momentarycontact ) sendEvent( name: 'contact', value: 'open'   )
     if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'active' )
-    if ( momentaryswitch  ) sendEvent( name: 'switch',  value: 'on'     )
+    sendEvent( name: 'switch',  value: 'on' )
 
 	// Return attributes to inactive state.
 	if ( momentarycontact ) sendEvent( name: 'contact', value: 'closed'   )
     if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'inactive' )
-    if ( momentaryswitch  ) sendEvent( name: 'switch',  value: 'off'      )
+    sendEvent( name: 'switch',  value: 'off' )
 }
 
 // parse() is called when the hub receives a message from a device.
