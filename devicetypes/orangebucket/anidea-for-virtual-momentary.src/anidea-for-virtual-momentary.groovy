@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.08.09.00
+ * Version:	 20.08.09.01
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place, and the momentary switch action is permanently
@@ -17,7 +17,8 @@
 
 metadata
 {
-	definition( name: 'Anidea for Virtual Momentary', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition( name: 'Anidea for Virtual Momentary', namespace: 'orangebucket', author: 'Graham Johnson',
+    			mnmn: 'SmartThingsCommunity', vid: '18570b53-3a92-34ac-8134-f9c0dc671e5c' )
     {
     	//
         capability 'Momentary'
