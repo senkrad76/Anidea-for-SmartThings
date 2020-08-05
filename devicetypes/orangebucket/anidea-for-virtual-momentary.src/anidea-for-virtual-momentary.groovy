@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.08.04.00
+ * Version:	 20.08.09.00
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place, and the momentary switch action is permanently
@@ -85,6 +85,15 @@ def push()
 	if ( momentarycontact ) sendEvent( name: 'contact', value: 'closed'   )
     if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'inactive' )
     sendEvent( name: 'switch',  value: 'off' )
+}
+
+def on()
+{
+    push()
+}
+
+def off()
+{
 }
 
 // parse() is called when the hub receives a message from a device.
