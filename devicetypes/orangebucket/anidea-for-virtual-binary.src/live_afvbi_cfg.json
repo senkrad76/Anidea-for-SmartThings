@@ -1,0 +1,266 @@
+{
+    "mnmn": "SmartThingsCommunity",
+    "vid": "aee06982-e66a-3aa8-9c3f-032c98882b86",
+    "type": "dth",
+    "dpInfo": null,
+    "iconUrl": null,
+    "dashboard": {
+        "states": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    },
+    "detailView": [
+        {
+            "component": "main",
+            "capability": "switch",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "contactSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "motionSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "presenceSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "waterSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "occupancySensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.contactCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.motionCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.presenceCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.waterCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.occupancyCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "waterSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.waterCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "waterSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.waterCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    }
+}
