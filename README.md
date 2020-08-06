@@ -42,6 +42,10 @@ There is also a REST API client script for viewing capabilities, and a WebHook E
 - [Bucket](automations/orangebucket/bucket/)
 - [SmartThings Capabilities](automations/orangebucket/smartthings-capabilities/)
 
+A number of custom capabilities are being used with the various device handlers. They are being placed in a [capabilities](capabilities) folder with the namespace adding an extra level of hierarchy.
+
+- [Custom Capabilities (circlemusic21301)](capabilities/circlemusic21301/)
+
 ---
 
 ## Anidea for Lumi Devices
