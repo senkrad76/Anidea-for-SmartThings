@@ -8,7 +8,7 @@ The repository layout is compatible with the IDE for the 'classic' [Device Handl
 
 The terminology for the 'new' environment is all over the place. The term SmartApp appears in the documentation as 'SmartApp Connector' (for cloud-connected devices not using the 'Schema Connector'), as 'SmartApp' (for Automations), and 'WebHook SmartApp' (for automations not using the AWS Lambdas). However in the Developer Workspace you get it in the context of  'Automation SmartApp' (also written 'Automation | SmartApp') or 'Automation Connector | SmartApp'. So in the absence of any convention, the top level folder [automations](automations) is being used, with the namespace underneath.
 
-The following device handlers deliberately do not define a UI for the SmartThings Classic app:
+The following device handlers deliberately do not define a UI for the SmartThings Classic app. They are the ones I think other users may be interested in.
 
 - [Anidea for Lumi Devices](#anidea-for-lumi-devices)
   - [Anidea for Aqara Button](#anidea-for-aqara-button)
@@ -17,28 +17,35 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - [Anidea for Aqara Temperature](#anidea-for-aqara-temperature)
   - [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
   - [Anidea for Mijia Contact](#anidea-for-mijia-contact)
-- [Anidea for HTTP Ping](#anidea-for-http-ping)
-- [Anidea for Scene Momentary](#anidea-for-scene-momentary)
+- [Anidea for HTTP Ping](devicetypes/orangebucket/anidea-for-http-ping.src/)
+- [Anidea for Scene Momentary](devicetypes/orangebucket/anidea-for-scene-momentary.src/)
 - [Anidea for Virtual Devices](#anidea-for-virtual-devices)
-  - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
-  - [Anidea for Virtual Button](#anidea-for-virtual-button)
-  - [Anidea for Virtual Momentary](#anidea-for-virtual-momentary)
-  - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
-  - [Anidea for Virtual Temperature](#anidea-for-virtual-temperature)
+  - Anidea for Virtual Binary
+  - Anidea for Virtual Button
+  - Anidea for Virtual Momentary
+  - Anidea for Virtual Presence
+  - Anidea for Virtual Temperature
 
-This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app:
+This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app. You really don't want to use it.
 
-- [LAN MultiThing](#lan-multithing)
+- [LAN MultiThing](devicetypes/orangebucket/lan-multithing.src)
 
-There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app.
+There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app. There might be some interest in reading those.
 
-- [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper)
-- [Bucket](#bucket)
-- [SmartThings Capabilities](#smartthings-capabilities)
+- [Anidea for WebHook Wrapper](automations/orangebucket/anidea-for-webhook-wrapper/)
+- [Bucket](automations/orangebucket/anidea-for-webhook-wrapper/)
+- [SmartThings Capabilities](automations/orangebucket/smartthings-capabilities/)
 ---
 ## Anidea for Lumi Devices
 <img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_button.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_contact.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_motion.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_temperature.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_vibration.png" width="100">
 
+- [Anidea for Aqara Button](#anidea-for-aqara-button)
+- [Anidea for Aqara Contact](#anidea-for-aqara-contact)
+- [Anidea for Aqara Motion](#anidea-for-aqara-motion)
+- [Anidea for Aqara Temperature](#anidea-for-aqara-temperature)
+- [Anidea for Aqara Vibration](#anidea-for-aqara-vibration)
+- [Anidea for Mijia Contact](#anidea-for-mijia-contact)
+  
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort (largely driven by different single individuals at different times), to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The sensors use Zigbee in a rather non-standard way and so they need special handling. SmartThings recognise their popularity enough to make some allowances for them, but neither they nor Lumi have created 'official' handlers. Although they are very effective, the handlers have a number of issues: they are very much rooted in the Classic environment; the logging might be considered a bit excessive and untidy; there are several custom attributes that don't really add anything; the Health Check support isn't quite right; and most of the settings are pretty much superfluous (for example, why have a UK / US date format setting when log messages are already timestamped?). 
 
 The 'Anidea for ...' handlers strip things down and make them suitable for the 'new' app and environment, with the Classic app no longer supported. Suitable custom capabilities and device presentations will be created where required, but the tools required only entered alpha test in mid-June 2020.
@@ -95,150 +102,18 @@ The reworking of the handler for the vibration sensor, model DJT11LM, is pretty 
 The [Anidea for Aqara Contact](#anidea-for-aqara-contact) handler also covers an earlier model.
 
 ---
-## Anidea for HTTP Ping
-A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect if the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
-
-This simple device handler was built for the job described above, but as well as being able to act as a virtual Motion Sensor, it can also be set to be a Contact Sensor, Occupancy Sensor, Presence Sensor and Switch and it behaves like the [Anidea for Virtual Binary](#anidea-for-virtual-binary) handler in having a single overall active or inactive state. Every fifteen minutes it attempts to connect an HTTP server on the IP address, port and path defined in the preferences. If the `parse()` command picks up the response the status is set to active. If no response is received within a minute the status is set to inactive. The `refresh()` command can also be used to check the status out of band, and custom setter commands can be used to set the attributes directly (see [Anidea for Virtual Binary](#anidea-for-virtual-binary) for the commands, though bear in mind the Water Sensor capability is not being used).
-
-*Polling more frequently than every fifteen minutes just seems like 'a bad thing', but it will probably be made configurable at some stage.*
-
-*A number of users claimed that, if Smart Lighting was configured with multiple motion sensors, they didn't 'or' together when it came to inactivity timeouts. Several tests and months of usage suggested this was not the case. Unfortunately things seem to have changed and now the second motion sensor being active will not prevent inactivity timeouts.*
-
----
-## Anidea for Scene Momentary
-This is a simple device handler that uses the Momentary capability (and thus a virtual button in the mobile app, and a `push()` command for other apps such as ActionTiles and webCoRE) and executes a Scene using the SmartThings REST API. It is an alternative to having to mess about creating HTTPS POST requests to execute scenes, or having a virtual switch and a trivial automation.
-
-The device needs to be configured with a Personal Access Token (https://account.smartthings.com/tokens) with suitable scope to control a Scene, and the device ID of the Scene (which is arguably easiest to find in the IDE by using 'List Scenes' on your Location details page).
-
----
 ## Anidea for Virtual Devices
-At the time the [Anidea for Virtual Button](#anidea-for-virtual-button) handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button`, it was decided to create a separate handler instead, hence [Anidea for Virtual Momentary](#anidea-for-virtual-momentary).
 
-It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the [Anidea for Virtual Binary](#anidea-for-virtual-binary) handler.
-
-Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](#anidea-for-virtual-presence) does likewise.
-
-A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](#anidea-for-virtual-temperature) being created.
-
-  - [Anidea for Virtual Binary](#anidea-for-virtual-binary)
-  - [Anidea for Virtual Button](#anidea-for-virtual-button)
-  - [Anidea for Virtual Momentary](devicetypes/orangebucket/anidea-for-virtual-momentary.src)
-  - [Anidea for Virtual Presence](#anidea-for-virtual-presence)
-  - [Anidea for Virtual Temperature](#anidea-for-virtual-temperature)
-
-### Anidea for Virtual Binary
-This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which with the exception of Switch are all disabled by default and should be enabled as required using the device settings, are:
-
-|CAPABILITY|ATTRIBUTE|ACTIVE STATE|COMMAND|INACTIVE STATE|COMMAND|
-|----------|---------|--------------|----------------|--------------|----------------|
-|Contact Sensor|contact|open|open()|closed|close()|
-|Motion Sensor|motion|active|active()|inactive|inactive()|
-|Occupancy Sensor|occupancy|occupied|occupied()|unoccupied|unoccupied()|
-|Presence Sensor|presence|present|arrived()|not present|departed()|
-|Switch|switch|on|on()|off|off()|
-|Water Sensor|water|wet|wet()|dry|dry()|
-
-The commands are consistent with those used by other 'Anidea for ...' device handlers. Those are derived from the capability where the device is an actuator, from the commands used by a stock 'Simulated ...' device handler where one is available, and lastly from whatever has been chosen for use in other 'Anidea for ...' device handlers.
-*The one exception is that `wet()` and `dry()` were created for the handler.*
-
-The Switch capability is permanently enabled as its presentation includes an on/off button and the SmartThings app returns an error if pushing that button doesn't result in an attribute change. It is therefore a sensible candidate for use on the dashboard tile for both state and action.
-
-A custom capability named 'Binary Sensor' is being developed to represent the inherent active or inactive state of the device, independently of the standard capabilities. However custom capabilities aren't mature enough to release this yet.
-
-### Anidea for Virtual Button
-This device handler implements the Button and Momentary capabilities and sends `pushed` events when the momentary tile is pressed in the new app, or the `push()` method is called from other apps e.g. webCoRE. The handler also supports the `down_6x` value of the button, but this is only used to seed the button attribute at start up, which is something that keeps the new app happy.
-
-### Anidea for Virtual Momentary
-This device handler implements a momentary action for the Contact Sensor, Motion Sensor and Switch capabilities. Although not really necessary, the contact and motion actions are not enabled by default and should be enabled via the device settings as required. The switch action is permanently enabled as the new app doesn't like having an on/off button that doesn't actually do anything. Pressing the momentary tile, or calling the `push()` method, sets the active states (`open`, `active` and `on`) as required, and then immediately resets them to the inactive states (`closed`, `inactive` and `off`). Pressing the action button on the switch tile, or calling `on()` also activates the momentary action. The `off()` method does nothing.
-
-*This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button and at the time there wasn't anything that could be done about it, and also the device details screen was a bit too messy.*
-
-### Anidea for Virtual Presence
-The Simulated Presence Sensor doesn't allow for the Occupancy Sensor capability used in mobile presence. This handler supports both the Presence Sensor and Occupancy Sensor capabilities independently, and supports the `arrived()` and `departed()` custom commands to set presence, and uses `occupied()` and `unoccupied()` for occupancy. The [Anidea for Virtual Binary](#anidea-for-virtual-binary) handler is an alternative if you just want presence, or want to link presence and occupancy together.
-
-### Anidea for Virtual Temperature
-The Simulated Temperature Sensor uses Switch Level to give local control in the Classic app. However this confuses things in the 'new' app because the attribute `level` is never set. There are also issues because the units are never set in the events, and also there is an omission in that the level isn't updated when the temperature is changed remotely. This device handler has been written to work properly in the new app, and not at all in the Classic app. The `up()`, `down()` and `setTemperature()` custom commands allow the temperature to be incremented, decremented and set to a particular value, using the command names from the simulated sensor as a de facto standard.
-
-The implementation of Switch Level in the UI for the new app doesn't seem to support anything but 0 to 100. To work with this, the handler defaults of a range of -40 C to 150 C, or -40 F to 302 F, depending on the temperature scale setting in the Location (there doesn't seem to be a way to change this in the new app, but it can be changed via the IDE). These values can be overridden in the settings. Temperature values below the 0% value, or above the 100% value, are changed to the minimum or maximum readings.
-
-*The Switch Level capability in the device details doesn't seem to support entering 0%, and the Settings screen can be a little odd with 0 values too.*
-
-*Please be aware that webCoRE recognises the `up()` and `down()` commands from another capability, and so presents them as 'Pan Camera Up' and 'Pan Camera Down'.*
-
----
-## LAN MultiThing
-This device handler implements the actuator capabilities Alarm, Audio Notification (see below), Configuration, Notification, Speech Synthesis, Switch and Tone by sending messages as HTTP GET messages in a format compatible with the AutoRemote WiFi Service and using AutoApps command format. There really is nothing magical about this and you can do absolutely anything you want with the commands at the other end. The author primarily uses it to implement a replacement for LANnouncer using the AutoRemote WiFi Service to provide an HTTP server for Tasker, and then Tasker to act on the commands.
-
-The device handler is also capable of receiving 'pings' from the remote device sent as HTTP POST requests to port 39500 of the hub in JSON format. Currently these can be used to set the attribute states for the sensor capabilities Air Quality Sensor, Battery, Estimated Time Of Arrival, Motion Sensor, Power Source, Relative Humidity, Speech Recognition, Temperature and Ultraviolet Index, and also to set other variables in the device state map. Adding additional sensor capabilities requires adding the capability to the supported list, adding any UI tiles required, and possibly adding code to the parse() method for those capabilities that don't fit into the simple name and value model.
-
-The device handler can also act as a bridge for individual devices supported by the remote device. There are currently child device handlers for the actuator capability Audio Notification ('Audio'), and the sensor capabilities Estimated Time Of Arrival ('ETA'), Motion Sensor and Speech Recognition ('STT'). These device handlers can be created and maintained independently of the parent device handler which doesn't need to know anything specific about them. The child devices send commands by calling methods on the parent, while the parent will forward incoming messages addressed to the child to the child's parse() method. The remote device should send a 'ping' with the list of child devices and these are then created (or deleted) when the updated() method is run (it is currently down to the user to do this, for example by saving the device preferences in the mobile app).
-
-*It is possible to query the commands and attributes supported by capabilities on the fly. The commands reported for Audio Notification are consistent with the reference documentation. However the Speaker Companion app (previously Speaker Notify With Sound) uses commands which are not part of the Audio Notification or the now deprecated Music Player capabilities, or indeed any at all. They are device specific commands, which is utterly ridiculous. The two commands which have the same names will accept, and ignore, the extra parameter they may be called with by Speaker Companion. The other command is not supported at the moment.*
-
-The device is specified by IP Address and Port in the Preferences, and the MAC address may also be specified (with or without colons and in upper, lower or mixed case). If the MAC address is provided it will be used as the Device Network ID (DNI), otherwise the IP Address and Port are combined in a hex form as the DNI. You might prefer to give your AutoRemote device a fixed IP address using a manual IP or a reserved IP address in your DHCP server. If the MAC address is not provided the incoming 'pings' will not work so a lot of functionality will be lost.
-
-*The device network ID has to be either the MAC address or the hex IP:Port in order for SmartThings to send responses to the parse() method of a device handler. The MAC address is generally preferred and allows the device handler to receive out of band requests from the remote device on port 39500 on the hub. With the hex IP:Port this doesn't work as the remote source port would be completely different for these requests. Unfortunately if you have one device set up with the MAC address and another with the hex IP:Port the latter will not see the responses to its own requests. It would be nice if messages were forwarded based on IP:Port first and then MAC address but that isn't how it works.*
-
-For capabilities that have a state, such as Alarm and Switch, the device handler waits for a response from the server on the device before setting the new state. This doesn't mean the command has worked, only that AutoRemote WiFi service has received it.
-
-The HTTP GET requests are of the form `http://LAN IP ADDRESS:PORT/sendmessage?message=MESSAGE` where the MESSAGE is of the form `DEVICENAME=:=DEVICE DISPLAY NAME=:=CAPABILITY;=:=COMMAND=:=FREE TEXT=:=EXTRA`. The device handler doesn't allow any empty strings to make it to the remote end, with the exception of EXTRA, as Tasker doesn't really handle them elegantly. DEVICENAME is the 'name' property of the device with the spaces stripped out. So if you create your device with the name 'LAN MultiThing' it will be 'LANMultiThing'. DEVICE DISPLAY NAME is the 'displayName' property of the device, which may be different to the 'name' if you have defined it (it is called the 'label' in the IDE). DEVICE DISPLAY NAME, CAPABILITY, COMMAND, FREE TEXT and EXTRA are all URL encoded.
-
-*The author likes to define the 'name' of a device, as shown in the IDE, as either the name of the device type handler (as in 'LAN MultiThing') or the specific make and model number of the device.*
-
-If the free text used with the Notification or Speech Synthesis commands is of the form `COMMAND=:=FREE TEXT` the COMMAND and FREE TEXT will be extracted.
-
-|CAPABILITY|COMMAND (State)|FREE TEXT|EXTRA||
-|---|---|---|---|---|
-|alarm|off|off|||
-|alarm|siren|siren|||
-|alarm|strobe|strobe|||
-|alarm|both|both|||
-|audioNotification|playTrack|&lt;uri&gt;|&lt;level&gt;||
-|audioNotification|playTrackAndResume|&lt;uri&gt;|&lt;level&gt;||
-|audioNotification|playTrackAndRestore|&lt;uri&gt;|&lt;level&gt;||
-|configuration|configure|configure|||
-|notification|deviceNotification|LAN MultiThing||Empty notification text replaced by dummy text.|
-|notification|deviceNotification|&lt;free text&gt;||Notification without a valid command.|
-|notification|&lt;command&gt;|&lt;free text&gt;||Notification with a valid command.|
-|notification|&lt;command&gt;|deviceNotification||Notification only containing a command.
-|speechSynthesis|speak|LAN MultiThing||Empty speech text replaced by dummy text.|
-|speechSynthesis|speak|&lt;free text&gt;||Speech without a valid command.|
-|speechSynthesis|&lt;command&gt;|&lt;free text&gt;||Speech with a valid command.|
-|speechSynthesis|&lt;command&gt;|speak||Speech only containing a command.|
-|switch|off|off|||
-|switch|on|on|||
-|tone|beep|beep|||
-
-Incoming HTTP POST requests are sent to `http://HUB IP ADDRESS:39500/`, the content type is `application/json`, and the data is of the form:
+- [Anidea for Virtual Binary](devicetypes/orangebucket/anidea-for-virtual-binary.src)
+- [Anidea for Virtual Button](devicetypes/orangebucket/anidea-for-virtual-button.src)
+- [Anidea for Virtual Momentary](devicetypes/orangebucket/anidea-for-virtual-momentary.src)
+- [Anidea for Virtual Presence](devicetypes/orangebucket/anidea-for-virtual-presence.src)
+- [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src)
   
-<pre>{
-    "device":"Device Display Name",
-    "attribute": {
-        "attribute1 name":"attribute1 value",
-        "attribute2 name":{"attribute2 field1 name":"attribute2 field1 value"}
-    },
-    "state": {
-        "state1 name":"state1 value",
-        "state2 name":"state2 value"
-    },
-    "devices": [
-        {"name":"child1 name", "type":"child1 type"},
-        {"name":"child2 name", "type":"child2 type"}
-    ]
-}</pre>
+At the time the [Anidea for Virtual Button](devicetypes/orangebucket/anidea-for-virtual-binary.src) handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa (probably incorrectly as it turns out, as it looks like Alexa needs more than momentary changes for triggering routines). As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button` (which could not be corrected at the time), it was decided to create a separate handler instead, hence [Anidea for Virtual Momentary](devicetypes/orangebucket/anidea-for-virtual-momentary.src).
 
-The `"device":"Device Display Name",` entry is only used to address the messages to child devices, for example to set the child device attributes. The currently available types of child devices are 'Audio', 'ETA' and 'STT'.
+It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the [Anidea for Virtual Binary](devicetypes/orangebucket/anidea-for-virtual-binary.src) handler. As it turns out, this is the one that is handy for Alexa routines.
 
----
-## Anidea for WebHook Wrapper
-This is a simple wrapper library, written in good old-fashioned procedural style, to assist development of automations using the WebHook Endpoint approach. It is also useful for REST API clients. It is still in the early stages of development. See [Bucket](#bucket) for a companion example app that demonstrates how to use it).
+Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](devicetypes/orangebucket/anidea-for-virtual-presence.src) does likewise.
 
-*SmartThings are creating SDKs for this sort of thing but seem to be starting out with JavaScript and Java and going all OOP, which isn't the author's cup of tea at all. So largely procedural programming in PHP fits in a niche.*
-
-## Bucket
-Bucket was a dummy name I used for a Developer Workspace project, forgetting that it was not possible to rename it once created. It is an example app to work with the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper). What it actually does may vary over time.
-
-## SmartThings Capabilities
-This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for two days. The script uses the [Anidea for WebHook Wrapper](#anidea-for-webhook-wrapper) just because it can.
-
-It requires a Personal Access Token (<https://account.smartthings.com/tokens>). One with scope to access custom capabilities will work (so might others but they haven't been checked).
+A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src) being created.
