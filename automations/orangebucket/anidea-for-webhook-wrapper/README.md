@@ -1,3 +1,6 @@
+#### [Anidea for SmartThings](../../../README.md) - (C) Graham Johnson (orangebucket)
+---
+
 # Anidea for WebHook Wrapper
 This is a simple wrapper library, written in good old-fashioned procedural style, to assist development of automations using the WebHook Endpoint approach. It is also useful for REST API clients. It is still in the early stages of development. See [Bucket](../bucket/) for a companion example app that demonstrates how to use it).
 
