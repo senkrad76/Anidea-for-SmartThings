@@ -39,7 +39,7 @@ This device handler is perhaps a little more bespoke than the others and it stil
 There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app. There might be some interest in reading those.
 
 - [Anidea for WebHook Wrapper](automations/orangebucket/anidea-for-webhook-wrapper/)
-- [Bucket](automations/orangebucket/anidea-for-webhook-wrapper/)
+- [Bucket](automations/orangebucket/bucket/)
 - [SmartThings Capabilities](automations/orangebucket/smartthings-capabilities/)
 ---
 ## Anidea for Lumi Devices
