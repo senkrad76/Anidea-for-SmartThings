@@ -1,0 +1,17 @@
+{
+    "id": "circlemusic21301.contactCommands",
+    "version": 1,
+    "status": "proposed",
+    "name": "Contact Commands",
+    "attributes": {},
+    "commands": {
+        "close": {
+            "name": "close",
+            "arguments": []
+        },
+        "open": {
+            "name": "open",
+            "arguments": []
+        }
+    }
+}
