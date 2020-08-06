@@ -1,3 +1,6 @@
+#### [Anidea for SmartThings](../../../README.md) > [Anidea for Virtual Devices](../../../README.md#anidea-for-virtual-devices) - (C) Graham Johnson (orangebucket)
+---
+
 # Anidea for Virtual Temperature
 The Simulated Temperature Sensor uses Switch Level to give local control in the Classic app. However this confuses things in the 'new' app because the attribute `level` is never set. There are also issues because the units are never set in the events, and also there is an omission in that the level isn't updated when the temperature is changed remotely. This device handler has been written to work properly in the new app, and not at all in the Classic app. The `up()`, `down()` and `setTemperature()` custom commands allow the temperature to be incremented, decremented and set to a particular value, using the command names from the simulated sensor as a de facto standard.
 
