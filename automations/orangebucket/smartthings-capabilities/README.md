@@ -1,3 +1,6 @@
+#### [Anidea for SmartThings](../../../README.md) - (C) Graham Johnson (orangebucket)
+---
+
 # SmartThings Capabilities
 This is a simple PHP script to pull the latest list of capabilities from the SmartThings REST API. As there are over two hundred capabilities the list is cached for two days. The script uses the [Anidea for WebHook Wrapper](../anidea-for-webhook-wrapper) just because it can.
 
