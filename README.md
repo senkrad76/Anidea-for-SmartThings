@@ -11,7 +11,7 @@ The repository layout is compatible with the IDE for the 'classic' [Device Handl
 
 The terminology for the 'new' environment is all over the place. The term SmartApp appears in the documentation as 'SmartApp Connector' (for cloud-connected devices not using the 'Schema Connector'), as 'SmartApp' (for Automations), and 'WebHook SmartApp' (for automations not using the AWS Lambdas). However in the Developer Workspace you get it in the context of  'Automation SmartApp' (also written 'Automation | SmartApp') or 'Automation Connector | SmartApp'. So in the absence of any convention, the top level folder [automations](automations) is being used, with the namespace underneath.
 
-The following device handlers deliberately do not define a UI for the SmartThings Classic app. They are the ones I think other users may be interested in. I use them heavily myself.
+The following device handlers deliberately do not define a UI for the SmartThings Classic app. They are the ones that would seem the most likely to interest others.
 
 - [Anidea for Lumi Devices](#anidea-for-lumi-devices)
   - Anidea for Aqara Button
@@ -27,12 +27,12 @@ The following device handlers deliberately do not define a UI for the SmartThing
   - Anidea for Virtual Presence
   - Anidea for Virtual Temperature
 
-These two handlers are also only for the 'new' app. I make limited use of the HTTP Ping but I wouldn't really recommend it to anyone else, apart from the code perhaps being of some limited interest. The Scene Momentary is really just illustrating yet another way of activating Scenes in places where native support isn't yet available.
+These two handlers are also only for the 'new' app. HTTP Ping does a job but, apart from the code perhaps being of some limited interest, seems unlikely to be particularly useful to others. The Scene Momentary is really just illustrating yet another way of activating Scenes in places where native support isn't yet available.
 
 - [Anidea for HTTP Ping](devicetypes/orangebucket/anidea-for-http-ping.src/)
 - [Anidea for Scene Momentary](devicetypes/orangebucket/anidea-for-scene-momentary.src/)
 
-This device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app. You really don't want to use it.
+The following device handler is perhaps a little more bespoke than the others and it still supports a UI in the Classic app. It was as much a learning exercise as anything. It works but it is all a bit contrived.
 
 - [LAN MultiThing](devicetypes/orangebucket/lan-multithing.src)
 
@@ -41,7 +41,9 @@ There is also a REST API client script for viewing capabilities, and a WebHook E
 - [Anidea for WebHook Wrapper](automations/orangebucket/anidea-for-webhook-wrapper/)
 - [Bucket](automations/orangebucket/bucket/)
 - [SmartThings Capabilities](automations/orangebucket/smartthings-capabilities/)
+
 ---
+
 ## Anidea for Lumi Devices
 <img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_button.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_contact.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_motion.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_temperature.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_vibration.png" width="100">
 
@@ -72,6 +74,7 @@ The common changes made to all the handlers include:
 * Change code to 'house style': lower case variable and method names except where required for compatibility; Allman style indentation; single quotes where possible; spaces around contents of brackets and parentheses.
 
 ---
+
 ## Anidea for Virtual Devices
 
 - [Anidea for Virtual Binary](devicetypes/orangebucket/anidea-for-virtual-binary.src)
