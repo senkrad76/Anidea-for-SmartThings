@@ -16,7 +16,7 @@ require_once '../anidea-for-webhook-wrapper/afww_main.php';
 function afww_config_main()
 {
     // Personal Access Token (https://account.smartthings.com/tokens).
-    $accesstoken = '0294daf0-84c9-4d43-a2a1-b1a6ef398ad9';
+    $accesstoken = 'UUID';
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
