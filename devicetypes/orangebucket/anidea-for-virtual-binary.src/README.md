@@ -1,3 +1,6 @@
+#### [Anidea for SmartThings](../../../README.md) > [Anidea for Virtual Devices](../../../README.md#anidea-for-virtual-devices) - (C) Graham Johnson (orangebucket)
+---
+
 # Anidea for Virtual Binary
 This handler implements a multiple attribute binary state device. The overall state is either active, or it is inactive, as expressed by a number of attributes from stock capabilities. When the handler receives any command to set an attribute active, it sets all enabled attributes to be active. When it receives any command to set an attribute to inactive, it sets all enabled attributes to be inactive. The supported attributes, which with the exception of Switch are all disabled by default and should be enabled as required using the device settings, are:
 
