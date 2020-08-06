@@ -1,3 +1,6 @@
+#### [Anidea for SmartThings](../../../README.md) - (C) Graham Johnson (orangebucket)
+---
+
 # Anidea for HTTP Ping
 A light in a room is switched automatically by a motion sensor at certain times of day. Very occasionally the room may also be occupied at those times and it would be a nuisance if the lights kept turning off because the occupants were watching the TV and not moving about. If it were possible to detect if the TV is switched on then the automation could keep the lights on. Given the automation is working with a motion sensor it is likely to be able to handle a second one. Therefore a device handler which treats the TV being on as active motion would be rather handy.
 
