@@ -5,7 +5,7 @@
 
 A repository of assorted SmartThings bits and bobs that were created for use within the owner's personal SmartThings environment, but hopefully to a standard that could potentially make them useful to others.
 
-**Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
+**Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. However, as a number of users have forked the master repository, a private branch has been provided to provide a bit of a buffer.**
 
 The repository layout is compatible with the IDE for the 'classic' Device Handlers and SmartApps that are written in Groovy. In the absence of any convention, or even consistent terminology, this structure has been extended for Automations using the top level folder 'automations'.
  
