@@ -1,4 +1,4 @@
-#### [Anidea for SmartThings](../../../README.md) > [Anidea for Lumi Devices](../../../README.md#anidea-for-lumi-devices) - (C) Graham Johnson (orangebucket)
+#### [Anidea for SmartThings](../../../README.md) > [Anidea for Lumi Devices](../README.md#anidea-for-lumi-devices) - (C) Graham Johnson (orangebucket)
 ---
 
 # Anidea for Aqara Button
