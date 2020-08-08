@@ -12,12 +12,12 @@
 ## Anidea for Lumi Devices
 <img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_button.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_contact.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_motion.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_temperature.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_vibration.png" width="100">
 
-- [Anidea for Aqara Button](devicetypes/orangebucket/anidea-for-aqara-button.src/)
-- [Anidea for Aqara Contact](devicetypes/orangebucket/anidea-for-aqara-contact.src/)
-- [Anidea for Aqara Motion](devicetypes/orangebucket/anidea-for-aqara-motion.src/)
-- [Anidea for Aqara Temperature](devicetypes/orangebucket/anidea-for-aqara-temperature.src/)
-- [Anidea for Aqara Vibration](devicetypes/orangebucket/anidea-for-aqara-vibration.src/)
-- [Anidea for Mijia Contact](devicetypes/orangebucket/anidea-for-aqara-contact.src/)
+- [Anidea for Aqara Button](anidea-for-aqara-button.src/)
+- [Anidea for Aqara Contact](anidea-for-aqara-contact.src/)
+- [Anidea for Aqara Motion](anidea-for-aqara-motion.src/)
+- [Anidea for Aqara Temperature](anidea-for-aqara-temperature.src/)
+- [Anidea for Aqara Vibration](anidea-for-aqara-vibration.src/)
+- [Anidea for Mijia Contact](anidea-for-aqara-contact.src/)
   
 The ['bspranger' device handlers](https://github.com/bspranger/Xiaomi) are the results of a cumulative community effort to support the Mijia and Aqara brands of sensors made by Lumi, but generally referred to by the Xiaomi name. The work seems to have been largely driven by different single individuals at different times, with particular mentions due to Wayne ('a4refillpad') for creating the first set of handlers, Brian Spranger ('ArstenA' / 'bspranger') for taking the work forward, and Keith G ('veeceeoh') for keeping it going. 
 
@@ -44,22 +44,25 @@ The common changes made to all the handlers include:
 
 ## Anidea for Virtual Devices
 
-- [Anidea for Virtual Binary](devicetypes/orangebucket/anidea-for-virtual-binary.src)
-- [Anidea for Virtual Button](devicetypes/orangebucket/anidea-for-virtual-button.src)
-- [Anidea for Virtual Momentary](devicetypes/orangebucket/anidea-for-virtual-momentary.src)
-- [Anidea for Virtual Presence](devicetypes/orangebucket/anidea-for-virtual-presence.src)
-- [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src)
+- [Anidea for Virtual Binary](anidea-for-virtual-binary.src)
+- [Anidea for Virtual Button](anidea-for-virtual-button.src)
+- [Anidea for Virtual Momentary](anidea-for-virtual-momentary.src)
+- [Anidea for Virtual Presence](anidea-for-virtual-presence.src)
+- [Anidea for Virtual Temperature](anidea-for-virtual-temperature.src)
   
-At the time the [Anidea for Virtual Button](devicetypes/orangebucket/anidea-for-virtual-binary.src) handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button` (which could not be corrected at the time), it was decided to create a separate handler instead, hence [Anidea for Virtual Momentary](devicetypes/orangebucket/anidea-for-virtual-momentary.src).
+At the time the [Anidea for Virtual Button](anidea-for-virtual-binary.src) handler was created, there simply wasn't a stock handler that implemented a virtual button with the momentary capability and worked cleanly with the 'new' SmartThings mobile app. Once that was put together, consideration was given to adding support for the Switch capability, as used by the stock Momentary Button Tile handler, and also Contact Sensor and Motion Sensor capabilities as the author was vaguely aware that sort of thing was useful for working with Alexa. As adding those capabilities made the device details page look a bit of a mess, and more significantly made the `contact` attribute the default tile status instead of `button` (which could not be corrected at the time), it was decided to create a separate handler instead, hence [Anidea for Virtual Momentary](anidea-for-virtual-momentary.src).
 
-It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the [Anidea for Virtual Binary](devicetypes/orangebucket/anidea-for-virtual-binary.src) handler. This is also useful for Alexa routines.
+It also seems to be useful to be able to do things like map `switch` attributes to `contact` attributes, and vice versa. Hence the [Anidea for Virtual Binary](anidea-for-virtual-binary.src) handler. This is also useful for Alexa routines.
 
-Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](devicetypes/orangebucket/anidea-for-virtual-presence.src) does likewise.
+Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](anidea-for-virtual-presence.src) does likewise.
 
-A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src) being created.#
+A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](anidea-for-virtual-temperature.src) being created.#
 
 ---
 
 ## Anidea for Odds and Sods
 
+- [Anidea for HTTP Ping](anidea-for-http-ping.src)
+- [Anidea for Scene Momentary](anidea-for-scene-momentary.src)
+- [LAN Multithing](lan-multithing.src)
 
