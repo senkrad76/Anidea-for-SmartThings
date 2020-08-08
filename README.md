@@ -27,12 +27,10 @@ The repository layout is compatible with the IDE for the 'classic' Device Handle
     - Anidea for HTTP Ping
     - Anidea for Scene Momentary
     - LAN MultiThing
-
-There is also a REST API client script for viewing capabilities, and a WebHook Endpoint library and example app. There might be some interest in reading those.
-
-- [Anidea for WebHook Wrapper](automations/orangebucket/anidea-for-webhook-wrapper/)
-- [Bucket](automations/orangebucket/bucket/)
-- [SmartThings Capabilities](automations/orangebucket/smartthings-capabilities/)
+  - [Anidea for Automations](automations/orangebucket)
+    - Anidea for WebHook Wrapper
+    - Bucket
+    - SmartThings Capabilities
 
 A number of custom capabilities are being used with the various device handlers. They are being placed in a [capabilities](capabilities) folder with the namespace adding an extra level of hierarchy.
 
