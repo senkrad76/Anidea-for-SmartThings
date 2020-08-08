@@ -1,4 +1,4 @@
-#### [Anidea for SmartThings](../../../README.md) > [Anidea for Virtual Devices](../../../README.md#anidea-for-virtual-devices) - (C) Graham Johnson (orangebucket)
+#### [Anidea for SmartThings](../../../README.md) > [Anidea for Virtual Devices](../README.md#anidea-for-virtual-devices) - (C) Graham Johnson (orangebucket)
 ---
 
 # Anidea for Virtual Temperature
