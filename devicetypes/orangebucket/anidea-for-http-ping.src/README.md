@@ -1,4 +1,4 @@
-#### [Anidea for SmartThings](../../../README.md) > [Anidea for Odds and Sods](../README.md#anidea-for-odds-ands-sods) - (C) Graham Johnson (orangebucket)
+#### [Anidea for SmartThings](../../../README.md) > [Anidea for Odds and Sods](../README.md#anidea-for-odds-and-sods) - (C) Graham Johnson (orangebucket)
 ---
 
 # Anidea for HTTP Ping
