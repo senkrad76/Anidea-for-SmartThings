@@ -1,3 +1,12 @@
+#### [Anidea for SmartThings](../../../README.md) - (C) Graham Johnson (orangebucket)
+---
+
+# Anidea for Groovy Device Handlers
+
+- [Anidea for Lumi Devices](#anidea-for-lumi-devices)
+- [Anidea for Virtual Devices](#anidea-for-virtual-devices)
+- [Anidea for Odds and Sods](#anidea-for-odds-and-sods)
+
 ---
 
 ## Anidea for Lumi Devices
@@ -47,4 +56,10 @@ It also seems to be useful to be able to do things like map `switch` attributes 
 
 Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](devicetypes/orangebucket/anidea-for-virtual-presence.src) does likewise.
 
-A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src) being created.
+A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](devicetypes/orangebucket/anidea-for-virtual-temperature.src) being created.#
+
+---
+
+## Anidea for Odds and Sods
+
+
