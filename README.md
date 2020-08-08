@@ -7,10 +7,8 @@ A repository of assorted SmartThings bits and bobs that were created for use wit
 
 **Please be aware that this is very much a personal repository, and so can be subject to the most trivial of changes. There isn't currently any staging or anything going on. There is just the one branch.**
 
-The repository layout is compatible with the IDE for the 'classic' [Device Handlers](devicetypes/orangebucket) and SmartApps that are written in Groovy. 
-
-The terminology for the 'new' environment is all over the place. The term SmartApp appears in the documentation as 'SmartApp Connector' (for cloud-connected devices not using the 'Schema Connector'), as 'SmartApp' (for Automations), and 'WebHook SmartApp' (for automations not using the AWS Lambdas). However in the Developer Workspace you get it in the context of  'Automation SmartApp' (also written 'Automation | SmartApp') or 'Automation Connector | SmartApp'. So in the absence of any convention, the top level folder [automations](automations) is being used, with the namespace underneath.
-
+The repository layout is compatible with the IDE for the 'classic' [Device Handlers](devicetypes/orangebucket) and SmartApps that are written in Groovy. In the absence of any convention, or even consistent terminology, this structure has been extended for [Automations](automations/orangebucket/).
+ 
 The following device handlers deliberately do not define a UI for the SmartThings Classic app. They are the ones that would seem the most likely to interest others.
 
 - [Anidea for Lumi Devices](#anidea-for-lumi-devices)
