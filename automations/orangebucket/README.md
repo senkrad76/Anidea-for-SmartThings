@@ -4,3 +4,7 @@
 ----
 
 # Anidea for Automations
+
+- [Anidea for Webhook Wrapper](anidea-for-webhook-wrapper/)
+- [Bucket](bucket/)
+- [SmartThings Capabilities](smartthings-capabilities/)

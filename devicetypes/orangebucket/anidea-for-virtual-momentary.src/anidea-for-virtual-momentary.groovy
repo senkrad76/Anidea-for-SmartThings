@@ -7,7 +7,7 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.08.09.01
+ * Version:	 20.08.09.02
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place, and the momentary switch action is permanently
@@ -36,8 +36,9 @@ metadata
 
 	preferences
     {
-        input name: 'momentarycontact', type: 'bool', title: 'Act as momentary Contact Sensor?', description: 'Enter boolean', required: true
-        input name: 'momentarymotion',  type: 'bool', title: 'Act as momentary Motion Sensor?',  description: 'Enter boolean', required: true
+        input name: 'momentarycontact', type: 'bool',   title: 'Act as momentary Contact Sensor?', description: 'Enter boolean', required: true
+        input name: 'momentarymotion',  type: 'bool',   title: 'Act as momentary Motion Sensor?',  description: 'Enter boolean', required: true
+        input name: 'momentarydelay',   type: 'number', title: 'Momentary delay in seconds',       description: 'Enter number of seconds (default = 0)', range: '0..60'
 	}
 }
 
@@ -76,25 +77,29 @@ def logger( method, level = 'debug', message = '' )
 def push()
 {
 	logger( 'push', 'info', '' )
-    
-    // Change attributes to the active state.
-    if ( momentarycontact ) sendEvent( name: 'contact', value: 'open'   )
-    if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'active' )
-    sendEvent( name: 'switch',  value: 'on' )
 
-	// Return attributes to inactive state.
-	if ( momentarycontact ) sendEvent( name: 'contact', value: 'closed'   )
-    if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'inactive' )
-    sendEvent( name: 'switch',  value: 'off' )
+	momentaryactive()
+    
+    if ( momentarydelay )
+    {
+    	runIn( momentarydelay, momentaryinactive )
+    }
+    else
+    {
+    	momentaryinactive()
+    }
 }
 
 def on()
 {
+	logger( 'on', 'info', '' )
+    
     push()
 }
 
 def off()
 {
+	logger( 'off', 'info', '' )
 }
 
 // parse() is called when the hub receives a message from a device.
@@ -103,4 +108,24 @@ def parse( String description )
     logger( 'parse', 'debug', description )
     
 	// Nothing should appear.
+}
+
+def momentaryactive()
+{
+	logger( 'momentaryactive', 'info', '' )
+    
+    // Change attributes to the active state.
+    if ( momentarycontact ) sendEvent( name: 'contact', value: 'open'   )
+    if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'active' )
+    sendEvent( name: 'switch',  value: 'on' )
+}
+
+def momentaryinactive()
+{
+	logger( 'momentaryinactive', 'info', '' )
+
+	// Return attributes to inactive state.
+	if ( momentarycontact ) sendEvent( name: 'contact', value: 'closed'   )
+    if ( momentarymotion  ) sendEvent( name: 'motion',  value: 'inactive' )
+    sendEvent( name: 'switch',  value: 'off' )
 }
