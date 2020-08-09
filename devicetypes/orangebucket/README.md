@@ -56,7 +56,7 @@ It also seems to be useful to be able to do things like map `switch` attributes 
 
 Mobile presence has been using both the Presence Sensor and Occupancy Sensor capabilities for some time. The [Anidea for Virtual Presence](anidea-for-virtual-presence.src) does likewise.
 
-A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](anidea-for-virtual-temperature.src) being created.#
+A post on Facebook mentioned that the Simulated Temperature Sensor didn't work with the new app. This led to [Anidea for Virtual Temperature](anidea-for-virtual-temperature.src) being created.
 
 ---
 
