@@ -27,8 +27,8 @@ The repository layout is compatible with the IDE for the 'classic' Device Handle
     - Anidea for HTTP Ping
     - Anidea for Scene Momentary
     - LAN MultiThing
-- [Anidea for Automations](automations/orangebucket)
+- [Anidea for Automations](automations/orangebucket/README.md)
   - Anidea for WebHook Wrapper
   - Bucket
   - SmartThings Capabilities
-- [Custom Capabilities (circlemusic21301)](capabilities/circlemusic21301/)
+- [Custom Capabilities (circlemusic21301)](capabilities/circlemusic21301/README.md)
