@@ -26,7 +26,7 @@ import physicalgraph.zigbee.zcl.DataType
 metadata
 {
 	definition( name: 'Anidea for Aqara Button', namespace: 'orangebucket', author: 'Graham Johnson',
-    			ocfDeviceType: 'x.com.st.d.remotecontroller' )
+    			ocfDeviceType: 'x.com.st.d.remotecontroller', mnmn: 'SmartThingsCommunity', vid: '226d1613-5edb-3039-b79b-383334366fe0' )
     {
     	//
 		capability 'Button'
