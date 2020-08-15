@@ -12,4 +12,6 @@
 * **double** (to represent the hold release)
 * **down_6x** (for a button press in the installation routine)
 
+Following the SmartThings app suddenly refusing to connect to the devices in August 2020, a device presentation was created for the device handler to see if that would kick things into life. It did, and as a part of the fix a momentary button was added to the dashboard tile to handle single presses.
+
 *The full range of attribute values is not available natively in webCoRE as that uses a lookup table which hasn't been updated. However the values can be used in a trigger condition by using an 'expression' instead of a 'value', and entering the event value as a double-quoted string e.g. `"pushed_2x"` (single quotes didn't work but this might have been because of other issues so needs to be tried again).*
