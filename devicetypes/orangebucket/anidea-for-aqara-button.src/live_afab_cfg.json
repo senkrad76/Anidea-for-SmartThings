@@ -1,0 +1,231 @@
+{
+    "mnmn": "SmartThingsCommunity",
+    "vid": "226d1613-5edb-3039-b79b-383334366fe0",
+    "type": "dth",
+    "dpInfo": null,
+    "iconUrl": null,
+    "dashboard": {
+        "states": [ 
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "momentary",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "momentary",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    },
+    "detailView": [
+        {
+            "component": "main",
+            "capability": "battery",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "momentary",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "button",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "sensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "actuator",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "healthCheck",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "momentary",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "momentary",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    }
+}
