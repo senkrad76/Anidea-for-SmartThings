@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Button
  * =======================
- * Version:	 20.05.31.00
+ * Version:	 20.08.15.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Button' DTH by 'bspranger' that
  * adapts it for the 'new' environment. It has been stripped of the 'tiles', custom attributes,
