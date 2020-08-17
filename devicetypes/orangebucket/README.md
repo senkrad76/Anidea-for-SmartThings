@@ -10,7 +10,7 @@
 ---
 
 ## Anidea for Lumi Devices
-<img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_button.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_contact.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_motion.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_temperature.png" width="100"><img src="https://raw.githubusercontent.com/orangebucket/Anidea-for-SmartThings/master/images/aqara_vibration.png" width="100">
+<img src="../../images/aqara_button.png?raw=true" width="100"><img src="../../images/aqara_contact.png?raw=true" width="100"><img src="../../images/aqara_motion.png?raw=true" width="100"><img src="../../images/aqara_temperature.png?raw=true" width="100"><img src="../../images/aqara_vibration.png?raw=true" width="100">
 
 - [Anidea for Aqara Button](anidea-for-aqara-button.src/)
 - [Anidea for Aqara Contact](anidea-for-aqara-contact.src/)
