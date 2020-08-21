@@ -9,7 +9,7 @@ in the app, with devices that were functioning fine being shown as offline, and 
 The 'new' app doesn’t give this option and there isn’t any useful documentation available about it. The new app is generally more aggressive about the status of devices.
 
 A similar lack of information exists for the Health Check capability, which seems to be the modern face of whatever is going on behind the scenes, and whatever 
-is going on behind the scenes is evolving. There is a page about ‘Health Check’ in the ‘new’ documentation but it is characteristically vague and also mentions
+is going on behind the scenes is evolving. There is a [page about ‘Health Check’ in the ‘new’ documentation](https://smartthings.developer.samsung.com/docs/devices/health.html) but it is characteristically vague and also mentions
 the device status UNHEALTHY which isn’t mentioned anywhere else, and the ‘Health API’ which doesn’t make it to the SmartThings API reference.
 
 It should first be noted that by far the most helpful status display has historically been that displayed in the Groovy IDE. This can be accessed using `device.getStatus()` 
