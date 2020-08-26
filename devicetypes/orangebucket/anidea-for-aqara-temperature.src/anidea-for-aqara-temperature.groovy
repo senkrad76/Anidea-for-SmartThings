@@ -19,7 +19,7 @@
 metadata
 {
 	// Please be aware that the 'vid' may be subject to change.
-	definition ( name: 'Anidea for Aqara Temperature', namespace: 'orangebucket', author: 'Graham Johnson',
+	definition ( name: 'Aqara/Xiaomi Temp/Humidity*/Pressure', namespace: 'orangebucket', author: 'Graham Johnson',
     			 ocfDeviceType: 'oic.d.thermostat', mnmn: 'SmartThingsCommunity', vid: 'be5ff498-cfb1-37ee-b675-5464440f45b9' )
 	{
             capability 'Temperature Measurement'
