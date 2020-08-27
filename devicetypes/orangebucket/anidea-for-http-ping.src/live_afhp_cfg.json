@@ -1,0 +1,476 @@
+{
+    "mnmn": "SmartThingsCommunity",
+    "vid": "2a00b04e-2dc9-3001-949c-d5b8a21a968f",
+    "type": "dth",
+    "dpInfo": null,
+    "iconUrl": null,
+    "dashboard": {
+        "states": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "refresh",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "refresh",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    },
+    "detailView": [
+        {
+            "component": "main",
+            "capability": "switch",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "contactSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "motionSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "presenceSensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "refresh",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "sensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "actuator",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "healthCheck",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "occupancySensor",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.contactCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.motionCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.presenceCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.occupancyCommands",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "refresh",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ],
+        "actions": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "contactSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "motionSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "presenceSensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "refresh",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "actuator",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "occupancySensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.contactCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.presenceCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.occupancyCommands",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            }
+        ]
+    }
+}
