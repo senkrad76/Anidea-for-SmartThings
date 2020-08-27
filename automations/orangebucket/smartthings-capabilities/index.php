@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------------------
  *
- * SmartThings Capabilities (capabilities.php)
- * ===========================================
- * Version: 20.06.18.00
+ * SmartThings Capabilities (index.php)
+ * ====================================
+ * Version: 20.08.27.00
  */
 
 // Change the following line to reflect the correct location.
@@ -113,5 +113,5 @@ ob_end_flush();
 <?php
 }
 
-afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $access_token );
+afww_main( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] );
 ?>
