@@ -9,6 +9,7 @@
 * **pushed_3x**
 * **pushed_4x**
 * **pushed_6x** (to represent 'shaken')
+* **held**
 * **double** (to represent the hold release)
 * **down_6x** (for a button press in the installation routine)
 
