@@ -9,3 +9,5 @@ Originally, pressing the momentary tile, or calling the `push()` method, set the
 Pressing the action button on the switch tile, or calling `on()` also activates the momentary action. The `off()` method does nothing.
 
 *This handler could have been combined with the Virtual Button, but testing suggested the tile in the mobile app would default to the contact status rather than the button and at the time there wasn't anything that could be done about it, and also the device details screen was a bit too messy.*
+
+Sean (steinauf) pointed out that despite the above it would still be useful to have a Button capability and on reflection it doesn't seem right having Momentary without the Button it is clearly meant for, so this has been added as standard.
