@@ -1,8 +1,5 @@
 {
-    "mnmn": "SmartThingsCommunity",
-    "vid": "b9a0441f-b25b-30ea-b4c5-e6c5e3a859ef",
     "type": "dth",
-    "dpInfo": null,
     "iconUrl": null,
     "dashboard": {
         "states": [
@@ -11,15 +8,17 @@
                 "capability": "momentary",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             }
         ],
-        "actions": [
+        "actions": [      
             {
                 "component": "main",
                 "capability": "momentary",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             }
         ]
@@ -27,9 +26,26 @@
     "detailView": [
         {
             "component": "main",
+            "capability": "momentary",
+            "version": 1,
+            "values": [],
+            "patch": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "button",
+            "version": 1,
+            "values": [],
+            "patch": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
             "capability": "switch",
             "version": 1,
             "values": [],
+            "patch": [],
             "visibleCondition": null
         },
         {
@@ -37,6 +53,7 @@
             "capability": "contactSensor",
             "version": 1,
             "values": [],
+            "patch": [],
             "visibleCondition": null
         },
         {
@@ -44,13 +61,7 @@
             "capability": "motionSensor",
             "version": 1,
             "values": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
-            "capability": "momentary",
-            "version": 1,
-            "values": [],
+            "patch": [],
             "visibleCondition": null
         },
         {
@@ -58,6 +69,7 @@
             "capability": "sensor",
             "version": 1,
             "values": [],
+            "patch": [],
             "visibleCondition": null
         },
         {
@@ -65,6 +77,7 @@
             "capability": "actuator",
             "version": 1,
             "values": [],
+            "patch": [],
             "visibleCondition": null
         },
         {
@@ -72,6 +85,7 @@
             "capability": "healthCheck",
             "version": 1,
             "values": [],
+            "patch": [],
             "visibleCondition": null
         }
     ],
@@ -82,6 +96,7 @@
                 "capability": "switch",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -89,6 +104,7 @@
                 "capability": "contactSensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -96,6 +112,7 @@
                 "capability": "motionSensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -103,6 +120,15 @@
                 "capability": "momentary",
                 "version": 1,
                 "values": [],
+                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -110,6 +136,7 @@
                 "capability": "sensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -117,6 +144,7 @@
                 "capability": "actuator",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -124,6 +152,7 @@
                 "capability": "healthCheck",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             }
         ],
@@ -133,6 +162,7 @@
                 "capability": "switch",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -140,6 +170,7 @@
                 "capability": "contactSensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -147,6 +178,7 @@
                 "capability": "motionSensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -154,6 +186,15 @@
                 "capability": "momentary",
                 "version": 1,
                 "values": [],
+                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "button",
+                "version": 1,
+                "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -161,6 +202,7 @@
                 "capability": "sensor",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -168,6 +210,7 @@
                 "capability": "actuator",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -175,8 +218,11 @@
                 "capability": "healthCheck",
                 "version": 1,
                 "values": [],
+                "patch": [],
                 "visibleCondition": null
             }
         ]
-    }
+    },
+    "vid": "f50ea297-7843-38da-8b0b-96084c656fe2",
+    "mnmn": "SmartThingsCommunity"
 }
