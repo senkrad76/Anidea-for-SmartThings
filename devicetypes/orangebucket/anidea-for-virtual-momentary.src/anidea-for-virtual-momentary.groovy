@@ -7,20 +7,20 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.09.22.00
+ * Version:	 20.09.22.01
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place, and the momentary switch action is permanently
  * enabled, but the other two momentary actions are controlled by booleans in the settings
  * and are not enabled by default. As the Momentary capability really seems to be intended
  * to press a Button, that ability has been added as standard too, and it is also more
- * suitable for triggering webCoRE routines.
+ * suitable for triggering webCoRE pistons.
  */
 
 metadata
 {
 	definition( name: 'Anidea for Virtual Momentary', namespace: 'orangebucket', author: 'Graham Johnson',
-    			mnmn: 'SmartThingsCommunity', vid: 'f5db60bb-f757-32f7-9d76-a3f20ab2db03' )
+    			ocfDeviceType: 'x.com.st.d.remotecontroller', mnmn: 'SmartThingsCommunity', vid: 'f5db60bb-f757-32f7-9d76-a3f20ab2db03' )
     {
     	//
         capability 'Momentary'
