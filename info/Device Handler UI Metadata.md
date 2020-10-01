@@ -103,7 +103,7 @@ the choice of tile status (default is the online / offline status) and tile acti
 This file, which can be replaced by a custom version, used to be called the 'UI Manifest' and was named using the developer or organisation ID and the vendor ID 
 e.g. `12AB_large-widget_ui.json`. A similar file referenced by the VID Selector tool was called a 'Presentation Resource'.
 
-When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to
+When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to the
 Device Profiles tool in the Developer Workspace to make things more consistent. 
 
 The Device Presentation is a JSON file, typically around 100 kb in size
