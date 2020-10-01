@@ -12,8 +12,8 @@ metadata used for defining the UI in the 'new' app. It seems that some of this m
 The `name` of the device handler has fairly obvious uses and is defined in the DTH as e.g. `name: 'Zigbee Switch'`. Apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
 
 ### Namespace - `namespace`
-The `namespace` is typically a GitHub username but needn't be. The Groovy IDE is linked in with GitHub and the `namespace` is part of the folder structure. q
-n a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
+The `namespace` is typically a GitHub username but needn't be. The Groovy IDE is linked in with GitHub and the `namespace` is part of the folder structure.
+In a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
 
 A different 'namespace' is used with Custom Capabilities. It is a catenation of two words and a number and is automatically generated for each user account.
  
