@@ -21,7 +21,7 @@ A different 'namespace' is used with Custom Capabilities. It is a catenation of 
 The author parameter is just what it seems, and has no bearing on the UI. An example would be `author: 'Smart Stuff'`. There isn’t any obvious bearing on the UI.
 
 ### Device Type - ocfDeviceType
-The Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the [Device Presentation](#device-config-and-device-presentation). 
+When managing Device Profiles, the Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the [Device Presentation](#device-config-and-device-presentation). 
 In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define it directly.
 
 The following list of device types was extracted from the Developer Workspace on 5th July 2020.
