@@ -106,7 +106,7 @@ e.g. `12AB_large-widget_ui.json`. A similar file referenced by the VID Selector 
 When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to the
 Device Profiles tool in the Developer Workspace to make things more consistent. 
 
-The Device Presentation is a JSON file, typically around 100 kb in size
+The Device Presentation is a JSON file, typically around 100 kb in size,
 that defines the UI for the 'new' app, or indeed any other UI. It is the same thing as the UI Manifest or Presentation Resource, though those generated for
 DTHs don't define the device icon at the time of writing.
 
