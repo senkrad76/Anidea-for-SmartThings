@@ -17,12 +17,12 @@ In a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from con
 
 A different 'namespace' is used with Custom Capabilities. It is a catenation of two words and a number and is automatically generated for each user account.
  
-### Author - author
+### Author - `author`
 The author parameter is just what it seems, and has no bearing on the UI. An example would be `author: 'Smart Stuff'`. There isn’t any obvious bearing on the UI.
 
-### Device Type - ocfDeviceType
-When managing Device Profiles, the Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the [Device Presentation](#device-config-and-device-presentation). 
-In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define it directly.
+### Device Type - `ocfDeviceType`
+When managing Device Profiles, the Developer Workspace lets you specify device types from a limited number of options and the one chosen is used to define the icon in the [Device Presentation](#device-config-and-device-presentation). 
+In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define the device icon directly.
 
 The following list of device types was extracted from the Developer Workspace on 5th July 2020.
 
