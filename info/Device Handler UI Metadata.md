@@ -12,17 +12,17 @@ metadata used for defining the UI in the 'new' app. It seems that some of this m
 The `name` of the device handler has fairly obvious uses and is defined in the DTH as e.g. `name: 'Zigbee Switch'`. Apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
 
 ### Namespace - `namespace`
-The `namespace` is typically a GitHub username but needn't be. The Groovy IDE is linked in with GitHub and the `namespace` is part of the folder structure. q
-n a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
+The `namespace` is typically a GitHub username but needn't be. The Groovy IDE is linked in with GitHub and the `namespace` is part of the folder structure.
+In a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
 
 A different 'namespace' is used with Custom Capabilities. It is a catenation of two words and a number and is automatically generated for each user account.
  
-### Author - author
+### Author - `author`
 The author parameter is just what it seems, and has no bearing on the UI. An example would be `author: 'Smart Stuff'`. There isn’t any obvious bearing on the UI.
 
-### Device Type - ocfDeviceType
-The Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the [Device Presentation](#device-config-and-device-presentation). 
-In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define it directly.
+### Device Type - `ocfDeviceType`
+When managing Device Profiles, the Developer Workspace lets you specify device types from a limited number of options and the one chosen is used to define the icon in the [Device Presentation](#device-config-and-device-presentation). 
+In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define the device icon directly.
 
 The following list of device types was extracted from the Developer Workspace on 5th July 2020.
 
@@ -101,12 +101,12 @@ e.g. `SmartThings-smartthings-Ikea_Button`.*
 When a Device Profile is created in the Developer Workspace, it automatically creates a JSON file defining the UI based on the supplied device type, capabilities, 
 the choice of tile status (default is the online / offline status) and tile action (default none). 
 This file, which can be replaced by a custom version, used to be called the 'UI Manifest' and was named using the developer or organisation ID and the vendor ID 
-e.g. `12AB_large-widget_ui.json`. A similar file referenced by the VID Selector tool was called a `Presentation Resource`.
+e.g. `12AB_large-widget_ui.json`. A similar file referenced by the VID Selector tool was called a 'Presentation Resource'.
 
-When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to
+When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to the
 Device Profiles tool in the Developer Workspace to make things more consistent. 
 
-The Device Presentation is a JSON file, typically around 100 kb in size
+The Device Presentation is a JSON file, typically around 100 kb in size,
 that defines the UI for the 'new' app, or indeed any other UI. It is the same thing as the UI Manifest or Presentation Resource, though those generated for
 DTHs don't define the device icon at the time of writing.
 
