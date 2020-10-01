@@ -1,5 +1,5 @@
 # Device Handler UI Metadata
-The SmartThings ‘Classic’ app builds a custom UI for a device using the tiles() method of the Groovy Device Handlers (DTH). 
+The SmartThings ‘Classic’ app builds a custom UI for a device using the `tiles()` method of the Groovy Device Handlers (DTH). 
 As the ‘new’ style C2C and direct integrations don’t use these device handlers, the UI for those in the Classic app tends to be non-existent. 
 The ‘new’ app, a.k.a. the ‘Connect’ or ‘One’ app, does things differently, being guided by the device metadata to access bespoke device presentations,
 and so it can have the reverse problem where Groovy Device Handlers don't have an effective UI in the 'new' app.
@@ -9,7 +9,7 @@ A Groovy Device Handler (DTH) has a `metadata()` method that includes a `definit
 metadata used for defining the UI in the 'new' app. It seems that some of this metadata may be overloaded by metadata in a matching `fingerprint`.
 
 ### Device Handler Name - `name`
-The name of the device handler has fairly obvious uses and is defined in the DTH as e.g. `name: 'Zigbee Switch'`. Apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
+The `name` of the device handler has fairly obvious uses and is defined in the DTH as e.g. `name: 'Zigbee Switch'`. Apart from contributing to uniquely identifying a device, it has no obvious bearing on the UI.
 
 ### Namespace - `namespace`
 The `namespace` is typically a GitHub username but needn't be. The Groovy IDE is linked in with GitHub and the `namespace` is part of the folder structure. q
@@ -18,10 +18,10 @@ n a DTH it is defined as e.g. `namespace: 'smartthings'`. Again, apart from cont
 A different 'namespace' is used with Custom Capabilities. It is a catenation of two words and a number and is automatically generated for each user account.
  
 ### Author - author
-The author parameter is just what it seems, and has no bearing on the UI. An example would be `name: 'Smart Stuff'`. There isn’t any obvious bearing on the UI.
+The author parameter is just what it seems, and has no bearing on the UI. An example would be `author: 'Smart Stuff'`. There isn’t any obvious bearing on the UI.
 
 ### Device Type - ocfDeviceType
-The Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the device presentation. 
+The Developer Workspace lets you specify device types from a limited number of options and the one chosen is included in the [Device Presentation](#device-config-and-device-presentation). 
 In a DTH the device type is defined using an OCF Device Type  e.g. `ocfDeviceType: 'oic.d.thermostat'` and the presentations used don't seem to define it directly.
 
 The following list of device types was extracted from the Developer Workspace on 5th July 2020.
@@ -91,17 +91,17 @@ and 'Presentation Resource'. With the introduction of the CLI and Custom Capabil
 `presentationId` replaced `vid` as the preferred term in the API.
 
 The `Presentation ID` appears in the DTH as e.g. `vid: 'generic-switch'` and works in combinationn with the `mnmn`. For community generated presentations the 'VID' 
-(as it is often known) takes the form of a UUID and works alongside the manufacturer name 'SmartThingsCommunity'.
+(as it is often known) takes the form of a UUID and works alongside the manufacturer name `SmartThingsCommunity`.
 
 *As something of an aside, the VID Selector tool reveals that stock device handlers without an explicit VID still seem to have bespoke presentations with identifiers
 built from the name (with spaces replaced with underscores), the namespace, and the mnmn in the combination mnmn-namespace-name, 
 e.g. `SmartThings-smartthings-Ikea_Button`.*
 
-## Device Configs and the Device Presentation
+## Device Config and Device Presentation
 When a Device Profile is created in the Developer Workspace, it automatically creates a JSON file defining the UI based on the supplied device type, capabilities, 
 the choice of tile status (default is the online / offline status) and tile action (default none). 
 This file, which can be replaced by a custom version, used to be called the 'UI Manifest' and was named using the developer or organisation ID and the vendor ID 
-e.g. '12AB_large-widget_ui.json'. A similar file referenced by the VID Selector tool was called a `Presentation Resource`.
+e.g. `12AB_large-widget_ui.json`. A similar file referenced by the VID Selector tool was called a `Presentation Resource`.
 
 When the CLI tool was introduced the terms 'Device Config' and 'Device Presentation' appeared and the terms 'Config' and 'Presentation' are being retrofitted to
 Device Profiles tool in the Developer Workspace to make things more consistent. 
@@ -110,10 +110,10 @@ The Device Presentation is a JSON file, typically around 100 kb in size
 that defines the UI for the 'new' app, or indeed any other UI. It is the same thing as the UI Manifest or Presentation Resource, though those generated for
 DTHs don't define the device icon at the time of writing.
 
-The Device Config is a much smaller JSON file that defines the user configurable parts of the 'Device Presentation'. It defines which capabilities should
+The Device Config is a much smaller JSON file that defines the user configurable parts of the Device Presentation. It defines which capabilities should
 be used for the dashboard status, dashboard actions, the details view, automation conditions and automation actions. Each capability, standard or custom, has a
-'Capability Presentation' that defines how the capability should be presented in each of those places. The 'Device Config' is fleshed out with the Capability Presentations
-and multi-language support to create the Device Presentation.
+'Capability Presentation' that defines how the capability should be presented in each of those places. The 'Device Config' is fleshed out with the Capability 
+Presentations and multi-language support to create the Device Presentation.
 
 Each Config and Presentation file includes the Manufacturer Name and Presentation ID, originally as `mnmn` and `vid` but from September 2020 also as `manufacturerName`
 and `presentationId`. In the API the values match, but local copies of the Config may have an older ID if they have been edited.
