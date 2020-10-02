@@ -7,3 +7,5 @@ This device handler implements a virtual button using the Button and Momentary c
 The Button capability supports the `pushed` and `down_6x` values for the `button` attribute, the latter only being used to seed the button attribute when a device is installed or updated (the mobile app likes attributes to have valid values).
 
 The Momentary action 'presses' the button, generating the `pushed` event on the `button` attribute. The momentary action can be activated from the dashboard tile, the Momentary tile on the device details page, as an Automation action, or by other apps (e.g. webCoRE) capable of calling the `push()` command method.
+
+Please see [Anidea for Virtual Momentary](../anidea-for-virtual-momentary.src/) for a handler that extends the momentary action to the Switch, Contact Sensor and Motion Sensor capabilities.
