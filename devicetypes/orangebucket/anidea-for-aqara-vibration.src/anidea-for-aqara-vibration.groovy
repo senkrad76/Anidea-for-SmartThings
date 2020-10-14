@@ -3,10 +3,11 @@
  * (C) Graham Johnson (orangebucket)
  *
  * SPDX-License-Identifier: MIT
- * --------------------------------------------------------------------------------- *
+ * ---------------------------------------------------------------------------------
+ *
  * Anidea for Aqara Vibration
  * ==========================
- * Version:	 20.05.31.00
+ * Version:	 20.10.14.00
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Vibration Sensor' DTH by
  * 'bspranger' that adapts it for the 'new' environment. It has been stripped of the 'tiles', 
@@ -15,7 +16,8 @@
  
 metadata
 {
-	definition ( name: 'Anidea for Aqara Vibration', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition ( name: 'Anidea for Aqara Vibration', namespace: 'orangebucket', author: 'Graham Johnson',
+    			 ocfDeviceType: 'x.com.st.d.sensor.multifunction', mnmn: 'SmartThingsCommunity', vid: '03bc815f-5fe5-3435-a7d5-3c8ae04247eb' )
 	{
 		// Vibration is reported as acceleration (for consistency with the 'new' app).
 		capability "Acceleration Sensor"   	
@@ -32,17 +34,19 @@ metadata
 
 		capability 'Health Check'
 		capability 'Sensor'
+        
+        // Add custom capabilities for setting the contact sensor
+        // positions, replacing custom commands.
+        capability 'circlemusic21301.setClosed'
+        capability 'circlemusic21301.setOpen'
 
 		attribute 'accelSensitivity', 'string'
-
 		attribute 'tiltAngle', 'string'
 		attribute 'activityLevel', 'string'
+         
+		command 'changeSensitivity'
 
 		fingerprint endpointId: '01', profileId: '0104', deviceId: '000A', inClusters: '0000,0003,0019,0101', outClusters: '0000,0004,0003,0005,0019,0101', manufacturer: 'LUMI', model: 'lumi.vibration.aq1', deviceJoinName: 'Lumi Aqara Sensor'
-
-		command 'changeSensitivity'
-		command 'setopen'
-		command 'setclosed'
 	}
 
 	preferences
@@ -130,32 +134,43 @@ Map mapSensorEvent( value )
 // Parse incoming device messages to generate events
 def parse( String description )
 {
-	displayDebugLog(": Parsing '${description}'")
+	logger( 'parse', 'debug', description )
+    
 	def result = [:]
 
 	// Send message data to appropriate parsing function based on the type of report
-	if (description?.startsWith("read attr - raw: ")) {
+	if ( description?.startsWith( 'read attr - raw: ') )
+    {
 		result = parseReadAttrMessage(description)
-	} else if (description?.startsWith('catchall:')) {
+	} 
+    else if ( description?.startsWith( 'catchall:' ) )
+    {
 		result = parseCatchAllMessage(description)
 	}
-	if (result != [:]) {
-		displayDebugLog(": Creating event $result")
-		return createEvent(result)
-	} else {
-		displayDebugLog(": Unable to parse unrecognized message")
+	if (result != [:])
+    {
+		logger( 'parse', 'info', result )
+		return createEvent( result )
+	} else
+    {
+		logger( 'parse', 'debug', 'Message not recognised.' )
+        
 		return [:]
 	}
 }
 
 // Check catchall for battery voltage data to pass to battery() for conversion to percentage report
-private Map parseCatchAllMessage(String description)
+Map parseCatchAllMessage( String description )
 {
+	logger( 'parseCatchAllMessage', 'info', '' )
+    
 	Map resultMap = [:]
 	def catchall = zigbee.parse(description)
-	displayDebugLog(": $catchall")
+    
+	logger( 'parseCatchAllMessage', 'debug', catchall )
 
-	if (catchall.clusterId == 0x0000) {
+	if ( catchall.clusterId == 0x0000 )
+    {
 		def MsgLength = catchall.data.size()
 		// Xiaomi CatchAll does not have identifiers, first UINT16 is Battery
 		if ((catchall.data.get(0) == 0x01 || catchall.data.get(0) == 0x02) && (catchall.data.get(1) == 0xFF)) {
@@ -171,8 +186,11 @@ private Map parseCatchAllMessage(String description)
 	return resultMap
 }
 
-// Parse read attr - raw messages (includes all sensor event messages and reset button press, and )
-private Map parseReadAttrMessage(String description) {
+// Parse read attr - raw messages (includes all sensor event messages and reset button press)
+Map parseReadAttrMessage(String description)
+{
+	logger( 'parseReadAttrMessage', 'info', '' )
+    
 	def cluster = description.split(",").find {it.split(":")[0].trim() == "cluster"}?.split(":")[1].trim()
 	def attrId = description.split(",").find {it.split(":")[0].trim() == "attrId"}?.split(":")[1].trim()
 	def value = description.split(",").find {it.split(":")[0].trim() == "value"}?.split(":")[1].trim()
@@ -198,19 +216,17 @@ private Map parseReadAttrMessage(String description) {
 			float Psi = Math.round(Math.atan(x/Math.sqrt(z*z+y*y))*1800/Math.PI)/10
 			float Phi = Math.round(Math.atan(y/Math.sqrt(x*x+z*z))*1800/Math.PI)/10
 			float Theta = Math.round(Math.atan(z/Math.sqrt(x*x+y*y))*1800/Math.PI)/10
-			def descText = ": Calculated angles are Psi = ${Psi}°, Phi = ${Phi}°, Theta = ${Theta}° "
-			displayDebugLog(": Raw accelerometer XYZ axis values = $x, $y, $z")
-			displayDebugLog(descText)
-			resultMap = [
-				name: 'threeAxis',
-				value: [Psi, Phi, Theta],
-				linkText: getLinkText(device),
-				isStateChange: true,
-				descriptionText: "$device.displayName$descText",
-			]
+			def descText = "Calculated angles are Psi = ${Psi}°, Phi = ${Phi}°, Theta = ${Theta}° "
+            
+			logger( 'parseReadAttrMessage', 'debug', "Raw accelerometer XYZ axis values = $x, $y, $z")
+			logger( 'parseReadAttrMessage', 'debug', descText )
+            
+			resultMap = [ name: 'threeAxis', value: [Psi, Phi, Theta] ]
+            
 			if ( !state.closedx || !state.openx )
-				displayInfoLog(": Open/Closed position is unknown because Open and/or Closed positions have not been set")
-			else {
+				logger( 'parseReadAttrMessage', 'debug', 'Open/Closed position is unknown because Open and/or Closed positions have not been set' )
+			else
+            {
 				def float cX = state.closedx
 				def float cY = state.closedy
 				def float cZ = state.closedz
@@ -225,51 +241,40 @@ private Map parseReadAttrMessage(String description) {
 				else if ((Psi < oX + e) && (Psi > oX - e) && (Phi < oY + e) && (Phi > oY - e) && (Theta < oZ + e) && (Theta > oZ - e))
 					ocPosition = "open"
 				else
-					displayDebugLog(": The current calculated angle position does not match either stored open/closed positions")
+					logger( 'parseReadAttrMessage', 'debug', 'The current calculated angle position does not match either stored open/closed positions' )
                     
                 // Only send a change event when have any confidence in it.
 				if ( ocPosition != 'unknown' ) sendEvent( name: 'contact', value: ocPosition )
 			}
 		}
 		// Handles Recent Activity level value messages
-		else if (attrId == "0505") {
-			def level = Integer.parseInt(value[0..3],16)
-			def descText = ": Recent activity level reported at $level"
-			displayInfoLog(descText)
-			resultMap = [
-				name: 'activityLevel',
-				value: level,
-				descriptionText: "$device.displayName$descText",
-			]
+		else if ( attrId == "0505" )
+        {
+			def level = Integer.parseInt( value[0..3], 16 )
+ 
+			resultMap = [ name: 'activityLevel', value: level ]
 		}
 	}
-	else if (cluster == "0000" && attrId == "0005")	{
-		displayInfoLog(": reset button short press detected")
-		def modelName = ""
-		// Parsing the model
-		for (int i = 0; i < value.length(); i+=2) {
-			def str = value.substring(i, i+2);
-			def NextChar = (char)Integer.parseInt(str, 16);
-				modelName = modelName + NextChar
-		}
-		displayDebugLog(" reported model name:${modelName}")
+	else if (cluster == "0000" && attrId == "0005")
+    {
+		// It seems this is triggered by a short press of the reset 
+        // button but it doesn't seem particularly interesting.
 	}
+    
 	return resultMap
 }
 
 // Handles tilt angle change message and posts event to update UI tile display
-private parseTiltAngle(value) {
-	def angle = Integer.parseInt(value,16)
+def parseTiltAngle( value )
+{
+	logger( 'parseTileAngle', 'info', '' )
+    
+	def angle = Integer.parseInt( value,16 )
 	def descText = ": tilt angle changed by $angle°"
-	sendEvent(
-		name: 'tiltAngle',
-		value: angle,
-		// unit: "°",  // Need to check whether this works or is needed at all
-		descriptionText : "$device.displayName$descText",
-		isStateChange:true,
-		displayed: true
-	)
-	displayInfoLog(descText)
+    
+	sendEvent( name: 'tiltAngle', value: angle )
+    
+	logger ( 'parseTiltAngle', 'debug', descText )
 }
 
 Map battery( raw )
@@ -293,18 +298,22 @@ Map battery( raw )
 
 def clearvibration()
 {
+	logger( 'clearvibration', 'info', '' )
+    
 	def result = [:]
 	result = mapSensorEvent(4)
 	state.vibrationactive = 0
-	displayDebugLog(": Sending event $result")
+
 	sendEvent( result )
 }
 
 def cleartilt()
 {
+	logger( 'cleartilt', 'info', '' )
+    
 	def result = [:]
 	result = mapSensorEvent(5)
-	displayDebugLog(": Sending event $result")
+
 	sendEvent(result)
 }
 
@@ -356,20 +365,17 @@ def setopen()
     }
 }
 
-def changeSensitivity() {
-	state.sensitivity = (state.sensitivity < 3) ? state.sensitivity + 1 : 1
-	def attrValue = [0, 0x15, 0x0B, 0x01]
-	def levelText = ["", "Low", "Medium", "High"]
-	def descText = ": Sensitivity level set to ${levelText[state.sensitivity]}"
-	zigbee.writeAttribute(0x0000, 0xFF0D, 0x20, attrValue[state.sensitivity], [mfgCode: 0x115F])
-	zigbee.readAttribute(0x0000, 0xFF0D, [mfgCode: 0x115F])
-	displayInfoLog(descText)
-}
-
-def displayDebugLog(String message) {
-	logger( 'displayDebugLog', 'debug', message )
-}
-
-def displayInfoLog(String message) {
-	logger( 'displayDebugLog', 'info', message )
+def changeSensitivity()
+{
+	logger( 'changeSensitivity', 'info', '' )
+    
+	state.sensitivity = ( state.sensitivity < 3 ) ? state.sensitivity + 1 : 1
+	def attrValue = [ 0, 0x15, 0x0B, 0x01 ]
+	def levelText = [ "", "Low", "Medium", "High" ]
+	def descText = "Sensitivity level set to ${levelText[state.sensitivity]}"
+    
+	zigbee.writeAttribute(0x0000, 0xFF0D, 0x20, attrValue[ state.sensitivity ], [ mfgCode: 0x115F ] )
+	zigbee.readAttribute( 0x0000, 0xFF0D, [ mfgCode: 0x115F ])
+	
+    logger( 'changeSensitivity', 'debug', descText)
 }
