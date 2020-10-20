@@ -24,7 +24,7 @@ The `ACTIVE` and `INACTIVE` statuses were shown for devices that did not use the
 The`HUB_DISCONNECTED` status should only have appeared on hub connected devices when the hub is offline, but for some reason devices could sometimes find 
 themselves in that state and appear ‘offline’ to the new app.
 
-SmartThings announced a move to a hub based system of determining the health of hub connected devices as the cloud based system was rather unreliable. It became available with the October 2010 release of hub firmware version 32, with hubs with earlier firmware using the status of the hub itself as a proxy for all connected devices. The would seem to have already taken affect by
+SmartThings announced a move to a hub based system of determining the health of hub connected devices as the cloud based system was rather unreliable. It became available with the October 2020 release of hub firmware version 32, with hubs with earlier firmware using the status of the hub itself as a proxy for all connected devices. The would seem to have already taken affect by
 August 2020 as `ACTIVE` status was no longer appearing in the IDE. It isn't clear what the situation is with `HUB_DISCONNECTED`.
 
 The Health Check capability has four attributes:
