@@ -1,3 +1,5 @@
+#### &copy; Graham Johnson (orangebucket)
+---
 # Device Handler UI Metadata
 The SmartThings ‘Classic’ app builds a custom UI for a device using the `tiles()` method of the Groovy Device Handlers (DTH). 
 As the ‘new’ style C2C and direct integrations don’t use these device handlers, the UI for those in the Classic app tends to be non-existent. 
