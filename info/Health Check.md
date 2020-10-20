@@ -1,3 +1,5 @@
+#### &copy; Graham Johnson (orangebucket)
+---
 # Device Health, the Health Check capability, and the Health API
 
 In which I try and guess things about device health and the Health Check capability ...
