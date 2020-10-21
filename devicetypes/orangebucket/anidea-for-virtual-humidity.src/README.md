@@ -2,7 +2,7 @@
 ---
 
 # Anidea for Virtual Humidity
-This handler has been created as a companion to the [Anidea for Virtual Temperature handler](../anidea-for-virtual-temperature.src). The `up()`, `down()` and `setHumidity()` custom commands allow the relative humidity to be incremented, decremented and set to a particular value. Switch Level is being (ab)used to allow the handler to work in Automations using `setLevel()`, without the need to implement a custom capability for the `up()`, `down()` and `setHumidity()` commands with any urgency.
+This handler has been created as a companion to the [Anidea for Virtual Temperature](../anidea-for-virtual-temperature.src) handler. The `up()`, `down()` and `setHumidity()` custom commands allow the relative humidity to be incremented, decremented and set to a particular value. Switch Level is being (ab)used to allow the handler to work in Automations using `setLevel()`, without the need to implement a custom capability for the `up()`, `down()` and `setHumidity()` commands with any urgency.
 
 The implementation of Switch Level in the UI for the new app doesn't seem to support anything but 0 to 100, so values are being rounded to the nearest integer. Humidity values below the 0% value, or above the 100% value, are changed to the minimum or maximum readings.
 
