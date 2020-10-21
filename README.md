@@ -20,6 +20,7 @@ The repository layout is compatible with the IDE for the 'classic' Device Handle
   - [Anidea for Virtual Devices](devicetypes/orangebucket/README.md#anidea-for-virtual-devices)
     - Anidea for Virtual Binary
     - Anidea for Virtual Button
+    - Anidea for Virtual Humidity
     - Anidea for Virtual Momentary
     - Anidea for Virtual Presence
     - Anidea for Virtual Temperature
