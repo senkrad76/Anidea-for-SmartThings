@@ -46,9 +46,7 @@ A fuller example of the code to enroll a device as untracked is the following:
 This might typically be called in the `installed()` method of a Groovy DTH.
 
 The `DeviceWatch-DeviceStatus` and `healthStatus` attributes both have the permitted values of `online` or `offline`. They are both used by the device handlers
-for simulated devices to simulate the online status. They also appear in the command mappings for an example cloud connector. There the change history 
-shows that originally `healthStatus` was used, then it was changed to `DeviceWatch-DeviceStatus` at the beginning of 2019, and then two days later changed back again.
-This tends to suggest that `healthStatus` is now the preferred attribute and the attribute name just seems more in keeping with the current styles.
+for simulated devices to simulate the online status and `healthStatus` seems to feature in documentation and examples for cloud connected devices using the new integrations. It seems plausible that Device Watch might be a mechanism exclusively used by Groovy DTHs and so `DeviceWatch-DeviceStatus` is the attribute to use for devices enrolled as untracked, with `healthStatus` applying to new integrations. It really isn't clear though.
 
 The final attribute, `checkInterval`, is used extensively by device handlers. It sets a number of seconds of device inactivity, after which the `ping()` command
 method of the handler will be called to attempt to make the device respond. If that doesn’t help the device will be marked as offline. The interval is typically
