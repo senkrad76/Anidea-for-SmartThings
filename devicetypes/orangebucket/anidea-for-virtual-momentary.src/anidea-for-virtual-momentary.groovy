@@ -7,22 +7,25 @@
  *
  * Anidea for Virtual Momentary
  * ============================
- * Version:	 20.08.09.02
+ * Version:	 20.09.22.01
  *
  * This device handler implements a momentary action Contact Sensor, Motion Sensor and Switch.
  * The capabilities are permanently in place, and the momentary switch action is permanently
- * enable, but the other two momentary actions are controlled by booleans in the settings
- * and are not enabled by default.
+ * enabled, but the other two momentary actions are controlled by booleans in the settings
+ * and are not enabled by default. As the Momentary capability really seems to be intended
+ * to press a Button, that ability has been added as standard too, and it is also more
+ * suitable for triggering webCoRE pistons.
  */
 
 metadata
 {
 	definition( name: 'Anidea for Virtual Momentary', namespace: 'orangebucket', author: 'Graham Johnson',
-    			mnmn: 'SmartThingsCommunity', vid: '18570b53-3a92-34ac-8134-f9c0dc671e5c' )
+    			ocfDeviceType: 'x.com.st.d.remotecontroller', mnmn: 'SmartThingsCommunity', vid: 'f5db60bb-f757-32f7-9d76-a3f20ab2db03' )
     {
     	//
         capability 'Momentary'
 		//
+        capability 'Button'
         capability 'Contact Sensor'
         capability 'Motion Sensor'
         capability 'Switch'
@@ -50,10 +53,17 @@ def installed()
     // Health Check is undocumented but this seems to be the common way of creating an untracked
     // device that will appear online when the hub is up.
 	sendEvent( name: 'DeviceWatch-Enroll', value: [protocol: 'cloud', scheme:'untracked'].encodeAsJson(), displayed: false )
+   
+    // The 'down_6x' attribute value is being used to seed the button attribute.
+    def supportedbuttons = [ 'pushed', 'down_6x' ]
     
-    sendEvent( name: 'contact', value: 'closed',   displayed: false )
-    sendEvent( name: 'motion',  value: 'inactive', displayed: false )
-    sendEvent( name: 'switch',  value: 'off',      displayed: false )
+	sendEvent( name: 'supportedButtonValues', value: supportedbuttons.encodeAsJSON(), displayed: false                      )
+	sendEvent( name: 'numberOfButtons',       value: 1,                               displayed: false                      )
+    sendEvent( name: 'button',                value: 'down_6x', 					  displayed: false, isStateChange: true )
+    
+    sendEvent( name: 'contact', 			  value: 'closed',   					  displayed: false )
+    sendEvent( name: 'motion',  			  value: 'inactive',					  displayed: false )
+    sendEvent( name: 'switch',  			  value: 'off',      					  displayed: false )
 }
 
 // updated() seems to be called after installed() when the device is first installed, but not when
@@ -113,6 +123,8 @@ def parse( String description )
 def momentaryactive()
 {
 	logger( 'momentaryactive', 'info', '' )
+    
+    sendEvent( name: 'button', value: 'pushed', isStateChange: true )
     
     // Change attributes to the active state.
     if ( momentarycontact ) sendEvent( name: 'contact', value: 'open'   )

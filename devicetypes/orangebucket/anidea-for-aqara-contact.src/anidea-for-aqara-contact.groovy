@@ -7,7 +7,7 @@
  *
  * Anidea for Aqara Contact
  * ========================
- * Version:	 20.07.07.00
+ * Version:	 20.10.17.01
  *
  * This device handler is a reworking of the 'Xiaomi Aqara Door/Window Sensor' and 'Xiaomi Door/Window
  * Sensor' devices handlers by 'bspranger' that combines and adapt them for the 'new' environment. It has
@@ -22,12 +22,14 @@
 
 metadata
 {
-	definition( name: 'Anidea for Aqara Contact', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition( name: 'Anidea for Aqara Contact', namespace: 'orangebucket', author: 'Graham Johnson',
+    		    mnmn: 'SmartThingsCommunity', vid: 'b2397b84-0187-3ed2-890e-2d743d07568e' )
 	{
         capability 'Contact Sensor'
         capability 'Battery'
                 
 		capability 'Health Check'
+        capability 'Actuator'
 		capability 'Sensor'
 
 		// There may be occasions where it will be useful to 'manually' set the status of the contact

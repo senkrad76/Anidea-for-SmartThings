@@ -7,7 +7,7 @@
  *
  * Anidea for HTTP Ping
  * ====================
- * Version: 20.06.04.02
+ * Version: 20.08.27.00
  *
  * This device handler implements a number of binary sensors which are active when a
  * specified HTTP server on the hub's local network can be reached. Every fifteen 
@@ -17,7 +17,8 @@
 
 metadata
 {
-	definition ( name: 'Anidea for HTTP Ping', namespace: 'orangebucket', author: 'Graham Johnson' )
+	definition ( name: 'Anidea for HTTP Ping', namespace: 'orangebucket', author: 'Graham Johnson',
+    			 ocfDeviceType: 'oic.wk.d', mnmn: 'SmartThingsCommunity', vid: '2a00b04e-2dc9-3001-949c-d5b8a21a968f' )
     {
         capability 'Contact Sensor'
         capability 'Motion Sensor'
@@ -32,15 +33,11 @@ metadata
         capability 'Actuator'
 		capability 'Sensor'
         
-     	command 'open'
-        command 'close'
-        command 'active'
-        command 'inactive'
-        command 'occupied'
-        command 'unoccupied'
-        command 'arrived'
-        command 'departed'
-	}
+     	capability 'circlemusic21301.contactCommands'
+        capability 'circlemusic21301.motionCommands'
+        capability 'circlemusic21301.occupancyCommands'
+		capability 'circlemusic21301.presenceCommands'
+    }
 
 	preferences
 	{
@@ -52,7 +49,6 @@ metadata
         input name: 'virtualmotion',    type: 'bool', title: 'Act as virtual Motion Sensor?',    description: 'Enter boolean', required: true
         input name: 'virtualoccupancy', type: 'bool', title: 'Act as virtual Occupancy Sensor?', description: 'Enter boolean', required: true
         input name: 'virtualpresence',  type: 'bool', title: 'Act as virtual Presence Sensor?',  description: 'Enter boolean', required: true
-        input name: 'virtualswitch',    type: 'bool', title: 'Act as virtual Switch?',           description: 'Enter boolean', required: true
 	}
 }
 
@@ -82,7 +78,6 @@ def updated()
     logger( 'updated', 'debug', 'Virtual Motion Sensor '    + ( virtualmotion    ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Occupancy Sensor ' + ( virtualoccupancy ? 'enabled' : 'disabled' ) )
     logger( 'updated', 'debug', 'Virtual Presence Sensor '  + ( virtualpresence  ? 'enabled' : 'disabled' ) )
-    logger( 'updated', 'debug', 'Virtual Switch '           + ( virtualswitch    ? 'enabled' : 'disabled' ) )
 
 	runIn(10, polldevice)
 
@@ -211,7 +206,8 @@ def binaryactive()
     if ( virtualmotion    ) sendEvent( name: 'motion',    value: 'active'   )
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'occupied' )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'present'  )
-    if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'on'       )
+    
+    sendEvent( name: 'switch',  value: 'on'  )
 }
 
 def binaryinactive()
@@ -223,7 +219,8 @@ def binaryinactive()
     if ( virtualmotion    ) sendEvent( name: 'motion',    value: 'inactive'    )
     if ( virtualoccupancy ) sendEvent( name: 'occupancy', value: 'unoccupied'  )
     if ( virtualpresence  ) sendEvent( name: 'presence',  value: 'not present' )
-    if ( virtualswitch    ) sendEvent( name: 'switch',    value: 'off'         )
+    
+    sendEvent( name: 'switch',  value: 'off'  )
 }
 
 def open()

@@ -1,24 +1,95 @@
 {
+    "mnmn": "SmartThingsCommunity",
+    "vid": "9f5d4cb5-ace7-3971-af7c-ceb695925add",
     "type": "dth",
+    "dpInfo": null,
     "iconUrl": null,
     "dashboard": {
         "states": [
-            {
+             {
                 "component": "main",
-                "capability": "momentary",
+                "capability": "motionSensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "illuminanceMeasurement",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
                 "visibleCondition": null
             }
         ],
-        "actions": [      
+        "actions": [
             {
                 "component": "main",
-                "capability": "momentary",
+                "capability": "motionSensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "illuminanceMeasurement",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "battery",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "sensor",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "healthCheck",
+                "version": 1,
+                "values": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
                 "visibleCondition": null
             }
         ]
@@ -26,42 +97,23 @@
     "detailView": [
         {
             "component": "main",
-            "capability": "momentary",
-            "version": 1,
-            "values": [],
-            "patch": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
-            "capability": "button",
-            "version": 1,
-            "values": [],
-            "patch": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
-            "capability": "switch",
-            "version": 1,
-            "values": [],
-            "patch": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
-            "capability": "contactSensor",
-            "version": 1,
-            "values": [],
-            "patch": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
             "capability": "motionSensor",
             "version": 1,
             "values": [],
-            "patch": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "illuminanceMeasurement",
+            "version": 1,
+            "values": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "battery",
+            "version": 1,
+            "values": [],
             "visibleCondition": null
         },
         {
@@ -69,15 +121,6 @@
             "capability": "sensor",
             "version": 1,
             "values": [],
-            "patch": [],
-            "visibleCondition": null
-        },
-        {
-            "component": "main",
-            "capability": "actuator",
-            "version": 1,
-            "values": [],
-            "patch": [],
             "visibleCondition": null
         },
         {
@@ -85,50 +128,37 @@
             "capability": "healthCheck",
             "version": 1,
             "values": [],
-            "patch": [],
+            "visibleCondition": null
+        },
+        {
+            "component": "main",
+            "capability": "circlemusic21301.motionCommands",
+            "version": 1,
+            "values": [],
             "visibleCondition": null
         }
     ],
     "automation": {
         "conditions": [
-            {
-                "component": "main",
-                "capability": "switch",
-                "version": 1,
-                "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
-                "component": "main",
-                "capability": "contactSensor",
-                "version": 1,
-                "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
+	    {
                 "component": "main",
                 "capability": "motionSensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
                 "component": "main",
-                "capability": "momentary",
+                "capability": "illuminanceMeasurement",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
                 "component": "main",
-                "capability": "button",
+                "capability": "battery",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -136,15 +166,6 @@
                 "capability": "sensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
-                "component": "main",
-                "capability": "actuator",
-                "version": 1,
-                "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -152,49 +173,36 @@
                 "capability": "healthCheck",
                 "version": 1,
                 "values": [],
-                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
                 "visibleCondition": null
             }
         ],
         "actions": [
             {
                 "component": "main",
-                "capability": "switch",
-                "version": 1,
-                "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
-                "component": "main",
-                "capability": "contactSensor",
-                "version": 1,
-                "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
-                "component": "main",
                 "capability": "motionSensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
                 "component": "main",
-                "capability": "momentary",
+                "capability": "illuminanceMeasurement",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
                 "component": "main",
-                "capability": "button",
+                "capability": "battery",
                 "version": 1,
                 "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -202,15 +210,6 @@
                 "capability": "sensor",
                 "version": 1,
                 "values": [],
-                "patch": [],
-                "visibleCondition": null
-            },
-            {
-                "component": "main",
-                "capability": "actuator",
-                "version": 1,
-                "values": [],
-                "patch": [],
                 "visibleCondition": null
             },
             {
@@ -218,11 +217,15 @@
                 "capability": "healthCheck",
                 "version": 1,
                 "values": [],
-                "patch": [],
+                "visibleCondition": null
+            },
+            {
+                "component": "main",
+                "capability": "circlemusic21301.motionCommands",
+                "version": 1,
+                "values": [],
                 "visibleCondition": null
             }
         ]
-    },
-    "vid": "f50ea297-7843-38da-8b0b-96084c656fe2",
-    "mnmn": "SmartThingsCommunity"
+    }
 }
